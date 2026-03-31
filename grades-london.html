@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>London Edexcel | Samathwee Education Center</title>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Work+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --scarlet: #b22222; --scarlet2: #dc2626; --navy: #1a237e;
+      --gold: #c6a227; --cream: #faf8f2; --dark: #1a1a2e; --muted: #6b7280;
+    }
+    body { font-family: 'Work Sans', sans-serif; background: var(--cream); overflow-x: hidden; }
+
+    /* ── HERO ─ */
+    .hero {
+      position: relative; min-height: 100vh;
+      background: linear-gradient(160deg, var(--navy) 0%, #0d1b45 50%, #16213e 100%);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+
+    /* Union Jack inspired stripes */
+    .flag-deco {
+      position: absolute; inset: 0; pointer-events: none; z-index: 0; opacity: 0.04;
+      background:
+        linear-gradient(135deg, transparent 40%, #fff 40%, #fff 43%, transparent 43%),
+        linear-gradient(-135deg, transparent 40%, #fff 40%, #fff 43%, transparent 43%),
+        linear-gradient(90deg, transparent 45%, #fff 45%, #fff 55%, transparent 55%),
+        linear-gradient(0deg, transparent 45%, #fff 45%, #fff 55%, transparent 55%);
+    }
+
+    .hero-glow {
+      position: absolute; pointer-events: none;
+      border-radius: 50%; filter: blur(120px);
+    }
+    .hg1 { width:500px;height:500px; background:rgba(178,34,34,.2); top:-100px;right:0; }
+    .hg2 { width:350px;height:350px; background:rgba(26,35,126,.4); bottom:0;left:0; }
+
+    /* NAV */
+    .nav {
+      position: relative; z-index: 20;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 26px 7%;
+    }
+    .back-btn {
+      display: flex; align-items: center; gap: 8px;
+      color: rgba(255,255,255,.6); text-decoration: none; font-size: 0.88rem;
+      transition: color .3s;
+    }
+    .back-btn:hover { color: #fff; }
+    .nav-badge {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+      padding: 8px 20px; border-radius: 4px;
+      color: rgba(255,255,255,.7); font-size: 0.82rem; font-weight: 600;
+    }
+
+    /* HERO BODY */
+    .hero-body {
+      position: relative; z-index: 5;
+      flex: 1; display: grid; grid-template-columns: 1fr 0.8fr;
+      align-items: center; gap: 60px;
+      padding: 60px 7% 80px;
+    }
+
+    .badge-row { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; animation: riseIn .7s ease both; }
+    .union-flag { font-size: 2rem; }
+    .london-badge {
+      border: 1px solid rgba(198,162,39,.4); color: var(--gold);
+      font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px;
+      padding: 7px 20px; border-radius: 3px; background: rgba(198,162,39,.08);
+    }
+
+    .hero-h1 {
+      font-family: 'Libre Baskerville', serif;
+      font-size: clamp(2.8rem, 5.5vw, 5rem);
+      color: #fff; font-weight: 700; line-height: 1.1;
+      margin-bottom: 26px; animation: riseIn .7s ease 0.1s both;
+    }
+    .hero-h1 em { font-style: italic; color: var(--gold); }
+
+    .hero-p { color: rgba(255,255,255,.6); font-size: 1.02rem; line-height: 1.9; max-width: 460px; margin-bottom: 42px; animation: riseIn .7s ease 0.2s both; }
+
+    .btns { display: flex; gap: 14px; flex-wrap: wrap; animation: riseIn .7s ease 0.3s both; }
+    .btn-scarlet {
+      background: linear-gradient(135deg, var(--scarlet), var(--scarlet2));
+      color: #fff; text-decoration: none; font-weight: 700; font-size: 0.86rem;
+      padding: 14px 34px; border-radius: 3px;
+      box-shadow: 0 8px 28px rgba(178,34,34,.35);
+      transition: transform .3s, box-shadow .3s; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-scarlet:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(178,34,34,.5); }
+    .btn-gold-outline {
+      border: 1px solid rgba(198,162,39,.4); color: var(--gold);
+      text-decoration: none; font-weight: 600; font-size: 0.86rem;
+      padding: 14px 34px; border-radius: 3px;
+      transition: all .3s; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-gold-outline:hover { background: rgba(198,162,39,.1); border-color: var(--gold); }
+
+    /* Right side: qualification levels */
+    .qual-panel { animation: riseIn .7s ease 0.4s both; }
+    .qp-title { color: rgba(255,255,255,.4); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 20px; }
+    .qual-item {
+      border: 1px solid rgba(255,255,255,.08); border-radius: 10px;
+      padding: 20px 24px; margin-bottom: 12px; background: rgba(255,255,255,.03);
+      transition: all .3s;
+    }
+    .qual-item:hover { border-color: var(--gold); background: rgba(198,162,39,.06); }
+    .qi-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    .qi-name { font-family: 'Libre Baskerville', serif; font-size: 1rem; color: #fff; }
+    .qi-level { font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 3px; }
+    .qi-board { font-size: 0.78rem; color: rgba(255,255,255,.4); }
+
+    @keyframes riseIn { from{opacity:0;transform:translateY(25px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ── SUBJECTS ─ */
+    .subj-sec { background: #fff; padding: 90px 7%; }
+    .subj-inner { max-width: 1300px; margin: 0 auto; }
+
+    .eyebrow { color: var(--scarlet); font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px; }
+    .sh2 { font-family: 'Libre Baskerville', serif; font-size: clamp(2rem, 3.5vw, 2.8rem); color: var(--dark); margin-bottom: 12px; }
+    .sp { color: var(--muted); line-height: 1.75; max-width: 520px; margin-bottom: 50px; }
+
+    .level-filter { display: flex; gap: 10px; margin-bottom: 40px; flex-wrap: wrap; }
+    .lf { padding: 8px 22px; border-radius: 3px; font-size: 0.82rem; font-weight: 600; cursor: pointer; border: 1.5px solid #e5e7eb; color: var(--muted); background: #fff; transition: all .3s; }
+    .lf.active, .lf:hover { border-color: var(--scarlet); color: var(--scarlet); background: #fff5f5; }
+
+    .london-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .london-card {
+      border: 1.5px solid #f1f5f9; border-radius: 12px; padding: 28px 26px;
+      transition: all .35s;
+      opacity: 0; transform: translateY(20px);
+    }
+    .london-card.vis { opacity:1; transform:translateY(0); }
+    .london-card:hover { border-color: var(--scarlet); box-shadow: 0 14px 40px rgba(178,34,34,.1); transform: translateY(-6px); }
+
+    .lc-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .lc-icon { width: 46px; height: 46px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+    .lc-name { font-family: 'Libre Baskerville', serif; font-size: 1rem; color: var(--dark); }
+    .lc-level { font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 3px; }
+    .lc-code { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+    .lc-desc { font-size: 0.84rem; color: var(--muted); line-height: 1.65; margin-bottom: 12px; }
+    .lc-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .lc-tag { font-size: 0.68rem; font-weight: 600; padding: 3px 9px; border-radius: 3px; background: #f8f8f8; color: #6b7280; }
+
+    /* ── TEACHERS ─ */
+    .teacher-sec { background: var(--cream); padding: 90px 7%; }
+    .teacher-inner { max-width: 1300px; margin: 0 auto; }
+    .london-tc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; }
+
+    .ltc {
+      background: #fff; border-radius: 12px; padding: 30px 26px;
+      border: 1.5px solid #e5e7eb;
+      transition: all .4s; opacity: 0; transform: translateY(30px);
+    }
+    .ltc.vis { opacity:1; transform:translateY(0); }
+    .ltc:hover { border-color: var(--scarlet); box-shadow: 0 16px 40px rgba(0,0,0,.08); transform: translateY(-8px); }
+
+    .ltc-top { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+    .ltc-av { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; color: #fff; flex-shrink: 0; }
+    .ltc-name { font-family: 'Libre Baskerville', serif; font-size: 1rem; color: var(--dark); margin-bottom: 2px; }
+    .ltc-role { font-size: 0.73rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+    .ltc-board { display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 4px 12px; border-radius: 3px; margin-bottom: 12px; }
+    .ltc-exp { font-size: 0.84rem; color: var(--muted); line-height: 1.65; }
+    .ltc-qual { margin-top: 12px; padding-top: 12px; border-top: 1px solid #f1f5f9; font-size: 0.76rem; color: var(--scarlet); font-weight: 600; }
+
+    footer { background: var(--dark); padding: 50px 7%; text-align: center; }
+    footer a { display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg,var(--scarlet),var(--scarlet2)); color:#fff; text-decoration:none; font-weight:700; font-size:.88rem; padding:14px 36px; border-radius:3px; box-shadow:0 8px 24px rgba(178,34,34,.35); transition:transform .3s; }
+    footer a:hover { transform:translateY(-3px); }
+    footer p { color:rgba(255,255,255,.35); margin-top:18px; font-size:.82rem; }
+
+    @media (max-width: 900px) {
+      .hero-body { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="flag-deco"></div>
+  <div class="hero-glow hg1"></div>
+  <div class="hero-glow hg2"></div>
+
+  <nav class="nav">
+    <a href="index.html" class="back-btn">← Home</a>
+    <div class="nav-badge">🇬🇧 Pearson Edexcel · London</div>
+  </nav>
+
+  <div class="hero-body">
+    <div>
+      <div class="badge-row">
+        <span class="union-flag">🇬🇧</span>
+        <span class="london-badge">London Examinations</span>
+      </div>
+      <h1 class="hero-h1">London &<br><em>Edexcel</em><br>Excellence</h1>
+      <p class="hero-p">Internationally recognized British qualifications — Pearson Edexcel IGCSE and A-Level programs taught by specialists with extensive UK curriculum expertise.</p>
+      <div class="btns">
+        <a href="#london-subjects" class="btn-scarlet">📚 Explore Subjects</a>
+        <a href="#london-teachers" class="btn-gold-outline">Meet Faculty →</a>
+      </div>
+    </div>
+
+    <div class="qual-panel">
+      <div class="qp-title">Qualifications Offered</div>
+      <div class="qual-item">
+        <div class="qi-row">
+          <div class="qi-name">Pearson Edexcel IGCSE</div>
+          <div class="qi-level" style="background:#b2222222;color:#b22222">IGCSE</div>
+        </div>
+        <div class="qi-board">International General Certificate of Secondary Education</div>
+      </div>
+      <div class="qual-item">
+        <div class="qi-row">
+          <div class="qi-name">Edexcel International A-Level</div>
+          <div class="qi-level" style="background:#1a237e22;color:#9fa8da">AS / A2</div>
+        </div>
+        <div class="qi-board">Pearson Edexcel International Advanced Level</div>
+      </div>
+      <div class="qual-item">
+        <div class="qi-row">
+          <div class="qi-name">GCSE Foundation & Higher</div>
+          <div class="qi-level" style="background:#c6a22722;color:#c6a227">GCSE</div>
+        </div>
+        <div class="qi-board">For UK-based examination boards</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUBJECTS -->
+<section class="subj-sec" id="london-subjects">
+  <div class="subj-inner">
+    <div class="eyebrow">Edexcel Curriculum</div>
+    <h2 class="sh2">London Subjects</h2>
+    <p class="sp">Pearson Edexcel-aligned teaching from experienced subject specialists with past-paper focused examination preparation.</p>
+
+    <div class="level-filter" id="levelFilter">
+      <div class="lf active" data-level="all">All Levels</div>
+      <div class="lf" data-level="igcse">IGCSE</div>
+      <div class="lf" data-level="al">A-Level</div>
+    </div>
+
+    <div class="london-grid" id="londonGrid"></div>
+  </div>
+</section>
+
+<!-- TEACHERS -->
+<section class="teacher-sec" id="london-teachers">
+  <div class="teacher-inner">
+    <div class="eyebrow">Our Specialists</div>
+    <h2 class="sh2">London Faculty</h2>
+    <p class="sp">Teachers trained in UK curriculum delivery with expertise in Edexcel examination marking schemes.</p>
+    <div class="london-tc-grid" id="londonTeachers"></div>
+  </div>
+</section>
+
+<footer>
+  <a href="index.html">← All Programs</a>
+  <p>© 2025 Samathwee Higher Education Center · Panadura & Moratuwa, Sri Lanka</p>
+</footer>
+
+<script>
+const subjects = [
+  { icon:'🔤', name:'English Language', code:'4EA1', level:'igcse', desc:'Pearson Edexcel English Language IGCSE focusing on reading, writing and communication skills.', tags:['Reading','Writing','Communication'], ibg:'#dbeafe', ic:'#3b82f6' },
+  { icon:'📚', name:'English Literature', code:'4ET1', level:'igcse', desc:'Study of prose, poetry and drama for the Edexcel English Literature examination.', tags:['Prose','Poetry','Drama'], ibg:'#ede9fe', ic:'#7c3aed' },
+  { icon:'🔢', name:'Mathematics', code:'4MA1', level:'igcse', desc:'Edexcel IGCSE Mathematics covering number, algebra, shape and statistics comprehensively.', tags:['Number','Algebra','Geometry','Statistics'], ibg:'#ede9fe', ic:'#8b5cf6' },
+  { icon:'⚛️', name:'Physics', code:'4PH1 / WPH', level:'both', desc:'Edexcel IGCSE and International A-Level Physics with practical assessment preparation.', tags:['Mechanics','Waves','Electricity','Modern'], ibg:'#dbeafe', ic:'#2563eb' },
+  { icon:'🧪', name:'Chemistry', code:'4CH1 / WCH', level:'both', desc:'Edexcel Chemistry from IGCSE through International A-Level with full syllabus coverage.', tags:['Organic','Inorganic','Physical'], ibg:'#dcfce7', ic:'#16a34a' },
+  { icon:'🔬', name:'Biology', code:'4BI1 / WBI', level:'both', desc:'Edexcel Biology IGCSE and A-Level with genetics, ecology and practical investigation skills.', tags:['Genetics','Ecology','Physiology'], ibg:'#dcfce7', ic:'#15803d' },
+  { icon:'📈', name:'Economics', code:'4EC1 / WEC', level:'both', desc:'Micro and macroeconomics from IGCSE foundation through International A-Level.', tags:['Micro','Macro','Market Analysis'], ibg:'#fef3c7', ic:'#d97706' },
+  { icon:'🏢', name:'Business Studies', code:'4BS1 / WBS', level:'both', desc:'Business organisation, management, finance and marketing for Edexcel examinations.', tags:['Management','Finance','Marketing'], ibg:'#e0f2fe', ic:'#0284c7' },
+  { icon:'💻', name:'ICT / Computer Science', code:'4IT1', level:'igcse', desc:'Edexcel ICT IGCSE covering systems, programming, data and digital communication.', tags:['Programming','Systems','Data'], ibg:'#f5f3ff', ic:'#7c3aed' },
+  { icon:'🧠', name:'Psychology', code:'WPS', level:'al', desc:'Pearson Edexcel International A-Level Psychology — research methods, cognition, social topics.', tags:['Cognition','Social','Research'], ibg:'#fce7f3', ic:'#ec4899' },
+  { icon:'👥', name:'Sociology', code:'WSO', level:'al', desc:'International A-Level Sociology: culture, social stratification, identity and global society.', tags:['Culture','Stratification','Identity'], ibg:'#e0f2fe', ic:'#0891b2' },
+  { icon:'∞', name:'Further Mathematics', code:'WFM', level:'al', desc:'Edexcel International A-Level Further Maths for high-achieving mathematics students.', tags:['Pure Maths','Mechanics','Statistics'], ibg:'#f5f3ff', ic:'#6d28d9' },
+];
+
+const teachers = [
+  { initials:'JH', name:'Mr. James Handunnetti', role:'English Specialist', board:'Edexcel IGCSE/A-Level', exp:'Trained Pearson examiner. 11 years UK curriculum English. Expert in exam technique coaching.', qual:'MA English Literature, University of Colombo', bg:'#3b82f6' },
+  { initials:'MP', name:'Ms. Michelle Peiris', role:'Sciences Teacher', board:'IGCSE Physics & Chemistry', exp:'UK-trained educator with 9 years Edexcel science delivery. Strong focus on practicals.', qual:'B.Sc Chemistry, University of Kelaniya', bg:'#16a34a' },
+  { initials:'RA', name:'Mr. Ravi Abeysekara', role:'Mathematics Specialist', board:'IGCSE & A-Level Maths', exp:'12 years teaching Edexcel maths. 98% pass rate in IGCSE Maths examinations.', qual:'B.Sc Applied Mathematics, University of Colombo', bg:'#7c3aed' },
+  { initials:'CW', name:'Ms. Chamari Wickrama', role:'Economics & Business', board:'Edexcel A-Level', exp:'Former HSBC analyst. 8 years teaching International A-Level Economics and Business.', qual:'MBA Finance, University of Sri Jayewardenepura', bg:'#d97706' },
+];
+
+const levelLabels = { igcse: 'IGCSE', al: 'A-Level', both: 'IGCSE + A-Level' };
+const levelColors = { igcse: { bg: '#b2222218', c: '#b22222' }, al: { bg: '#1a237e18', c: '#9fa8da' }, both: { bg: '#c6a22718', c: '#c6a227' } };
+
+function renderLondon(filter) {
+  const grid = document.getElementById('londonGrid');
+  grid.innerHTML = '';
+  const list = filter === 'all' ? subjects : subjects.filter(s => s.level === filter || s.level === 'both');
+  list.forEach((s, i) => {
+    const lc = levelColors[s.level] || levelColors.both;
+    const c = document.createElement('div');
+    c.className = 'london-card';
+    c.style.transitionDelay = `${i * 0.06}s`;
+    c.innerHTML = `
+      <div class="lc-head">
+        <div class="lc-icon" style="background:${s.ibg}">${s.icon}</div>
+        <div>
+          <div class="lc-name">${s.name}</div>
+          <div style="display:flex;gap:6px;margin-top:4px;align-items:center">
+            <span class="lc-level" style="background:${lc.bg};color:${lc.c}">${levelLabels[s.level]}</span>
+            <span class="lc-code">${s.code}</span>
+          </div>
+        </div>
+      </div>
+      <div class="lc-desc">${s.desc}</div>
+      <div class="lc-tags">${s.tags.map(t => `<span class="lc-tag">${t}</span>`).join('')}</div>
+    `;
+    grid.appendChild(c);
+    requestAnimationFrame(() => c.classList.add('vis'));
+  });
+}
+renderLondon('all');
+
+document.getElementById('levelFilter').addEventListener('click', e => {
+  const btn = e.target.closest('.lf');
+  if (!btn) return;
+  document.querySelectorAll('.lf').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLondon(btn.dataset.level);
+});
+
+const tg = document.getElementById('londonTeachers');
+teachers.forEach((t, i) => {
+  const c = document.createElement('div');
+  c.className = 'ltc';
+  c.style.transitionDelay = `${i * 0.1}s`;
+  c.innerHTML = `
+    <div class="ltc-top">
+      <div class="ltc-av" style="background:${t.bg}">${t.initials}</div>
+      <div>
+        <div class="ltc-name">${t.name}</div>
+        <div class="ltc-role">${t.role}</div>
+      </div>
+    </div>
+    <div class="ltc-board" style="background:${t.bg}22;color:${t.bg}">${t.board}</div>
+    <div class="ltc-exp">${t.exp}</div>
+    <div class="ltc-qual">🎓 ${t.qual}</div>
+  `;
+  tg.appendChild(c);
+});
+
+const obs = new IntersectionObserver(e => e.forEach(x => x.isIntersecting && x.target.classList.add('vis')), { threshold: 0.1 });
+document.querySelectorAll('.london-card,.ltc').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

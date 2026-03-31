@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grade 6–O/Level | Samathwee Education Center</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --pur: #5a2d91; --pur2: #7c3fb8; --pur3: #ede9fe;
+      --dark: #0f0820; --dark2: #1e1240;
+      --white: #fff; --muted: #64748b;
+    }
+    body { font-family: 'DM Sans', sans-serif; background: #0f0820; overflow-x: hidden; }
+
+    /* ── HERO ─ */
+    .hero {
+      position: relative; min-height: 100vh;
+      background: linear-gradient(135deg, #0f0820 0%, #1e1240 50%, #2d1a60 100%);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+
+    /* Grid pattern */
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    .glow {
+      position: absolute; border-radius: 50%; filter: blur(100px);
+      pointer-events: none; z-index: 0;
+    }
+    .g1 { width:600px;height:600px; background:rgba(90,45,145,.3); top:-150px;right:-100px; animation: glowPulse 6s ease-in-out infinite; }
+    .g2 { width:400px;height:400px; background:rgba(243,146,35,.15); bottom:0;left:-80px; animation: glowPulse 8s ease-in-out infinite reverse; }
+
+    @keyframes glowPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+
+    /* NAV */
+    .nav {
+      position: relative; z-index: 20;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 6%;
+    }
+    .back-btn {
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none; color: #fff; font-weight: 700; font-size: 0.9rem;
+      background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15);
+      padding: 10px 24px; border-radius: 50px; transition: all .3s;
+      backdrop-filter: blur(10px);
+    }
+    .back-btn:hover { background: rgba(255,255,255,.15); transform: translateX(-4px); }
+
+    .nav-logo {
+      color: rgba(255,255,255,.6); font-weight: 600; font-size: 0.9rem;
+      background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+      padding: 10px 24px; border-radius: 50px;
+    }
+
+    /* HERO BODY */
+    .hero-body {
+      position: relative; z-index: 5;
+      flex: 1; display: flex; align-items: center;
+      padding: 40px 6% 80px; gap: 80px;
+    }
+
+    .hero-text { flex: 1; }
+
+    .grade-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(90,45,145,.3); border: 1px solid rgba(124,63,184,.5);
+      color: #c4b5fd; font-size: 0.78rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 2px;
+      padding: 8px 22px; border-radius: 50px; margin-bottom: 28px;
+      animation: slideUp .6s ease both;
+    }
+
+    .hero-h1 {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(3rem, 5.5vw, 5rem);
+      color: #fff; font-weight: 800; line-height: 1.08;
+      margin-bottom: 24px;
+      animation: slideUp .6s ease 0.1s both;
+    }
+    .hero-h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, #a78bfa, #c4b5fd);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-p {
+      font-size: 1.05rem; color: rgba(255,255,255,.6); line-height: 1.85;
+      max-width: 480px; margin-bottom: 40px;
+      animation: slideUp .6s ease 0.2s both;
+    }
+
+    .hero-btns { display: flex; gap: 14px; animation: slideUp .6s ease 0.3s both; }
+    .btn-pur {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--pur), var(--pur2));
+      color: #fff; text-decoration: none; font-weight: 700; font-size: 0.88rem;
+      padding: 14px 34px; border-radius: 50px;
+      box-shadow: 0 8px 28px rgba(90,45,145,.5);
+      transition: transform .3s, box-shadow .3s;
+    }
+    .btn-pur:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(90,45,145,.6); }
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.15);
+      color: #fff; text-decoration: none; font-weight: 700; font-size: 0.88rem;
+      padding: 14px 34px; border-radius: 50px;
+      transition: background .3s, transform .3s;
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,.14); transform: translateY(-4px); }
+
+    /* Right stats panel */
+    .hero-panel {
+      flex: 0 0 360px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 32px; padding: 36px;
+      backdrop-filter: blur(20px);
+      animation: slideUp .6s ease 0.4s both;
+    }
+    .panel-title {
+      font-family: 'Sora', sans-serif; font-size: 1rem; color: rgba(255,255,255,.5);
+      text-transform: uppercase; letter-spacing: 2px; margin-bottom: 24px;
+    }
+    .panel-stat { margin-bottom: 20px; }
+    .ps-label { font-size: 0.78rem; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+    .ps-bar-track { height: 8px; background: rgba(255,255,255,.08); border-radius: 10px; overflow: hidden; }
+    .ps-bar { height: 100%; border-radius: 10px; transition: width 1.5s ease; width: 0; }
+    .ps-val { font-family: 'Sora', sans-serif; font-size: 1.5rem; font-weight: 800; color: #fff; margin-top: 6px; }
+
+    @keyframes slideUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ── SUBJECTS ─ */
+    .subj-sec { background: #fff; padding: 90px 6%; }
+    .subj-inner { max-width: 1300px; margin: 0 auto; }
+
+    .sec-eyebrow {
+      font-family: 'Sora', sans-serif; font-size: 0.75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 3px;
+      color: var(--pur); margin-bottom: 10px;
+    }
+    .sec-h2 {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(2rem, 3.5vw, 2.8rem); color: var(--dark);
+      font-weight: 800; margin-bottom: 12px;
+    }
+    .sec-p { color: var(--muted); font-size: 1rem; line-height: 1.75; max-width: 520px; margin-bottom: 50px; }
+
+    /* Category tabs */
+    .tabs { display: flex; gap: 10px; margin-bottom: 40px; flex-wrap: wrap; }
+    .tab {
+      padding: 8px 22px; border-radius: 50px;
+      font-weight: 700; font-size: 0.82rem; cursor: pointer;
+      border: 2px solid #e5e7eb; color: var(--muted); background: #fff;
+      transition: all .3s;
+    }
+    .tab.active, .tab:hover { border-color: var(--pur); color: var(--pur); background: var(--pur3); }
+
+    .subj-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;
+    }
+    .subj-card {
+      border-radius: 20px; padding: 28px 26px;
+      border: 1.5px solid #f1f5f9;
+      transition: all .35s cubic-bezier(.2,.8,.2,1);
+      opacity: 0; transform: translateY(20px);
+      cursor: default;
+    }
+    .subj-card.vis { opacity:1; transform:translateY(0); }
+    .subj-card:hover { border-color: var(--pur); box-shadow: 0 16px 40px rgba(90,45,145,.12); transform: translateY(-8px); }
+
+    .sc-head { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+    .sc-icon {
+      width: 48px; height: 48px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; flex-shrink: 0;
+    }
+    .sc-name { font-family: 'Sora', sans-serif; font-size: 1rem; font-weight: 700; color: var(--dark); }
+    .sc-grades { font-size: 0.72rem; color: var(--muted); font-weight: 600; margin-top: 2px; }
+    .sc-desc { font-size: 0.86rem; color: var(--muted); line-height: 1.65; margin-bottom: 14px; }
+    .sc-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .sc-tag { font-size: 0.7rem; font-weight: 700; padding: 3px 10px; border-radius: 50px; }
+
+    /* ── TEACHERS ─ */
+    .teacher-sec { background: #f8f4ff; padding: 90px 6%; }
+    .teacher-inner { max-width: 1300px; margin: 0 auto; }
+    .teacher-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+
+    .tc {
+      background: #fff; border-radius: 24px; overflow: hidden;
+      box-shadow: 0 6px 24px rgba(0,0,0,.06);
+      border: 1.5px solid transparent;
+      transition: all .4s;
+      opacity: 0; transform: translateY(30px);
+    }
+    .tc.vis { opacity:1; transform:translateY(0); }
+    .tc:hover { border-color: var(--pur); box-shadow: 0 20px 50px rgba(90,45,145,.15); transform: translateY(-8px); }
+
+    .tc-banner { height: 100px; position: relative; }
+    .tc-avatar {
+      position: absolute; bottom: -30px; left: 28px;
+      width: 64px; height: 64px; border-radius: 50%;
+      border: 3px solid #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Sora', sans-serif; font-size: 1.3rem; font-weight: 800; color: #fff;
+      box-shadow: 0 4px 16px rgba(0,0,0,.2);
+    }
+    .tc-body { padding: 42px 28px 28px; }
+    .tc-name { font-family: 'Sora', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--dark); margin-bottom: 3px; }
+    .tc-role { font-size: 0.78rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+    .tc-subj { display: inline-block; font-size: 0.76rem; font-weight: 700; padding: 4px 14px; border-radius: 50px; color: #fff; margin-bottom: 12px; }
+    .tc-exp { font-size: 0.85rem; color: var(--muted); line-height: 1.65; }
+    .tc-qual {
+      margin-top: 14px; padding-top: 14px; border-top: 1px solid #f1f5f9;
+      font-size: 0.78rem; color: var(--pur); font-weight: 700;
+    }
+
+    footer {
+      background: var(--dark); padding: 50px 6%; text-align: center;
+    }
+    footer a {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: linear-gradient(135deg, var(--pur), var(--pur2));
+      color: #fff; text-decoration: none; font-weight: 700; font-size: 0.88rem;
+      padding: 14px 36px; border-radius: 50px;
+      box-shadow: 0 8px 28px rgba(90,45,145,.4);
+      transition: transform .3s;
+    }
+    footer a:hover { transform: translateY(-3px); }
+    footer p { color: rgba(255,255,255,.4); margin-top: 20px; font-size: 0.85rem; }
+
+    @media (max-width: 900px) {
+      .hero-body { flex-direction: column; gap: 40px; }
+      .hero-panel { width: 100%; flex: none; }
+    }
+  </style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="glow g1"></div>
+  <div class="glow g2"></div>
+
+  <nav class="nav">
+    <a href="index.html" class="back-btn">← Home</a>
+    <div class="nav-logo">Samathwee Education Center</div>
+  </nav>
+
+  <div class="hero-body">
+    <div class="hero-text">
+      <div class="grade-pill">📘 Sri Lanka Curriculum</div>
+      <h1 class="hero-h1">Grade 6<br>to <em>O/Level</em></h1>
+      <p class="hero-p">Master the Sri Lanka National curriculum from Grade 6 through Ordinary Level examinations. Our comprehensive program covers all 17 subjects with expert guidance and structured study plans.</p>
+      <div class="hero-btns">
+        <a href="#subj-ol" class="btn-pur">📚 View Subjects</a>
+        <a href="#teach-ol" class="btn-ghost">👩‍🏫 Our Teachers</a>
+      </div>
+    </div>
+
+    <div class="hero-panel">
+      <div class="panel-title">Program Highlights</div>
+      <div class="panel-stat">
+        <div class="ps-label">Pass Rate (2024 O/L)</div>
+        <div class="ps-bar-track"><div class="ps-bar" style="background:linear-gradient(90deg,#8b5cf6,#a78bfa)" data-width="93"></div></div>
+        <div class="ps-val">93%</div>
+      </div>
+      <div class="panel-stat">
+        <div class="ps-label">A-Grade Achievements</div>
+        <div class="ps-bar-track"><div class="ps-bar" style="background:linear-gradient(90deg,#f59e0b,#fbbf24)" data-width="78"></div></div>
+        <div class="ps-val">78%</div>
+      </div>
+      <div class="panel-stat">
+        <div class="ps-label">Student Satisfaction</div>
+        <div class="ps-bar-track"><div class="ps-bar" style="background:linear-gradient(90deg,#22c55e,#4ade80)" data-width="97"></div></div>
+        <div class="ps-val">97%</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUBJECTS -->
+<section class="subj-sec" id="subj-ol">
+  <div class="subj-inner">
+    <div class="sec-eyebrow">Complete Curriculum</div>
+    <h2 class="sec-h2">O/Level Subjects</h2>
+    <p class="sec-p">All subjects aligned with the Department of Examinations Sri Lanka syllabus, taught by qualified subject specialists.</p>
+
+    <div class="tabs" id="tabBar">
+      <div class="tab active" data-filter="all">All Subjects</div>
+      <div class="tab" data-filter="core">Core</div>
+      <div class="tab" data-filter="science">Science</div>
+      <div class="tab" data-filter="humanities">Humanities</div>
+      <div class="tab" data-filter="arts">Arts & Tech</div>
+    </div>
+
+    <div class="subj-grid" id="olGrid"></div>
+  </div>
+</section>
+
+<!-- TEACHERS -->
+<section class="teacher-sec" id="teach-ol">
+  <div class="teacher-inner">
+    <div class="sec-eyebrow">Expert Educators</div>
+    <h2 class="sec-h2">Our O/L Teachers</h2>
+    <p class="sec-p">Highly qualified teachers with proven results in national examinations.</p>
+    <div class="teacher-grid" id="olTeachers"></div>
+  </div>
+</section>
+
+<footer>
+  <a href="index.html">← Back to All Programs</a>
+  <p>© 2025 Samathwee Higher Education Center · Panadura & Moratuwa</p>
+</footer>
+
+<script>
+const subjects = [
+  { icon:'📖', name:'Sinhala', grades:'Grade 6–11', desc:'Master Sinhala language skills for the O/L examination with essays, comprehension and grammar.', tags:['Grammar','Essay','Literature'], cat:'core', bg:'#fff5f5', ic:'#fee2e2', accent:'#ef4444' },
+  { icon:'🔤', name:'English', grades:'Grade 6–11', desc:'Build English proficiency across reading, writing, listening and speaking for the O/L exam.', tags:['Grammar','Composition','Reading'], cat:'core', bg:'#eff6ff', ic:'#dbeafe', accent:'#3b82f6' },
+  { icon:'🔢', name:'Mathematics', grades:'Grade 6–11', desc:'Comprehensive maths covering algebra, geometry, statistics and all O/L examination topics.', tags:['Algebra','Geometry','Statistics'], cat:'core', bg:'#f5f3ff', ic:'#ede9fe', accent:'#8b5cf6' },
+  { icon:'🧪', name:'Science', grades:'Grade 6–9', desc:'Explore Physics, Chemistry and Biology fundamentals in an integrated science program.', tags:['Physics','Chemistry','Biology'], cat:'science', bg:'#eff6ff', ic:'#dbeafe', accent:'#2563eb' },
+  { icon:'🏛️', name:'History', grades:'Grade 6–11', desc:'Study Sri Lankan and world history from ancient civilizations to modern times.', tags:['Sri Lanka','World History','Analysis'], cat:'humanities', bg:'#fefce8', ic:'#fef9c3', accent:'#d97706' },
+  { icon:'🌍', name:'Geography', grades:'Grade 6–11', desc:'Learn physical and human geography with maps, fieldwork and environmental studies.', tags:['Maps','Climate','Population'], cat:'humanities', bg:'#f0fdf4', ic:'#dcfce7', accent:'#16a34a' },
+  { icon:'⚖️', name:'Civic Education', grades:'Grade 6–11', desc:'Understand rights, responsibilities, government and democratic values in society.', tags:['Rights','Government','Democracy'], cat:'humanities', bg:'#eef2ff', ic:'#e0e7ff', accent:'#4f46e5' },
+  { icon:'🙏', name:'Buddhism / Religion', grades:'Grade 6–11', desc:'In-depth study of Buddhism, Hinduism, Islam or Christianity according to student religion.', tags:['Philosophy','Values','History'], cat:'humanities', bg:'#fefce8', ic:'#fef9c3', accent:'#eab308' },
+  { icon:'🏥', name:'Health Education', grades:'Grade 6–11', desc:'Comprehensive health, nutrition and physical development education for young adults.', tags:['Health','Nutrition','Growth'], cat:'arts', bg:'#fff1f2', ic:'#fee2e2', accent:'#e11d48' },
+  { icon:'💻', name:'ICT', grades:'Grade 6–11', desc:'Digital literacy, programming basics and computer applications for the modern world.', tags:['Programming','Office Tools','Internet'], cat:'science', bg:'#f5f3ff', ic:'#ede9fe', accent:'#7c3aed' },
+  { icon:'💼', name:'Commerce', grades:'Grade 6–11', desc:'Business principles, commerce, banking and economics for O/L Commerce students.', tags:['Business','Banking','Trade'], cat:'humanities', bg:'#fffbeb', ic:'#fef3c7', accent:'#b45309' },
+  { icon:'🏡', name:'Home Economics', grades:'Grade 6–11', desc:'Practical home management, cooking, textiles and consumer education skills.', tags:['Cooking','Textiles','Budget'], cat:'arts', bg:'#fdf4ff', ic:'#fae8ff', accent:'#a21caf' },
+  { icon:'📐', name:'Technical Drawing', grades:'Grade 6–11', desc:'Engineering drawing fundamentals, geometrical constructions and technical design.', tags:['Drafting','Geometry','Design'], cat:'arts', bg:'#f0f9ff', ic:'#e0f2fe', accent:'#0284c7' },
+  { icon:'🌾', name:'Agriculture', grades:'Grade 6–11', desc:'Modern farming techniques, soil science and food technology for Sri Lankan students.', tags:['Farming','Soil','Food Tech'], cat:'science', bg:'#f0fdf4', ic:'#dcfce7', accent:'#15803d' },
+  { icon:'🎨', name:'Art', grades:'Grade 6–11', desc:'Creative visual arts, drawing, painting and art history for the national curriculum.', tags:['Drawing','Painting','Art History'], cat:'arts', bg:'#fdf4ff', ic:'#fae8ff', accent:'#9333ea' },
+  { icon:'🎭', name:'Drama & Theatre', grades:'Grade 6–11', desc:'Performing arts, script writing, stage performance and theatrical production skills.', tags:['Performance','Script','Theatre'], cat:'arts', bg:'#fdf4ff', ic:'#fae8ff', accent:'#7e22ce' },
+  { icon:'📝', name:'Tamil', grades:'Grade 6–11', desc:'Tamil language mastery for students pursuing Tamil medium or second language O/L.', tags:['Reading','Writing','Grammar'], cat:'core', bg:'#fefce8', ic:'#fef9c3', accent:'#ca8a04' },
+];
+
+const teachers = [
+  { initials:'LP', name:'Mr. Lanka Perera', role:'Mathematics Specialist', subj:'Mathematics', exp:'12 years OL teaching experience. Over 300 A-grade students in the last 5 years.', qual:'B.Sc Mathematics, University of Colombo', banner:'linear-gradient(135deg,#5a2d91,#8b5cf6)', tbg:'#5a2d91' },
+  { initials:'NK', name:'Ms. Nilmini Kumari', role:'Science Teacher', subj:'Science / Physics', exp:'10 years in secondary science education. Known for visual learning methods.', qual:'B.Sc Physics, University of Kelaniya', banner:'linear-gradient(135deg,#2563eb,#60a5fa)', tbg:'#2563eb' },
+  { initials:'RS', name:'Mr. Ruwan Silva', role:'English Language Teacher', subj:'English', exp:'8 years OL English tutor. Strong focus on composition and paper-work strategy.', qual:'BA English, OUSL', banner:'linear-gradient(135deg,#0d9488,#34d399)', tbg:'#0d9488' },
+  { initials:'DW', name:'Ms. Dilhani Wijesekara', role:'History & Civics', subj:'History / Civics', exp:'9 years teaching history. Engaging storytelling approach to national curriculum.', qual:'BA History, University of Peradeniya', banner:'linear-gradient(135deg,#d97706,#fbbf24)', tbg:'#d97706' },
+  { initials:'SW', name:'Mr. Sampath Weerasinghe', role:'Sinhala Teacher', subj:'Sinhala', exp:'15 years Sinhala subject specialist. Exceptional track record with literature students.', qual:'BA Sinhala, University of Colombo', banner:'linear-gradient(135deg,#e11d48,#fb7185)', tbg:'#e11d48' },
+  { initials:'PM', name:'Ms. Priyanka Mendis', role:'ICT & Commerce Teacher', subj:'ICT / Commerce', exp:'7 years teaching ICT and commerce subjects with practical industry experience.', qual:'BSc IT, NSBM', banner:'linear-gradient(135deg,#7c3aed,#a78bfa)', tbg:'#7c3aed' },
+];
+
+// Render subjects
+const grid = document.getElementById('olGrid');
+let activeFilter = 'all';
+
+function renderSubjects(filter) {
+  grid.innerHTML = '';
+  const list = filter === 'all' ? subjects : subjects.filter(s => s.cat === filter);
+  list.forEach((s, i) => {
+    const c = document.createElement('div');
+    c.className = 'subj-card';
+    c.style.transitionDelay = `${i * 0.06}s`;
+    c.innerHTML = `
+      <div class="sc-head">
+        <div class="sc-icon" style="background:${s.ic}">${s.icon}</div>
+        <div>
+          <div class="sc-name">${s.name}</div>
+          <div class="sc-grades">${s.grades}</div>
+        </div>
+      </div>
+      <div class="sc-desc">${s.desc}</div>
+      <div class="sc-tags">${s.tags.map(t => `<span class="sc-tag" style="background:${s.accent}18;color:${s.accent}">${t}</span>`).join('')}</div>
+    `;
+    grid.appendChild(c);
+    requestAnimationFrame(() => c.classList.add('vis'));
+  });
+}
+renderSubjects('all');
+
+// Tabs
+document.getElementById('tabBar').addEventListener('click', e => {
+  const tab = e.target.closest('.tab');
+  if (!tab) return;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  renderSubjects(tab.dataset.filter);
+});
+
+// Render teachers
+const tg = document.getElementById('olTeachers');
+teachers.forEach((t, i) => {
+  const c = document.createElement('div');
+  c.className = 'tc';
+  c.style.transitionDelay = `${i * 0.1}s`;
+  c.innerHTML = `
+    <div class="tc-banner" style="background:${t.banner}">
+      <div class="tc-avatar" style="background:${t.tbg}">${t.initials}</div>
+    </div>
+    <div class="tc-body">
+      <div class="tc-name">${t.name}</div>
+      <div class="tc-role">${t.role}</div>
+      <div class="tc-subj" style="background:${t.tbg}">${t.subj}</div>
+      <div class="tc-exp">${t.exp}</div>
+      <div class="tc-qual">🎓 ${t.qual}</div>
+    </div>
+  `;
+  tg.appendChild(c);
+});
+
+// Observer
+const obs = new IntersectionObserver(e => e.forEach(x => x.isIntersecting && x.target.classList.add('vis')), { threshold: 0.1 });
+document.querySelectorAll('.subj-card,.tc').forEach(el => obs.observe(el));
+
+// Progress bars animation
+const barObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.ps-bar').forEach(b => b.style.width = b.dataset.width + '%');
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelector('.hero-panel') && barObs.observe(document.querySelector('.hero-panel'));
+// Trigger immediately as it's in hero
+setTimeout(() => {
+  document.querySelectorAll('.ps-bar').forEach(b => b.style.width = b.dataset.width + '%');
+}, 800);
+</script>
+</body>
+</html>

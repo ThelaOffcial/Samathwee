@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cambridge CAIE | Samathwee Education Center</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,700;1,400&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --cam: #003d71; --cam2: #005da8; --cam3: #0073cc;
+      --light-blue: #e8f4fd; --teal: #008080; --teal2: #00a8a8;
+      --amber: #c47d00; --white: #fff; --cream: #f0f7ff;
+      --dark: #0a1628; --muted: #64748b;
+    }
+    body { font-family: 'Outfit', sans-serif; background: var(--white); overflow-x: hidden; }
+
+    /* HERO */
+    .hero {
+      position: relative; min-height: 100vh;
+      background: linear-gradient(150deg, var(--cam) 0%, #002850 50%, #001a35 100%);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+
+    /* Cambridge arch pattern */
+    .arch-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .arch-bg::before {
+      content: '';
+      position: absolute; bottom: -200px; right: -200px;
+      width: 700px; height: 700px;
+      border: 1px solid rgba(255,255,255,.05);
+      border-radius: 50%;
+    }
+    .arch-bg::after {
+      content: '';
+      position: absolute; bottom: -300px; right: -300px;
+      width: 900px; height: 900px;
+      border: 1px solid rgba(255,255,255,.03);
+      border-radius: 50%;
+    }
+
+    .hero-glow { position: absolute; border-radius: 50%; filter: blur(100px); pointer-events: none; }
+    .hg1 { width:600px;height:400px; background:rgba(0,115,204,.25); top:0;right:0; }
+    .hg2 { width:400px;height:400px; background:rgba(0,128,128,.15); bottom:-100px;left:0; }
+
+    /* NAV */
+    .nav {
+      position: relative; z-index: 20;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 26px 7%;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    .back-link { color: rgba(255,255,255,.5); text-decoration: none; font-size: 0.88rem; transition: color .3s; display: flex; align-items: center; gap: 8px; }
+    .back-link:hover { color: #fff; }
+    .nav-brand {
+      display: flex; align-items: center; gap: 12px;
+      color: rgba(255,255,255,.6); font-size: 0.8rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+    }
+    .cam-logo {
+      width: 36px; height: 36px; background: rgba(255,255,255,.1);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    /* HERO BODY */
+    .hero-body {
+      position: relative; z-index: 5;
+      flex: 1; display: grid; grid-template-columns: 1fr 0.9fr;
+      align-items: center; gap: 70px;
+      padding: 60px 7% 80px;
+    }
+
+    .cambridge-seal {
+      display: inline-flex; align-items: center; gap: 12px;
+      margin-bottom: 32px; animation: appear .7s ease both;
+    }
+    .seal-icon { font-size: 2.5rem; }
+    .seal-text { border-left: 2px solid rgba(196,125,0,.4); padding-left: 12px; }
+    .seal-name { color: rgba(255,255,255,.9); font-weight: 700; font-size: 0.9rem; }
+    .seal-sub { color: var(--amber); font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; }
+
+    .hero-h1 {
+      font-family: 'EB Garamond', serif;
+      font-size: clamp(3rem, 5.5vw, 5.2rem);
+      color: #fff; line-height: 1.08; font-weight: 700;
+      margin-bottom: 26px; animation: appear .7s ease 0.12s both;
+    }
+    .hero-h1 .italic { font-style: italic; color: var(--teal2); }
+
+    .hero-p { color: rgba(255,255,255,.6); font-size: 1rem; line-height: 1.9; max-width: 460px; margin-bottom: 42px; animation: appear .7s ease 0.24s both; }
+
+    .btns { display: flex; gap: 14px; flex-wrap: wrap; animation: appear .7s ease 0.36s both; }
+    .btn-teal {
+      background: linear-gradient(135deg, var(--teal), var(--teal2));
+      color: #fff; text-decoration: none; font-weight: 700; font-size: 0.88rem;
+      padding: 14px 34px; border-radius: 6px;
+      box-shadow: 0 8px 28px rgba(0,128,128,.35);
+      transition: transform .3s, box-shadow .3s; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-teal:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,128,128,.5); }
+    .btn-cam-outline {
+      border: 1px solid rgba(255,255,255,.15); color: rgba(255,255,255,.8);
+      text-decoration: none; font-weight: 600; font-size: 0.88rem;
+      padding: 14px 34px; border-radius: 6px;
+      transition: all .3s; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-cam-outline:hover { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.3); }
+
+    /* Right - CAIE pathway */
+    .pathway { animation: appear .7s ease 0.45s both; }
+    .pathway-title { color: rgba(255,255,255,.4); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 20px; }
+    .path-item {
+      display: flex; align-items: center; gap: 16px;
+      padding: 18px 22px; border: 1px solid rgba(255,255,255,.07);
+      border-radius: 10px; margin-bottom: 10px; background: rgba(255,255,255,.03);
+      transition: all .3s; cursor: default;
+    }
+    .path-item:hover { border-color: var(--teal2); background: rgba(0,168,168,.06); }
+    .pi-icon { font-size: 1.6rem; flex-shrink: 0; }
+    .pi-name { font-weight: 700; color: #fff; font-size: 0.95rem; margin-bottom: 2px; }
+    .pi-desc { font-size: 0.74rem; color: rgba(255,255,255,.4); }
+    .pi-badge {
+      margin-left: auto; flex-shrink: 0;
+      font-size: 0.68rem; font-weight: 700; padding: 4px 10px; border-radius: 4px;
+    }
+
+    @keyframes appear { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+
+    /* SUBJECTS */
+    .subj-sec { background: var(--cream); padding: 90px 7%; }
+    .subj-inner { max-width: 1300px; margin: 0 auto; }
+
+    .eyebrow { color: var(--cam2); font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px; }
+    .sh2 { font-family: 'EB Garamond', serif; font-size: clamp(2rem, 3.5vw, 2.8rem); color: var(--dark); margin-bottom: 12px; }
+    .sp { color: var(--muted); line-height: 1.75; max-width: 520px; margin-bottom: 50px; }
+
+    .qual-filter { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 40px; }
+    .qf { padding: 8px 22px; border-radius: 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer; border: 1.5px solid #d1e8f5; color: var(--muted); background: #fff; transition: all .3s; }
+    .qf.active, .qf:hover { border-color: var(--cam2); color: var(--cam2); background: var(--light-blue); }
+
+    .cam-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .cam-card {
+      background: #fff; border: 1.5px solid #e2edf7; border-radius: 14px; padding: 28px 24px;
+      transition: all .35s; opacity: 0; transform: translateY(20px);
+    }
+    .cam-card.vis { opacity:1; transform:translateY(0); }
+    .cam-card:hover { border-color: var(--cam2); box-shadow: 0 14px 40px rgba(0,61,113,.1); transform: translateY(-6px); }
+
+    .cc-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+    .cc-icon { width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+    .cc-name { font-family: 'EB Garamond', serif; font-size: 1.05rem; color: var(--dark); font-weight: 700; margin-bottom: 3px; }
+    .cc-code { font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; display: inline-block; }
+    .cc-desc { font-size: 0.84rem; color: var(--muted); line-height: 1.65; margin-bottom: 12px; }
+    .cc-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .cc-tag { font-size: 0.68rem; font-weight: 600; padding: 3px 9px; border-radius: 4px; background: var(--light-blue); color: var(--cam2); }
+
+    /* TEACHERS */
+    .teacher-sec { background: #fff; padding: 90px 7%; }
+    .teacher-inner { max-width: 1300px; margin: 0 auto; }
+    .cam-tc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; }
+
+    .ctc {
+      border: 1.5px solid var(--light-blue); border-radius: 14px; padding: 30px 26px;
+      transition: all .4s; opacity: 0; transform: translateY(30px);
+    }
+    .ctc.vis { opacity:1; transform:translateY(0); }
+    .ctc:hover { border-color: var(--teal2); box-shadow: 0 16px 44px rgba(0,128,128,.12); transform: translateY(-8px); }
+
+    .ctc-top { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .ctc-av { width: 54px; height: 54px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; color: #fff; flex-shrink: 0; }
+    .ctc-name { font-family: 'EB Garamond', serif; font-size: 1.05rem; color: var(--dark); font-weight: 700; margin-bottom: 2px; }
+    .ctc-role { font-size: 0.73rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+    .ctc-board { display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 4px 12px; border-radius: 4px; margin-bottom: 12px; background: var(--light-blue); color: var(--cam2); }
+    .ctc-exp { font-size: 0.84rem; color: var(--muted); line-height: 1.65; }
+    .ctc-qual { margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2edf7; font-size: 0.76rem; color: var(--teal); font-weight: 600; }
+
+    footer { background: var(--dark); padding: 50px 7%; text-align: center; }
+    footer a { display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--teal),var(--teal2));color:#fff;text-decoration:none;font-weight:700;font-size:.88rem;padding:14px 36px;border-radius:6px;box-shadow:0 8px 24px rgba(0,128,128,.35);transition:transform .3s; }
+    footer a:hover { transform:translateY(-3px); }
+    footer p { color:rgba(255,255,255,.35);margin-top:18px;font-size:.82rem; }
+
+    @media (max-width: 900px) {
+      .hero-body { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="arch-bg"></div>
+  <div class="hero-glow hg1"></div>
+  <div class="hero-glow hg2"></div>
+
+  <nav class="nav">
+    <a href="index.html" class="back-link">← Home</a>
+    <div class="nav-brand">
+      <div class="cam-logo">🏛️</div>
+      Cambridge CAIE
+    </div>
+  </nav>
+
+  <div class="hero-body">
+    <div>
+      <div class="cambridge-seal">
+        <div class="seal-icon">🏛️</div>
+        <div class="seal-text">
+          <div class="seal-name">Cambridge Assessment</div>
+          <div class="seal-sub">International Education</div>
+        </div>
+      </div>
+      <h1 class="hero-h1">Cambridge<br>Path to <span class="italic">Global</span><br>Excellence</h1>
+      <p class="hero-p">Cambridge CAIE qualifications — recognized by over 160 countries and leading universities worldwide. From Cambridge IGCSE through Cambridge International A-Level.</p>
+      <div class="btns">
+        <a href="#cam-subjects" class="btn-teal">🏛️ View Subjects</a>
+        <a href="#cam-teachers" class="btn-cam-outline">Meet Faculty →</a>
+      </div>
+    </div>
+
+    <div class="pathway">
+      <div class="pathway-title">Cambridge Qualifications</div>
+      <div class="path-item">
+        <div class="pi-icon">📗</div>
+        <div>
+          <div class="pi-name">Cambridge IGCSE</div>
+          <div class="pi-desc">Age 14–16 · International recognition</div>
+        </div>
+        <div class="pi-badge" style="background:#00807018;color:#008070">IGCSE</div>
+      </div>
+      <div class="path-item">
+        <div class="pi-icon">📘</div>
+        <div>
+          <div class="pi-name">Cambridge O-Level</div>
+          <div class="pi-desc">Age 15–16 · Core academic qualification</div>
+        </div>
+        <div class="pi-badge" style="background:#0073cc18;color:#0073cc">O Level</div>
+      </div>
+      <div class="path-item">
+        <div class="pi-icon">📙</div>
+        <div>
+          <div class="pi-name">Cambridge International AS & A</div>
+          <div class="pi-desc">Age 16–19 · University preparation</div>
+        </div>
+        <div class="pi-badge" style="background:#c47d0018;color:#c47d00">A Level</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUBJECTS -->
+<section class="subj-sec" id="cam-subjects">
+  <div class="subj-inner">
+    <div class="eyebrow">CAIE Curriculum</div>
+    <h2 class="sh2">Cambridge Subjects</h2>
+    <p class="sp">Fully aligned with CAIE syllabuses, our teachers bring Cambridge's rigorous academic tradition to every classroom.</p>
+
+    <div class="qual-filter" id="qualFilter">
+      <div class="qf active" data-q="all">All Qualifications</div>
+      <div class="qf" data-q="igcse">IGCSE</div>
+      <div class="qf" data-q="ol">O-Level</div>
+      <div class="qf" data-q="al">A-Level</div>
+    </div>
+
+    <div class="cam-grid" id="camGrid"></div>
+  </div>
+</section>
+
+<!-- TEACHERS -->
+<section class="teacher-sec" id="cam-teachers">
+  <div class="teacher-inner">
+    <div class="eyebrow">Cambridge Faculty</div>
+    <h2 class="sh2">Our Specialists</h2>
+    <p class="sp">CAIE-trained educators with deep expertise in Cambridge examination marking and student guidance.</p>
+    <div class="cam-tc-grid" id="camTeachers"></div>
+  </div>
+</section>
+
+<footer>
+  <a href="index.html">← All Programs</a>
+  <p>© 2025 Samathwee Higher Education Center · Panadura & Moratuwa, Sri Lanka</p>
+</footer>
+
+<script>
+const subjects = [
+  { icon:'🔤', name:'English Language', code:'0500 / 0627', q:'igcse', desc:'Cambridge IGCSE English Language with focus on reading comprehension, directed writing and continuous writing.', tags:['Reading','Writing','Communication'], bg:'#e8f4fd', ic:'#0073cc' },
+  { icon:'📚', name:'English Literature', code:'0475', q:'igcse', desc:'Prose, poetry and drama analysis for Cambridge IGCSE Literature in English.', tags:['Prose','Poetry','Drama','Analysis'], bg:'#ede9fe', ic:'#7c3aed' },
+  { icon:'🔢', name:'Mathematics', code:'0580 / 0607', q:'igcse', desc:'Cambridge IGCSE Mathematics (Core and Extended) covering all four content areas.', tags:['Number','Algebra','Geometry','Statistics'], bg:'#e8f4fd', ic:'#005da8' },
+  { icon:'⚛️', name:'Physics', code:'0625 / 9702', q:'both', desc:'Cambridge IGCSE and A-Level Physics with rigorous experimental investigation skills.', tags:['Mechanics','Waves','Fields','Modern'], bg:'#dbeafe', ic:'#2563eb' },
+  { icon:'🧪', name:'Chemistry', code:'0620 / 9701', q:'both', desc:'Cambridge Chemistry IGCSE through A-Level with detailed practical skills development.', tags:['Organic','Inorganic','Physical','Practical'], bg:'#dcfce7', ic:'#16a34a' },
+  { icon:'🔬', name:'Biology', code:'0610 / 9700', q:'both', desc:'Cambridge Biology from IGCSE to A-Level — genetics, ecology, physiology and evolution.', tags:['Genetics','Physiology','Ecology'], bg:'#f0fdf4', ic:'#15803d' },
+  { icon:'📈', name:'Economics', code:'0455 / 9708', q:'both', desc:'Cambridge Economics at IGCSE and A-Level — market structures, national and global economics.', tags:['Micro','Macro','Trade','Development'], bg:'#fef9c3', ic:'#d97706' },
+  { icon:'🏢', name:'Business Studies', code:'0450 / 9609', q:'both', desc:'Cambridge Business from IGCSE through A-Level with management, marketing and finance.', tags:['Management','Marketing','Finance'], bg:'#e0f2fe', ic:'#0284c7' },
+  { icon:'🌍', name:'Geography', code:'0460 / 9696', q:'both', desc:'Cambridge Geography — physical and human geography with fieldwork and data analysis.', tags:['Physical','Human','Environment','Fieldwork'], bg:'#dcfce7', ic:'#059669' },
+  { icon:'🏛️', name:'History', code:'0470 / 9489', q:'both', desc:'Cambridge History — depth and breadth studies with source analysis and essay skills.', tags:['Modern History','Source Analysis','Essay'], bg:'#fef3c7', ic:'#b45309' },
+  { icon:'💻', name:'Computer Science', code:'0478 / 9618', q:'both', desc:'Cambridge Computer Science — algorithms, programming, networking and data representation.', tags:['Algorithms','Programming','Networking'], bg:'#f5f3ff', ic:'#6d28d9' },
+  { icon:'📊', name:'Mathematics (A-Level)', code:'9709', q:'al', desc:'Cambridge International A-Level Mathematics — Pure, Mechanics and Statistics components.', tags:['Pure','Mechanics','Statistics'], bg:'#e8f4fd', ic:'#003d71' },
+];
+
+const qLabels = { igcse:'IGCSE', ol:'O-Level', al:'A-Level', both:'IGCSE & A-Level' };
+const qColors = { igcse:'#008070', ol:'#005da8', al:'#c47d00', both:'#008070' };
+
+function renderCam(filter) {
+  const grid = document.getElementById('camGrid');
+  grid.innerHTML = '';
+  const list = filter === 'all' ? subjects : subjects.filter(s => s.q === filter || s.q === 'both');
+  list.forEach((s, i) => {
+    const c = document.createElement('div');
+    c.className = 'cam-card';
+    c.style.transitionDelay = `${i * 0.06}s`;
+    const ql = s.q === 'both' ? 'IGCSE & A-Level' : qLabels[s.q];
+    const qc = qColors[s.q];
+    c.innerHTML = `
+      <div class="cc-top">
+        <div class="cc-icon" style="background:${s.bg}">${s.icon}</div>
+        <div>
+          <div class="cc-name">${s.name}</div>
+          <span class="cc-code" style="background:${qc}18;color:${qc}">${ql} · ${s.code}</span>
+        </div>
+      </div>
+      <div class="cc-desc">${s.desc}</div>
+      <div class="cc-tags">${s.tags.map(t => `<span class="cc-tag">${t}</span>`).join('')}</div>
+    `;
+    grid.appendChild(c);
+    requestAnimationFrame(() => c.classList.add('vis'));
+  });
+}
+renderCam('all');
+
+document.getElementById('qualFilter').addEventListener('click', e => {
+  const btn = e.target.closest('.qf');
+  if (!btn) return;
+  document.querySelectorAll('.qf').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCam(btn.dataset.q);
+});
+
+const teachers = [
+  { initials:'AJ', name:'Mr. Asanka Jayawardena', role:'Cambridge Sciences Lead', board:'Cambridge IGCSE & A-Level Sciences', exp:'Trained CAIE examiner. 13 years Cambridge Science delivery. Students accepted to UCL, King\'s College and NUS.', qual:'M.Sc Chemistry, University of Colombo · CAIE Certified', bg:'linear-gradient(135deg,#008070,#00a8a8)' },
+  { initials:'TF', name:'Ms. Tharushi Fernando', role:'Cambridge English Specialist', board:'IGCSE English Language & Literature', exp:'10 years CAIE English specialist. Outstanding results in comprehension and writing components.', qual:'BA English, USJP · Cambridge CELTA', bg:'linear-gradient(135deg,#005da8,#0073cc)' },
+  { initials:'BW', name:'Mr. Buddhika Weerasekara', role:'Cambridge Mathematics', board:'IGCSE & A-Level Mathematics', exp:'12 years teaching Cambridge maths streams. Published practice paper sets for IGCSE students.', qual:'B.Sc Mathematics, University of Kelaniya', bg:'linear-gradient(135deg,#003d71,#0073cc)' },
+  { initials:'PN', name:'Ms. Preethi Nanayakkara', role:'Economics & Business', board:'Cambridge IGCSE & A-Level', exp:'Former investment banker. 9 years Cambridge Economics. Strong emphasis on structured essay writing.', qual:'MBA, Postgraduate Institute of Management, Sri Lanka', bg:'linear-gradient(135deg,#c47d00,#e6a020)' },
+];
+
+const tg = document.getElementById('camTeachers');
+teachers.forEach((t, i) => {
+  const c = document.createElement('div');
+  c.className = 'ctc';
+  c.style.transitionDelay = `${i * 0.1}s`;
+  c.innerHTML = `
+    <div class="ctc-top">
+      <div class="ctc-av" style="background:${t.bg}">${t.initials}</div>
+      <div>
+        <div class="ctc-name">${t.name}</div>
+        <div class="ctc-role">${t.role}</div>
+      </div>
+    </div>
+    <div class="ctc-board">${t.board}</div>
+    <div class="ctc-exp">${t.exp}</div>
+    <div class="ctc-qual">🎓 ${t.qual}</div>
+  `;
+  tg.appendChild(c);
+});
+
+const obs = new IntersectionObserver(e => e.forEach(x => x.isIntersecting && x.target.classList.add('vis')), { threshold: 0.1 });
+document.querySelectorAll('.cam-card,.ctc').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
