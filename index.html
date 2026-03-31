@@ -1,61 +1,397 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Samathwee Higher Education Center</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Samathwee Higher Education Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --purple: #5a2d91;
+      --orange: #f39223;
+      --dark:   #1e293b;
+      --muted:  #64748b;
+      --white:  #ffffff;
+    }
+
+    body { font-family: 'Poppins', sans-serif; background: var(--white); overflow-x: hidden; }
+
+    /* ─── ANIMATED BG CANVAS ─────────────────────────────────────── */
+    #bg-canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ─── HERO ───────────────────────────────────────────────────── */
+    .hero-container {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      /* ✅ FIX: rich gradient so text never fights the image */
+      background:
+        linear-gradient(115deg,
+          rgba(255,255,255,1)   0%,
+          rgba(255,255,255,0.97) 35%,
+          rgba(255,255,255,0.55) 60%,
+          rgba(255,255,255,0)   100%),
+        url('hero-image.jpg') right center / cover no-repeat;
+      background-color: #f8f4ff;   /* fallback tint when image is absent */
+      overflow: hidden;
+    }
+
+    /* ─── NAV ────────────────────────────────────────────────────── */
+    .nav-bar {
+      position: relative; z-index: 10;
+      display: flex; justify-content: space-between; align-items: center;
+      width: 94%; max-width: 1400px;
+      margin: 20px auto;
+      padding: 14px 36px;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(14px);
+      border-radius: 100px;
+      box-shadow: 0 8px 32px rgba(90,45,145,0.10);
+    }
+
+    .logo-container { display: flex; align-items: center; gap: 12px; }
+    .logo-container img { height: 44px; border-radius: 8px; }
+    .logo-container h1 { font-size: 1rem; color: var(--dark); font-weight: 700; line-height: 1.2; }
+
+    /* desktop links */
+    .nav-links { display: flex; list-style: none; align-items: center; gap: 28px; }
+    .nav-links li a {
+      text-decoration: none; color: var(--muted); font-weight: 500;
+      position: relative; padding: 5px 0; transition: color .3s;
+    }
+    .nav-links li a::after {
+      content: ''; position: absolute; width: 0; height: 2px;
+      bottom: 0; left: 0; background: var(--orange); transition: width .35s ease;
+    }
+    .nav-links li a:hover::after { width: 100%; }
+    .nav-links li a:hover { color: var(--purple); }
+
+    .contact-button-primary {
+      background: linear-gradient(135deg, var(--orange) 0%, #e67e22 100%);
+      color: var(--white) !important;
+      padding: 11px 30px !important;
+      border-radius: 50px; font-weight: 700;
+      text-transform: uppercase; font-size: 0.78rem; letter-spacing: 1.4px;
+      box-shadow: 0 4px 18px rgba(230,126,34,.35);
+      transition: transform .3s, box-shadow .3s !important;
+    }
+    .contact-button-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px rgba(230,126,34,.5);
+    }
+
+    /* hamburger – hidden on desktop */
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; background: none; border: none; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2.5px;
+      background: var(--dark); border-radius: 4px; transition: all .3s;
+    }
+    /* open state */
+    .hamburger.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+    /* ─── HERO CONTENT ───────────────────────────────────────────── */
+    .hero-content {
+      position: relative; z-index: 5;
+      flex: 1; display: flex; align-items: center;
+      padding: 60px 8% 80px;
+    }
+
+    .description-box { max-width: 580px; }
+
+    /* ✅ FIX: badge above heading for extra contrast cue */
+    .hero-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, rgba(90,45,145,0.12), rgba(243,146,35,0.12));
+      color: var(--purple);
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      padding: 7px 18px; border-radius: 50px;
+      border: 1px solid rgba(90,45,145,0.18);
+      margin-bottom: 22px;
+    }
+
+    .description-box h2 {
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      color: var(--dark);               /* ✅ always dark on white panel */
+      line-height: 1.12; font-weight: 800;
+      margin-bottom: 22px;
+    }
+
+    /* accent word */
+    .description-box h2 span {
+      background: linear-gradient(135deg, var(--purple), var(--orange));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    .description-box p {
+      font-size: 1.08rem; color: var(--muted);
+      line-height: 1.85; margin-bottom: 36px;
+    }
+
+    .pro-link {
+      display: inline-flex; align-items: center; gap: 10px;
+      color: var(--white); text-decoration: none; font-weight: 700;
+      text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1.5px;
+      background: linear-gradient(135deg, var(--purple), #7c3fb8);
+      padding: 14px 34px; border-radius: 50px;
+      box-shadow: 0 6px 22px rgba(90,45,145,.35);
+      transition: transform .3s, box-shadow .3s;
+    }
+    .pro-link:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(90,45,145,.45); }
+    .pro-link::after { content: '→'; font-size: 1rem; }
+
+    /* ─── CENTERS SECTION ────────────────────────────────────────── */
+    .centers-section {
+      padding: 100px 5%;
+      max-width: 1400px; margin: 0 auto;
+    }
+
+    .section-header { text-align: center; margin-bottom: 60px; }
+    .section-header h2 { font-size: clamp(1.9rem, 3.5vw, 2.8rem); color: var(--dark); font-weight: 700; }
+    .header-line { width: 70px; height: 4px; background: var(--orange); margin: 12px auto 0; border-radius: 10px; }
+
+    .centers-container {
+      display: flex; justify-content: center;
+      gap: 40px; flex-wrap: wrap;
+    }
+
+    .center-box {
+      background: var(--white);
+      flex: 1; min-width: 300px; max-width: 450px;
+      padding: 50px 40px; border-radius: 40px; text-align: center;
+      border: 1px solid #f1f5f9;
+      box-shadow: 0 20px 50px rgba(0,0,0,.06);
+      opacity: 0; transform: translateY(80px);
+      transition: transform .6s cubic-bezier(.2,.8,.2,1), box-shadow .4s, border-color .4s, opacity .6s;
+    }
+    .center-box.visible { opacity: 1; transform: translateY(0); }
+    .center-box:nth-child(2) { transition-delay: 0.18s; }
+
+    .center-box:hover {
+      transform: translateY(-14px);
+      border-color: var(--orange);
+      box-shadow: 0 32px 64px rgba(243,146,35,.18);
+    }
+
+    .center-icon {
+      width: 70px; height: 70px;
+      background: linear-gradient(135deg, var(--purple), #7c3fb8);
+      color: var(--white); font-size: 1.8rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 20px; margin: 0 auto 28px;
+      box-shadow: 0 8px 24px rgba(90,45,145,.3);
+    }
+
+    .center-box h3 { font-size: 1.7rem; color: var(--dark); margin-bottom: 14px; font-weight: 700; }
+    .center-box p  { color: var(--muted); line-height: 1.75; margin-bottom: 28px; }
+
+    .location-tag {
+      display: inline-block; padding: 7px 20px;
+      background: #f3f0fa; color: var(--purple);
+      border-radius: 100px; font-weight: 600; font-size: 0.82rem; margin-bottom: 22px;
+    }
+
+    .map-btn {
+      text-decoration: none; color: var(--orange); font-weight: 700;
+      text-transform: uppercase; font-size: 0.82rem; letter-spacing: 1px;
+      transition: letter-spacing .3s;
+    }
+    .map-btn:hover { letter-spacing: 2px; }
+
+    /* ─── MOBILE ─────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+
+      /* nav */
+      .hamburger { display: flex; }
+
+      .nav-links {
+        display: none; flex-direction: column; gap: 0;
+        position: absolute; top: calc(100% + 12px); left: 0; right: 0;
+        background: rgba(255,255,255,0.97);
+        backdrop-filter: blur(16px);
+        border-radius: 24px; padding: 16px 0;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+        z-index: 200;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links li { width: 100%; text-align: center; }
+      .nav-links li a {
+        display: block; padding: 14px 24px;
+        font-size: 1rem;
+      }
+      .nav-links li a::after { display: none; }
+      .contact-button-primary {
+        margin: 8px auto !important;
+        display: inline-block !important;
+      }
+
+      /* nav-bar position */
+      .nav-bar { position: relative; margin: 14px auto; padding: 12px 22px; }
+
+      /* hero */
+      .hero-container {
+        /* on mobile show a top-fading overlay so text is always legible */
+        background:
+          linear-gradient(180deg,
+            rgba(255,255,255,1)   0%,
+            rgba(255,255,255,0.96) 55%,
+            rgba(248,244,255,0.85) 100%),
+          url('hero-image.jpg') center top / cover no-repeat;
+      }
+
+      .hero-content { padding: 40px 6% 60px; justify-content: center; }
+      .description-box { text-align: center; max-width: 100%; }
+      .description-box p { font-size: 1rem; }
+      .pro-link { font-size: 0.78rem; padding: 13px 28px; }
+
+      /* centers */
+      .centers-section { padding: 70px 5%; }
+      .center-box { padding: 40px 28px; border-radius: 28px; min-width: 100%; }
+    }
+
+    @media (max-width: 400px) {
+      .logo-container h1 { font-size: 0.82rem; }
+      .description-box h2 { font-size: 1.9rem; }
+    }
+  </style>
 </head>
 <body>
 
-    <section class="hero-container">
-        <nav class="nav-bar">
-            <div class="logo-container">
-                <img src="images.jpg" alt="Logo">
-                <h1>Samathwee Higher Education Center</h1>
-            </div>
-            <ul class="nav-links">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Centers</a></li>
-                <li><a href="#">Subject</a></li>
-                <li><a href="#">Teachers</a></li>
-                <li><a href="#" class="contact-button-primary">Contact Us</a></li>
-            </ul>
-        </nav>
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero-container">
 
-        <div class="hero-content">
-            <div class="description-box">
-                <h2>Empowering the Next Generation</h2>
-                <p>Samathwee Higher Education Center provides world-class tutoring and academic guidance. Our expert faculty ensures every student reaches their peak potential.</p>
-                <a href="#" class="pro-link">Discover Our Programs</a>
-            </div>
-        </div>
-    </section>
+  <!-- Animated background canvas -->
+  <canvas id="bg-canvas"></canvas>
 
-    <section class="centers-section">
-        <div class="section-header">
-            <h2>Our Centers</h2>
-            <div class="header-line"></div>
-        </div>
+  <!-- NAV -->
+  <nav class="nav-bar">
+    <div class="logo-container">
+      <img src="images.jpg" alt="Samathwee Logo" />
+      <h1>Samathwee Higher<br>Education Center</h1>
+    </div>
 
-        <div class="centers-container">
-            <div class="center-box">
-                <div class="center-icon">P</div>
-                <h3>Samathwee Panadura</h3>
-                <p>Our flagship center located in Panadura, offering state-of-the-art classrooms and a dedicated study environment.</p>
-                <div class="location-tag">Main Branch</div>
-                <a href="#" class="map-btn">Find on Map</a>
-            </div>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
 
-            <div class="center-box">
-                <div class="center-icon">M</div>
-                <h3>Samathwee Moratuwa</h3>
-                <p>Providing excellence in education to the Moratuwa community with expert faculty and modern learning resources.</p>
-                <div class="location-tag">Premium Center</div>
-                <a href="#" class="map-btn">Find on Map</a>
-            </div>
-        </div>
-    </section>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Centers</a></li>
+      <li><a href="#">Subjects</a></li>
+      <li><a href="#">Teachers</a></li>
+      <li><a href="#" class="contact-button-primary">Contact Us</a></li>
+    </ul>
+  </nav>
 
+  <!-- HERO CONTENT -->
+  <div class="hero-content">
+    <div class="description-box">
+      <div class="hero-badge">🎓 Excellence in Education</div>
+      <h2>Empowering the<br><span>Next Generation</span></h2>
+      <p>Samathwee Higher Education Center provides world-class tutoring and academic guidance. Our expert faculty ensures every student reaches their peak potential.</p>
+      <a href="#" class="pro-link">Discover Our Programs</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ CENTERS ═══════════════ -->
+<section class="centers-section">
+  <div class="section-header">
+    <h2>Our Centers</h2>
+    <div class="header-line"></div>
+  </div>
+
+  <div class="centers-container">
+    <div class="center-box">
+      <div class="center-icon">P</div>
+      <h3>Samathwee Panadura</h3>
+      <p>Our flagship center located in Panadura, offering state-of-the-art classrooms and a dedicated study environment for all students.</p>
+      <div class="location-tag">Main Branch</div><br>
+      <a href="#" class="map-btn">Find on Map →</a>
+    </div>
+
+    <div class="center-box">
+      <div class="center-icon">M</div>
+      <h3>Samathwee Moratuwa</h3>
+      <p>Providing excellence in education to the Moratuwa community with expert faculty and modern learning resources for every learner.</p>
+      <div class="location-tag">Premium Center</div><br>
+      <a href="#" class="map-btn">Find on Map →</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  /* ── Hamburger toggle ── */
+  const btn   = document.getElementById('hamburger');
+  const links = document.getElementById('nav-links');
+  btn.addEventListener('click', () => {
+    btn.classList.toggle('open');
+    links.classList.toggle('open');
+  });
+
+  /* ── Scroll-triggered center cards ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.center-box').forEach(el => observer.observe(el));
+
+  /* ── Floating particle background ── */
+  const canvas = document.getElementById('bg-canvas');
+  const ctx    = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width  = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const COUNT = 28;
+  const COLORS = ['rgba(90,45,145,', 'rgba(243,146,35,', 'rgba(90,45,145,'];
+
+  const particles = Array.from({ length: COUNT }, () => ({
+    x:  Math.random() * canvas.width,
+    y:  Math.random() * canvas.height,
+    r:  4 + Math.random() * 14,
+    dx: (Math.random() - 0.5) * 0.45,
+    dy: (Math.random() - 0.5) * 0.45,
+    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    alpha: 0.04 + Math.random() * 0.1,
+  }));
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color + p.alpha + ')';
+      ctx.fill();
+
+      p.x += p.dx;
+      p.y += p.dy;
+
+      if (p.x < -p.r)              p.x = canvas.width  + p.r;
+      if (p.x > canvas.width + p.r) p.x = -p.r;
+      if (p.y < -p.r)              p.y = canvas.height + p.r;
+      if (p.y > canvas.height + p.r) p.y = -p.r;
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+</script>
 </body>
 </html>
