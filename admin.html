@@ -8,9 +8,12 @@
 </head>
 <body>
 
-<!-- ══════════════════════════ LOGIN ══════════════════════════ -->
+<!-- ══════════════════════════════════════════
+     LOGIN SCREEN
+══════════════════════════════════════════ -->
 <div id="loginScreen" class="auth-container">
   <div class="auth-box">
+
     <div class="auth-visual">
       <div class="visual-badge">Admin Portal</div>
       <div class="visual-main">
@@ -71,7 +74,9 @@
   </div>
 </div>
 
-<!-- ══════════════════════════ DASHBOARD ══════════════════════════ -->
+<!-- ══════════════════════════════════════════
+     DASHBOARD
+══════════════════════════════════════════ -->
 <div id="dashboard" class="dashboard" style="display:none;">
 
   <aside class="sidebar" id="sidebar">
@@ -85,16 +90,16 @@
 
     <nav class="sidebar-nav">
       <div class="nav-section-label">Content</div>
-      <button class="nav-item active" onclick="showSection('hero',this)"><span class="nav-icon">🏠</span> Hero Section</button>
-      <button class="nav-item" onclick="showSection('stats',this)"><span class="nav-icon">📊</span> Statistics</button>
-      <button class="nav-item" onclick="showSection('grades',this)"><span class="nav-icon">📚</span> Grade Cards</button>
-      <button class="nav-item" onclick="showSection('subjects',this)"><span class="nav-icon">🔬</span> Subjects</button>
+      <button class="nav-item active" onclick="showSection('hero', this)"><span class="nav-icon">🏠</span> Hero Section</button>
+      <button class="nav-item" onclick="showSection('stats', this)"><span class="nav-icon">📊</span> Statistics</button>
+      <button class="nav-item" onclick="showSection('grades', this)"><span class="nav-icon">📚</span> Grade Cards</button>
+      <button class="nav-item" onclick="showSection('subjects', this)"><span class="nav-icon">🔬</span> Subjects</button>
       <div class="nav-section-label">People</div>
-      <button class="nav-item" onclick="showSection('teachers',this)"><span class="nav-icon">👨‍🏫</span> Teachers</button>
+      <button class="nav-item" onclick="showSection('teachers', this)"><span class="nav-icon">👨‍🏫</span> Teachers</button>
       <div class="nav-section-label">Settings</div>
-      <button class="nav-item" onclick="showSection('center',this)"><span class="nav-icon">📍</span> Center Info</button>
-      <button class="nav-item" onclick="showSection('contact',this)"><span class="nav-icon">📞</span> Contact</button>
-      <button class="nav-item" onclick="showSection('footer',this)"><span class="nav-icon">🔗</span> Footer</button>
+      <button class="nav-item" onclick="showSection('center', this)"><span class="nav-icon">📍</span> Center Info</button>
+      <button class="nav-item" onclick="showSection('contact', this)"><span class="nav-icon">📞</span> Contact</button>
+      <button class="nav-item" onclick="showSection('footer', this)"><span class="nav-icon">🔗</span> Footer</button>
     </nav>
 
     <div class="sidebar-footer">
@@ -112,7 +117,7 @@
     <div class="top-statusbar">
       <div>
         <div class="page-title">Dashboard</div>
-        <div class="page-subtitle">Realtime DB · changes sync to live site instantly</div>
+        <div class="page-subtitle">Realtime DB · changes sync instantly</div>
       </div>
       <div id="saveStatus" class="save-status">
         <span class="dot"></span>
@@ -141,7 +146,7 @@
           <label>Description</label>
           <textarea id="heroDesc" rows="4" placeholder="Enter hero description..."></textarea>
         </div>
-        <button class="btn-save" onclick="saveHero(this)">💾 Save Hero</button>
+        <button class="btn-save" onclick="saveHero()">💾 Save Hero</button>
       </div>
     </section>
 
@@ -158,7 +163,7 @@
           <div class="stat-card"><label>Subjects</label><input type="number" id="statSubjects" placeholder="59" min="0" /></div>
           <div class="stat-card"><label>Centers</label><input type="number" id="statCenters" placeholder="1" min="0" /></div>
         </div>
-        <button class="btn-save" onclick="saveStats(this)">💾 Save Stats</button>
+        <button class="btn-save" onclick="saveStats()">💾 Save Stats</button>
       </div>
     </section>
 
@@ -172,7 +177,7 @@
         <div id="gradesList"></div>
         <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;">
           <button class="btn-add" onclick="addGradeRow()">＋ Add Grade Card</button>
-          <button class="btn-save" onclick="saveGrades(this)">💾 Save All Grades</button>
+          <button class="btn-save" onclick="saveGrades()">💾 Save All Grades</button>
         </div>
       </div>
     </section>
@@ -187,7 +192,7 @@
         <div id="subjectsList"></div>
         <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;">
           <button class="btn-add" onclick="addSubjectRow()">＋ Add Subject</button>
-          <button class="btn-save" onclick="saveSubjects(this)">💾 Save All Subjects</button>
+          <button class="btn-save" onclick="saveSubjects()">💾 Save All Subjects</button>
         </div>
       </div>
     </section>
@@ -196,13 +201,13 @@
     <section id="sec-teachers" class="admin-section">
       <div class="section-header">
         <h2>👨‍🏫 Teachers</h2>
-        <p>Add, edit, or remove teacher profiles shown on the homepage.</p>
+        <p>Add, edit, or remove teacher profiles.</p>
       </div>
       <div class="card">
         <div id="teachersList"></div>
         <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;">
           <button class="btn-add" onclick="addTeacher()">＋ Add Teacher</button>
-          <button class="btn-save" onclick="saveTeachers(this)">💾 Save All Teachers</button>
+          <button class="btn-save" onclick="saveTeachers()">💾 Save All Teachers</button>
         </div>
       </div>
     </section>
@@ -221,7 +226,7 @@
         <div class="form-group"><label>Description</label><textarea id="centerDesc" rows="3" placeholder="Center description..."></textarea></div>
         <div class="form-group"><label>Address</label><input type="text" id="centerAddress" placeholder="Panadura, Sri Lanka" /></div>
         <div class="form-group"><label>Google Maps URL</label><input type="url" id="centerMapUrl" placeholder="https://maps.app.goo.gl/..." /></div>
-        <button class="btn-save" onclick="saveCenter(this)">💾 Save Center</button>
+        <button class="btn-save" onclick="saveCenter()">💾 Save Center</button>
       </div>
     </section>
 
@@ -235,7 +240,7 @@
         <div class="form-group"><label>Phone Number</label><input type="text" id="contactPhone" placeholder="+94 77 000 0000" /></div>
         <div class="form-group"><label>Email Address</label><input type="email" id="contactEmail" placeholder="info@samathwee.lk" /></div>
         <div class="form-group"><label>Address</label><input type="text" id="contactAddress" placeholder="Panadura, Sri Lanka" /></div>
-        <button class="btn-save" onclick="saveContact(this)">💾 Save Contact</button>
+        <button class="btn-save" onclick="saveContact()">💾 Save Contact</button>
       </div>
     </section>
 
@@ -247,14 +252,14 @@
       </div>
       <div class="card">
         <div class="form-group"><label>Footer Text</label><input type="text" id="footerText" placeholder="© 2026 Samathwee Higher Education Center…" /></div>
-        <button class="btn-save" onclick="saveFooter(this)">💾 Save Footer</button>
+        <button class="btn-save" onclick="saveFooter()">💾 Save Footer</button>
       </div>
     </section>
 
   </main>
 </div>
 
-<!-- ⚠️ Firebase Realtime Database SDK ONLY — no Firestore -->
+<!-- Firebase SDKs (compat) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
