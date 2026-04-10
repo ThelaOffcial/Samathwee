@@ -26,8 +26,7 @@
 
   <nav class="nav-bar">
     <div class="logo-container">
-      <!-- Logo updated from admin images -->
-      <img id="site-logo" src="images.jpg" alt="Samathwee Logo" onerror="this.style.display='none'" />
+      <img src="images.jpg" alt="Samathwee Logo" onerror="this.style.display='none'" />
       <h1>Samathwee Higher<br>Education Center</h1>
     </div>
     <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
@@ -35,7 +34,6 @@
       <li><a href="#">Home</a></li>
       <li><a href="#grades">Grades</a></li>
       <li><a href="#subjects">Subjects</a></li>
-      <li><a href="#teachers">Teachers</a></li>
       <li><a href="#centers">Centers</a></li>
       <li><a href="#contact">Contact</a></li>
       <li><a href="#contact" class="contact-btn-nav">Contact Us</a></li>
@@ -45,9 +43,7 @@
   <div class="hero-content">
     <div class="description-box">
       <div class="hero-badge" id="hero-tagline">🎓 Excellence in Education Since 2010</div>
-      <h2 id="hero-title-wrap">Empowering the<br>
-        <span class="shiny-text" id="hero-title-shiny">Next Generation</span><br>of Sri Lanka
-      </h2>
+      <h2 id="hero-title-wrap">Empowering the<br><span class="shiny-text" id="hero-title-shiny">Next Generation</span><br>of Sri Lanka</h2>
       <p id="hero-desc">Samathwee Higher Education Center provides world-class tutoring and academic guidance from Grade 1 through A/Levels. Our expert faculty ensures every student reaches their peak potential.</p>
       <div class="hero-btns">
         <a href="#grades" class="btn-primary">Explore Programs →</a>
@@ -82,7 +78,9 @@
     <div class="section-tag">Our Programs</div>
     <h2 class="section-title">Choose Your Grade Level</h2>
     <p class="section-sub">From early education to advanced international qualifications — find the right program for every learner.</p>
-    <div class="grade-grid" id="gradesGrid"></div>
+    <div class="grade-grid" id="gradesGrid">
+      <!-- Populated by Firebase -->
+    </div>
   </div>
 </section>
 
@@ -97,19 +95,6 @@
     </div>
     <div class="subjects-grid" id="subjectsGrid"></div>
     <div class="no-results" id="noResults">🔍 No subjects found. Try a different keyword.</div>
-  </div>
-</section>
-
-<!-- TEACHERS (NEW) -->
-<section class="teachers-section" id="teachers">
-  <div class="teachers-inner">
-    <div class="section-tag" style="background:linear-gradient(135deg,#1a3c5e,#2c5f8e)">Our Faculty</div>
-    <h2 class="section-title">Meet Our Teachers</h2>
-    <p class="section-sub">Expert educators committed to your academic success.</p>
-    <div class="teachers-grid" id="teachersGrid">
-      <!-- Populated from Firebase Realtime DB -->
-    </div>
-    <div class="no-results" id="noTeachers" style="display:none;">No teacher profiles yet.</div>
   </div>
 </section>
 
@@ -164,7 +149,6 @@
 <!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
