@@ -1,1370 +1,251 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Samathwee — Admin Panel</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-:root{
-  --bg:#09060f;
-  --bg2:#110d1f;
-  --bg3:#1a1330;
-  --surface:#1e1640;
-  --surface2:#251c4d;
-  --border:rgba(255,255,255,0.08);
-  --border2:rgba(255,255,255,0.14);
-  --purple:#7c3aed;
-  --purple2:#5b21b6;
-  --purple-glow:rgba(124,58,237,0.25);
-  --orange:#f59e0b;
-  --orange2:#d97706;
-  --orange-glow:rgba(245,158,11,0.2);
-  --text:#e2e0f0;
-  --muted:#8b88a8;
-  --danger:#ef4444;
-  --success:#22c55e;
-  --info:#38bdf8;
-  --sidebar-w:260px;
-}
-html{scroll-behavior:smooth;}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;overflow-x:hidden;}
-
-/* ─── SIDEBAR ─── */
-.sidebar{
-  width:var(--sidebar-w);min-width:var(--sidebar-w);height:100vh;position:fixed;left:0;top:0;
-  background:linear-gradient(180deg,#0e0a20 0%,#130d28 60%,#0f0920 100%);
-  border-right:1px solid var(--border);
-  display:flex;flex-direction:column;z-index:100;
-  transition:transform .3s cubic-bezier(.4,0,.2,1);
-}
-.sb-logo{padding:28px 24px 20px;border-bottom:1px solid var(--border);}
-.sb-logo-ring{
-  width:48px;height:48px;border-radius:16px;
-  background:linear-gradient(135deg,var(--purple),#a855f7);
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.4rem;margin-bottom:14px;
-  box-shadow:0 8px 20px var(--purple-glow);
-}
-.sb-logo h2{font-family:'Sora',sans-serif;font-size:.88rem;font-weight:700;color:#fff;line-height:1.3;}
-.sb-logo p{font-size:.7rem;color:var(--muted);margin-top:3px;font-weight:500;}
-
-.sb-section{padding:16px 12px 8px;font-size:.62rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
-.sb-nav{list-style:none;padding:0 12px;}
-.sb-nav li{margin-bottom:4px;}
-.sb-nav a{
-  display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:12px;
-  text-decoration:none;color:var(--muted);font-weight:500;font-size:.9rem;
-  transition:all .22s ease;cursor:pointer;
-}
-.sb-nav a .nav-icon{font-size:1.1rem;width:22px;text-align:center;}
-.sb-nav a:hover{background:rgba(124,58,237,.12);color:#c4b5fd;}
-.sb-nav a.active{background:linear-gradient(135deg,rgba(124,58,237,.25),rgba(124,58,237,.1));color:#c4b5fd;border:1px solid rgba(124,58,237,.3);}
-.sb-nav a.active .nav-icon{filter:drop-shadow(0 0 6px rgba(124,58,237,.8));}
-.sb-badge{margin-left:auto;background:var(--orange);color:#000;font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:50px;}
-
-.sb-footer{margin-top:auto;padding:16px 24px;border-top:1px solid var(--border);}
-.sb-user{display:flex;align-items:center;gap:10px;}
-.sb-avatar{width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--orange),var(--orange2));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;color:#000;}
-.sb-user-info p{font-size:.82rem;font-weight:600;color:#fff;}
-.sb-user-info span{font-size:.7rem;color:var(--muted);}
-
-/* ─── MAIN ─── */
-.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh;}
-
-/* ─── TOP BAR ─── */
-.topbar{
-  position:sticky;top:0;z-index:50;
-  background:rgba(9,6,15,.85);backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);
-  padding:0 36px;height:68px;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.topbar-left h1{font-family:'Sora',sans-serif;font-size:1.3rem;font-weight:700;color:#fff;}
-.topbar-left p{font-size:.78rem;color:var(--muted);margin-top:2px;}
-.topbar-right{display:flex;align-items:center;gap:12px;}
-.tb-btn{
-  display:flex;align-items:center;gap:7px;padding:9px 20px;border-radius:50px;
-  border:1px solid var(--border2);background:transparent;color:var(--text);
-  font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;
-  transition:all .2s;
-}
-.tb-btn:hover{border-color:rgba(124,58,237,.5);background:rgba(124,58,237,.1);}
-.tb-btn.primary{background:linear-gradient(135deg,var(--purple),var(--purple2));border:none;color:#fff;box-shadow:0 4px 16px var(--purple-glow);}
-.tb-btn.primary:hover{transform:translateY(-1px);box-shadow:0 8px 24px var(--purple-glow);}
-.tb-btn.orange{background:linear-gradient(135deg,var(--orange),var(--orange2));border:none;color:#000;font-weight:700;}
-.save-indicator{font-size:.75rem;color:var(--success);display:none;align-items:center;gap:5px;}
-.save-indicator.show{display:flex;}
-
-/* ─── CONTENT ─── */
-.content{flex:1;padding:36px;max-width:1100px;width:100%;}
-.panel{display:none;}
-.panel.active{display:block;}
-
-/* ─── CARDS ─── */
-.card{
-  background:var(--bg2);border:1px solid var(--border);border-radius:20px;
-  padding:28px 32px;margin-bottom:24px;
-  transition:border-color .2s;
-}
-.card:hover{border-color:var(--border2);}
-.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
-.card-title{font-family:'Sora',sans-serif;font-size:1.05rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:10px;}
-.card-title .ct-icon{font-size:1.2rem;}
-.card-subtitle{font-size:.8rem;color:var(--muted);margin-top:3px;}
-
-/* ─── FORM ELEMENTS ─── */
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
-.form-grid.cols-3{grid-template-columns:1fr 1fr 1fr;}
-.form-full{grid-column:1/-1;}
-.form-group{display:flex;flex-direction:column;gap:7px;}
-.form-group label{font-size:.78rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
-.form-group input,.form-group textarea,.form-group select{
-  background:rgba(255,255,255,0.05);border:1px solid var(--border2);border-radius:12px;
-  color:#fff;font-family:'DM Sans',sans-serif;font-size:.92rem;padding:12px 16px;
-  outline:none;transition:all .2s;resize:vertical;
-}
-.form-group input:focus,.form-group textarea:focus,.form-group select:focus{
-  border-color:rgba(124,58,237,.6);background:rgba(124,58,237,.07);
-  box-shadow:0 0 0 3px rgba(124,58,237,.15);
-}
-.form-group select option{background:#1a1330;color:#fff;}
-.form-group textarea{min-height:90px;}
-
-/* ─── STAT EDITOR ─── */
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
-.stat-edit-card{
-  background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;
-  text-align:center;position:relative;overflow:hidden;
-  transition:all .25s;
-}
-.stat-edit-card::before{content:'';position:absolute;inset:0;opacity:0;background:linear-gradient(135deg,rgba(124,58,237,.15),transparent);transition:opacity .3s;}
-.stat-edit-card:hover::before{opacity:1;}
-.stat-edit-card:hover{border-color:rgba(124,58,237,.35);}
-.stat-num-display{font-family:'Sora',sans-serif;font-size:2rem;font-weight:800;color:var(--orange);margin-bottom:4px;}
-.stat-label-display{font-size:.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;}
-.stat-edit-card input{width:100%;padding:8px 12px;font-size:.85rem;text-align:center;}
-
-/* ─── SUBJECT LIST ─── */
-.subject-list{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.subject-item{
-  display:flex;align-items:center;gap:12px;padding:14px 16px;
-  background:var(--surface);border:1px solid var(--border);border-radius:14px;
-  transition:all .2s;cursor:grab;
-}
-.subject-item:hover{border-color:var(--border2);background:var(--surface2);}
-.si-icon{
-  width:38px;height:38px;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;
-}
-.si-info{flex:1;min-width:0;}
-.si-name{font-weight:600;font-size:.9rem;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.si-level{font-size:.7rem;color:var(--muted);margin-top:2px;}
-.si-actions{display:flex;gap:6px;flex-shrink:0;}
-.icon-btn{
-  width:30px;height:30px;border-radius:8px;border:1px solid var(--border);
-  background:transparent;color:var(--muted);cursor:pointer;font-size:.85rem;
-  display:flex;align-items:center;justify-content:center;transition:all .18s;
-}
-.icon-btn:hover.edit{background:rgba(124,58,237,.2);border-color:rgba(124,58,237,.4);color:#c4b5fd;}
-.icon-btn:hover.del{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.4);color:#fca5a5;}
-
-/* ─── GRADE CARDS ─── */
-.grade-editor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;}
-.grade-editor-card{
-  background:var(--surface);border:2px solid var(--border);border-radius:20px;
-  padding:22px 18px;text-align:center;position:relative;cursor:pointer;
-  transition:all .3s cubic-bezier(.2,.9,.4,1);
-}
-.grade-editor-card:hover{transform:translateY(-4px);border-color:rgba(124,58,237,.5);box-shadow:0 16px 32px rgba(0,0,0,.3);}
-.gec-emoji{font-size:2rem;margin-bottom:10px;display:block;}
-.gec-title{font-family:'Sora',sans-serif;font-size:1rem;font-weight:700;color:#fff;margin-bottom:4px;}
-.gec-sub{font-size:.72rem;color:var(--muted);font-weight:600;}
-.gec-count{
-  display:inline-block;margin-top:10px;padding:4px 12px;border-radius:50px;
-  font-size:.72rem;font-weight:700;background:rgba(124,58,237,.2);color:#c4b5fd;
-}
-.gec-edit-overlay{
-  position:absolute;inset:0;border-radius:18px;background:rgba(124,58,237,.9);
-  display:none;align-items:center;justify-content:center;flex-direction:column;gap:8px;
-}
-.grade-editor-card:hover .gec-edit-overlay{display:flex;}
-
-/* ─── CENTER CARDS ─── */
-.center-edit-card{
-  background:var(--surface);border:1px solid var(--border);border-radius:20px;
-  padding:24px 28px;display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start;
-}
-.cec-num{
-  width:56px;height:56px;border-radius:16px;
-  background:linear-gradient(135deg,var(--purple),#a855f7);
-  color:#fff;font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:800;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
-
-/* ─── DASHBOARD ─── */
-.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;}
-.dash-card{
-  background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:22px 20px;
-  position:relative;overflow:hidden;
-}
-.dash-card::after{content:'';position:absolute;inset:-1px;border-radius:18px;opacity:0;transition:opacity .3s;pointer-events:none;}
-.dash-card.purple::after{background:linear-gradient(135deg,rgba(124,58,237,.15),transparent);opacity:1;}
-.dash-card.orange::after{background:linear-gradient(135deg,rgba(245,158,11,.12),transparent);opacity:1;}
-.dash-card.blue::after{background:linear-gradient(135deg,rgba(56,189,248,.1),transparent);opacity:1;}
-.dash-card.green::after{background:linear-gradient(135deg,rgba(34,197,94,.1),transparent);opacity:1;}
-.dc-icon{font-size:1.5rem;margin-bottom:12px;}
-.dc-num{font-family:'Sora',sans-serif;font-size:2rem;font-weight:800;line-height:1;}
-.dc-num.purple{color:#c4b5fd;}
-.dc-num.orange{color:var(--orange);}
-.dc-num.blue{color:var(--info);}
-.dc-num.green{color:var(--success);}
-.dc-label{font-size:.75rem;color:var(--muted);font-weight:600;margin-top:5px;text-transform:uppercase;letter-spacing:.8px;}
-.dc-change{font-size:.72rem;color:var(--success);margin-top:8px;display:flex;align-items:center;gap:4px;}
-
-.activity-list{display:flex;flex-direction:column;gap:0;}
-.activity-item{
-  display:flex;align-items:flex-start;gap:14px;padding:14px 0;
-  border-bottom:1px solid var(--border);
-}
-.activity-item:last-child{border-bottom:none;}
-.ai-dot{
-  width:34px;height:34px;border-radius:10px;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;font-size:.95rem;
-}
-.ai-dot.purple{background:rgba(124,58,237,.2);}
-.ai-dot.orange{background:rgba(245,158,11,.15);}
-.ai-dot.blue{background:rgba(56,189,248,.15);}
-.ai-dot.green{background:rgba(34,197,94,.15);}
-.ai-text p{font-size:.88rem;color:var(--text);font-weight:500;line-height:1.4;}
-.ai-text span{font-size:.73rem;color:var(--muted);}
-
-.quick-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;}
-.qa-btn{
-  background:var(--surface);border:1px solid var(--border);border-radius:16px;
-  padding:18px;text-align:center;cursor:pointer;transition:all .25s;
-  display:flex;flex-direction:column;align-items:center;gap:8px;
-}
-.qa-btn:hover{border-color:rgba(124,58,237,.4);background:var(--surface2);transform:translateY(-2px);}
-.qa-icon{font-size:1.6rem;}
-.qa-label{font-size:.82rem;font-weight:600;color:#fff;}
-.qa-sub{font-size:.7rem;color:var(--muted);}
-
-/* ─── MODAL ─── */
-.modal-bg{
-  position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);
-  z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;
-}
-.modal-bg.open{display:flex;}
-.modal{
-  background:var(--bg2);border:1px solid var(--border2);border-radius:24px;
-  padding:32px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;
-  animation:modalIn .3s cubic-bezier(.2,.9,.4,1);
-}
-@keyframes modalIn{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:none}}
-.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
-.modal-title{font-family:'Sora',sans-serif;font-size:1.15rem;font-weight:700;color:#fff;}
-.modal-close{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--muted);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
-.modal-close:hover{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.4);color:#fca5a5;}
-.modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:24px;}
-
-/* ─── TAGS / BADGES ─── */
-.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:50px;font-size:.72rem;font-weight:700;}
-.badge.purple{background:rgba(124,58,237,.2);color:#c4b5fd;border:1px solid rgba(124,58,237,.3);}
-.badge.orange{background:rgba(245,158,11,.15);color:var(--orange);border:1px solid rgba(245,158,11,.25);}
-.badge.green{background:rgba(34,197,94,.15);color:#86efac;border:1px solid rgba(34,197,94,.25);}
-
-/* ─── TOGGLE ─── */
-.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);}
-.toggle-row:last-child{border-bottom:none;}
-.toggle-info p{font-size:.9rem;color:#fff;font-weight:500;}
-.toggle-info span{font-size:.75rem;color:var(--muted);}
-.toggle{position:relative;display:inline-block;width:46px;height:26px;}
-.toggle input{opacity:0;width:0;height:0;}
-.toggle-slider{position:absolute;inset:0;background:rgba(255,255,255,.1);border-radius:50px;transition:.3s;cursor:pointer;border:1px solid var(--border2);}
-.toggle-slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s;}
-.toggle input:checked + .toggle-slider{background:var(--purple);border-color:var(--purple);}
-.toggle input:checked + .toggle-slider:before{transform:translateX(20px);}
-
-/* ─── COLOR PICKER ─── */
-.color-swatches{display:flex;flex-wrap:wrap;gap:8px;}
-.swatch{width:32px;height:32px;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:all .18s;}
-.swatch:hover,.swatch.active{border-color:#fff;transform:scale(1.1);}
-
-/* ─── PREVIEW BAR ─── */
-.preview-hint{
-  background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(245,158,11,.05));
-  border:1px solid rgba(245,158,11,.2);border-radius:14px;padding:14px 18px;
-  display:flex;align-items:center;gap:12px;margin-bottom:24px;
-}
-.preview-hint p{font-size:.82rem;color:rgba(245,158,11,.9);font-weight:500;}
-
-/* ─── SEARCH ─── */
-.list-toolbar{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
-.list-search{position:relative;flex:1;}
-.list-search input{width:100%;padding:10px 16px 10px 40px;border-radius:12px;}
-.list-search::before{content:'🔍';position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:.85rem;pointer-events:none;}
-
-/* ─── NOTIFICATIONS ─── */
-.toast{
-  position:fixed;bottom:28px;right:28px;z-index:9999;
-  background:var(--bg2);border:1px solid var(--border2);border-radius:14px;
-  padding:14px 20px;display:flex;align-items:center;gap:10px;
-  box-shadow:0 8px 32px rgba(0,0,0,.4);
-  transform:translateY(80px);opacity:0;transition:all .35s cubic-bezier(.2,.9,.4,1);
-  font-size:.88rem;font-weight:500;max-width:320px;
-}
-.toast.show{transform:translateY(0);opacity:1;}
-.toast.success{border-left:3px solid var(--success);}
-.toast.warning{border-left:3px solid var(--orange);}
-.toast.error{border-left:3px solid var(--danger);}
-
-/* ─── SEPARATOR ─── */
-.sep{height:1px;background:var(--border);margin:22px 0;}
-
-/* ─── HAMBURGER (MOBILE) ─── */
-.hamburger{display:none;background:none;border:none;padding:8px;cursor:pointer;flex-direction:column;gap:5px;}
-.hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:4px;transition:all .3s;}
-
-@media(max-width:900px){
-  .sidebar{transform:translateX(-100%);}
-  .sidebar.open{transform:translateX(0);}
-  .main{margin-left:0;}
-  .topbar{padding:0 20px;}
-  .hamburger{display:flex;}
-  .content{padding:20px;}
-  .dash-grid{grid-template-columns:repeat(2,1fr);}
-  .form-grid{grid-template-columns:1fr;}
-  .stats-row{grid-template-columns:repeat(2,1fr);}
-  .subject-list{grid-template-columns:1fr;}
-  .quick-actions{grid-template-columns:1fr 1fr;}
-}
-@media(max-width:500px){
-  .dash-grid,.stats-row{grid-template-columns:1fr;}
-  .quick-actions{grid-template-columns:1fr;}
-  .grade-editor-grid{grid-template-columns:1fr 1fr;}
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Samathwee Admin Dashboard</title>
+  <link rel="stylesheet" href="admin.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════ SIDEBAR ═══ -->
-<aside class="sidebar" id="sidebar">
-  <div class="sb-logo">
-    <div class="sb-logo-ring">🎓</div>
-    <h2>Samathwee Admin</h2>
-    <p>Content Management Panel</p>
-  </div>
-
-  <div class="sb-section">Main</div>
-  <ul class="sb-nav">
-    <li><a class="active" onclick="showPanel('dashboard',this)"><span class="nav-icon">⚡</span>Dashboard</a></li>
-    <li><a onclick="showPanel('hero',this)"><span class="nav-icon">🏠</span>Hero Section</a></li>
-    <li><a onclick="showPanel('stats',this)"><span class="nav-icon">📊</span>Stats Counter</a></li>
-  </ul>
-
-  <div class="sb-section">Content</div>
-  <ul class="sb-nav">
-    <li><a onclick="showPanel('grades',this)"><span class="nav-icon">🎓</span>Grade Cards</a></li>
-    <li><a onclick="showPanel('subjects',this)"><span class="nav-icon">📚</span>Subjects <span class="sb-badge" id="subCountBadge">34</span></a></li>
-    <li><a onclick="showPanel('centers',this)"><span class="nav-icon">📍</span>Centers</a></li>
-  </ul>
-
-  <div class="sb-section">Settings</div>
-  <ul class="sb-nav">
-    <li><a onclick="showPanel('appearance',this)"><span class="nav-icon">🎨</span>Appearance</a></li>
-    <li><a onclick="showPanel('settings',this)"><span class="nav-icon">⚙️</span>Site Settings</a></li>
-  </ul>
-
-  <div class="sb-footer">
-    <div class="sb-user">
-      <div class="sb-avatar">A</div>
-      <div class="sb-user-info">
-        <p>Admin User</p>
-        <span>Super Administrator</span>
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" class="auth-container">
+  <div class="auth-box">
+    <div class="auth-visual">
+      <div class="visual-content">
+        <div class="visual-logo">S</div>
+        <h2>Samathwee Panadura</h2>
+        <p>Managing excellence at Samathwee Education Center starts here.</p>
       </div>
     </div>
-  </div>
-</aside>
-
-<!-- ═══════════════════════════════════════ MAIN ═══ -->
-<div class="main">
-
-  <!-- TOP BAR -->
-  <header class="topbar">
-    <div style="display:flex;align-items:center;gap:14px;">
-      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
-      <div class="topbar-left">
-        <h1 id="pageTitle">Dashboard</h1>
-        <p id="pageSubtitle">Welcome back — your site is live</p>
+    <div class="auth-form-wrapper">
+      <!-- LOGIN -->
+      <div id="loginForm" class="auth-form-content">
+        <h1 class="auth-title">Welcome Back</h1>
+        <p class="auth-sub">Enter your details to access the dashboard</p>
+        <div id="loginError" class="auth-error" style="display:none;"></div>
+        <div class="form-floating">
+          <input type="email" id="loginEmail" placeholder=" " required />
+          <label>Email Address</label>
+        </div>
+        <div class="form-floating">
+          <input type="password" id="loginPassword" placeholder=" " required />
+          <label>Password</label>
+        </div>
+        <div class="auth-options">
+          <label class="remember-me">
+            <input type="checkbox" id="rememberMe">
+            <span>Remember me</span>
+          </label>
+          <a href="#" class="forgot-link">Forgot Password?</a>
+        </div>
+        <button class="auth-btn" id="loginBtn" onclick="doLogin()">Sign In →</button>
+        <p class="switch-form">Don't have an account?
+          <a href="javascript:void(0)" onclick="toggleAuth('signup')">Create one</a>
+        </p>
       </div>
-    </div>
-    <div class="topbar-right">
-      <div class="save-indicator" id="saveIndicator">✅ Saved</div>
-      <button class="tb-btn" onclick="window.open('index.html','_blank')">👁 Preview Site</button>
-      <button class="tb-btn primary" onclick="saveAll()">💾 Save All Changes</button>
-    </div>
-  </header>
-
-  <!-- ════ CONTENT PANELS ════ -->
-  <div class="content">
-
-    <!-- ── DASHBOARD ── -->
-    <div class="panel active" id="panel-dashboard">
-      <div class="dash-grid">
-        <div class="dash-card purple">
-          <div class="dc-icon">🎓</div>
-          <div class="dc-num purple" id="d-students">1200</div>
-          <div class="dc-label">Students</div>
-          <div class="dc-change">↑ Active</div>
+      <!-- SIGNUP -->
+      <div id="signupForm" class="auth-form-content" style="display:none;">
+        <h1 class="auth-title">Create Admin Account</h1>
+        <p class="auth-sub">Only for authorized administrators</p>
+        <div id="signupError" class="auth-error" style="display:none;"></div>
+        <div class="form-floating">
+          <input type="email" id="signupEmail" placeholder=" " required />
+          <label>Email Address</label>
         </div>
-        <div class="dash-card orange">
-          <div class="dc-icon">👩‍🏫</div>
-          <div class="dc-num orange" id="d-teachers">45</div>
-          <div class="dc-label">Teachers</div>
-          <div class="dc-change">↑ Growing</div>
+        <div class="form-floating">
+          <input type="password" id="signupPassword" placeholder=" " required />
+          <label>Password</label>
         </div>
-        <div class="dash-card blue">
-          <div class="dc-icon">📖</div>
-          <div class="dc-num blue" id="d-subjects">34</div>
-          <div class="dc-label">Subjects</div>
-          <div class="dc-change">↑ All Levels</div>
-        </div>
-        <div class="dash-card green">
-          <div class="dc-icon">🏢</div>
-          <div class="dc-num green">2</div>
-          <div class="dc-label">Centers</div>
-          <div class="dc-change">↑ Panadura + Moratuwa</div>
-        </div>
+        <button class="auth-btn" onclick="doSignup()">Register Admin</button>
+        <p class="switch-form">Already an admin?
+          <a href="javascript:void(0)" onclick="toggleAuth('login')">Sign In</a>
+        </p>
       </div>
-
-      <div class="quick-actions">
-        <div class="qa-btn" onclick="showPanel('subjects',document.querySelector('.sb-nav a:nth-child(5)'))">
-          <div class="qa-icon">➕</div>
-          <div class="qa-label">Add Subject</div>
-          <div class="qa-sub">Expand subject list</div>
-        </div>
-        <div class="qa-btn" onclick="showPanel('hero',document.querySelector('.sb-nav a:nth-child(2)'))">
-          <div class="qa-icon">✏️</div>
-          <div class="qa-label">Edit Hero</div>
-          <div class="qa-sub">Update homepage headline</div>
-        </div>
-        <div class="qa-btn" onclick="showPanel('centers',document.querySelector('.sb-nav a:nth-child(6)'))">
-          <div class="qa-icon">📍</div>
-          <div class="qa-label">Edit Centers</div>
-          <div class="qa-sub">Update location info</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title"><span class="ct-icon">🕐</span>Recent Activity</div>
-            <div class="card-subtitle">Latest changes to your site</div>
-          </div>
-          <span class="badge purple">Live</span>
-        </div>
-        <div class="activity-list" id="activityList">
-          <div class="activity-item">
-            <div class="ai-dot purple">📚</div>
-            <div class="ai-text"><p>Subject list loaded from storage</p><span>Just now</span></div>
-          </div>
-          <div class="activity-item">
-            <div class="ai-dot orange">🎓</div>
-            <div class="ai-text"><p>Grade cards configuration ready</p><span>On startup</span></div>
-          </div>
-          <div class="activity-item">
-            <div class="ai-dot green">📍</div>
-            <div class="ai-text"><p>Center details synced</p><span>On startup</span></div>
-          </div>
-          <div class="activity-item">
-            <div class="ai-dot blue">⚡</div>
-            <div class="ai-text"><p>Admin panel initialized</p><span>Session start</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── HERO SECTION ── -->
-    <div class="panel" id="panel-hero">
-      <div class="preview-hint">
-        <span>💡</span>
-        <p>Changes here update the homepage hero section. Click <strong>"Save All Changes"</strong> to export your updated site data.</p>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title"><span class="ct-icon">🏷️</span>Badge & Headline</div>
-            <div class="card-subtitle">What visitors see first</div>
-          </div>
-          <span class="badge green">Live</span>
-        </div>
-        <div class="form-grid">
-          <div class="form-group form-full">
-            <label>Hero Badge Text</label>
-            <input type="text" id="heroBadge" value="🎓 Excellence in Education Since 2010"/>
-          </div>
-          <div class="form-group form-full">
-            <label>Main Headline Line 1</label>
-            <input type="text" id="heroLine1" value="Empowering the"/>
-          </div>
-          <div class="form-group form-full">
-            <label>Shiny Highlight Text</label>
-            <input type="text" id="heroShiny" value="Next Generation"/>
-          </div>
-          <div class="form-group form-full">
-            <label>Main Headline Line 3</label>
-            <input type="text" id="heroLine3" value="of Sri Lanka"/>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><span class="ct-icon">📝</span>Description & Buttons</div>
-        </div>
-        <div class="form-grid">
-          <div class="form-group form-full">
-            <label>Paragraph Description</label>
-            <textarea id="heroDesc">Samathwee Higher Education Center provides world-class tutoring and academic guidance from Grade 1 through A/Levels. Our expert faculty ensures every student reaches their peak potential.</textarea>
-          </div>
-          <div class="form-group">
-            <label>Primary Button Label</label>
-            <input type="text" id="heroBtn1" value="Explore Programs →"/>
-          </div>
-          <div class="form-group">
-            <label>Secondary Button Label</label>
-            <input type="text" id="heroBtn2" value="Our Centers"/>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><span class="ct-icon">🔗</span>Navigation Links</div>
-        </div>
-        <div class="form-grid cols-3">
-          <div class="form-group">
-            <label>Link 1</label>
-            <input type="text" id="nav1" value="Home"/>
-          </div>
-          <div class="form-group">
-            <label>Link 2</label>
-            <input type="text" id="nav2" value="Grades"/>
-          </div>
-          <div class="form-group">
-            <label>Link 3</label>
-            <input type="text" id="nav3" value="Subjects"/>
-          </div>
-          <div class="form-group">
-            <label>Link 4</label>
-            <input type="text" id="nav4" value="Centers"/>
-          </div>
-          <div class="form-group">
-            <label>CTA Button</label>
-            <input type="text" id="navCta" value="Contact Us"/>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── STATS ── -->
-    <div class="panel" id="panel-stats">
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title"><span class="ct-icon">📊</span>Hero Statistics</div>
-            <div class="card-subtitle">Animated counter numbers shown below the hero</div>
-          </div>
-        </div>
-        <div class="stats-row">
-          <div class="stat-edit-card">
-            <div class="stat-num-display" id="prev-students">1200</div>
-            <div class="stat-label-display">Students</div>
-            <div class="form-group">
-              <label>Number</label>
-              <input type="number" id="statStudents" value="1200" oninput="updateStatPreview('students',this.value)"/>
-            </div>
-            <div class="form-group" style="margin-top:8px">
-              <label>Label</label>
-              <input type="text" id="statStudentsLabel" value="Students"/>
-            </div>
-          </div>
-          <div class="stat-edit-card">
-            <div class="stat-num-display" id="prev-teachers">45</div>
-            <div class="stat-label-display">Expert Teachers</div>
-            <div class="form-group">
-              <label>Number</label>
-              <input type="number" id="statTeachers" value="45" oninput="updateStatPreview('teachers',this.value)"/>
-            </div>
-            <div class="form-group" style="margin-top:8px">
-              <label>Label</label>
-              <input type="text" id="statTeachersLabel" value="Expert Teachers"/>
-            </div>
-          </div>
-          <div class="stat-edit-card">
-            <div class="stat-num-display" id="prev-subj">30</div>
-            <div class="stat-label-display">Subjects</div>
-            <div class="form-group">
-              <label>Number</label>
-              <input type="number" id="statSubjects" value="30" oninput="updateStatPreview('subj',this.value)"/>
-            </div>
-            <div class="form-group" style="margin-top:8px">
-              <label>Label</label>
-              <input type="text" id="statSubjectsLabel" value="Subjects"/>
-            </div>
-          </div>
-          <div class="stat-edit-card">
-            <div class="stat-num-display" id="prev-centers">2</div>
-            <div class="stat-label-display">Centers</div>
-            <div class="form-group">
-              <label>Number</label>
-              <input type="number" id="statCenters" value="2" oninput="updateStatPreview('centers',this.value)"/>
-            </div>
-            <div class="form-group" style="margin-top:8px">
-              <label>Label</label>
-              <input type="text" id="statCentersLabel" value="Centers"/>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── GRADE CARDS ── -->
-    <div class="panel" id="panel-grades">
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title"><span class="ct-icon">🎓</span>Grade Program Cards</div>
-            <div class="card-subtitle">Click any card to edit its content</div>
-          </div>
-          <span class="badge orange">5 Programs</span>
-        </div>
-        <div class="grade-editor-grid" id="gradeEditorGrid"></div>
-      </div>
-
-      <div class="card" id="gradeEditForm" style="display:none;">
-        <div class="card-header">
-          <div class="card-title" id="gradeEditTitle"><span class="ct-icon">✏️</span>Editing Grade Card</div>
-        </div>
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Emoji Icon</label>
-            <input type="text" id="gEmojiInput"/>
-          </div>
-          <div class="form-group">
-            <label>Card Title</label>
-            <input type="text" id="gTitleInput"/>
-          </div>
-          <div class="form-group">
-            <label>Subtitle</label>
-            <input type="text" id="gSubInput"/>
-          </div>
-          <div class="form-group">
-            <label>Subject Count Label</label>
-            <input type="text" id="gCountInput"/>
-          </div>
-          <div class="form-group form-full">
-            <label>Link URL</label>
-            <input type="text" id="gLinkInput"/>
-          </div>
-        </div>
-        <div style="display:flex;gap:10px;margin-top:16px;">
-          <button class="tb-btn primary" onclick="saveGradeCard()">✅ Apply Changes</button>
-          <button class="tb-btn" onclick="document.getElementById('gradeEditForm').style.display='none'">Cancel</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── SUBJECTS ── -->
-    <div class="panel" id="panel-subjects">
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title"><span class="ct-icon">📚</span>Subject Manager</div>
-            <div class="card-subtitle">Add, edit, or remove subjects from all grade levels</div>
-          </div>
-          <button class="tb-btn orange" onclick="openAddSubject()">➕ Add Subject</button>
-        </div>
-        <div class="list-toolbar">
-          <div class="list-search">
-            <input type="text" id="subjectSearchAdmin" placeholder="Search subjects..." oninput="filterSubjectsAdmin(this.value)"/>
-          </div>
-          <select class="form-group" style="background:rgba(255,255,255,.05);border:1px solid var(--border2);border-radius:12px;color:#fff;padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:.88rem;" onchange="filterSubjectsAdmin(document.getElementById('subjectSearchAdmin').value,this.value)">
-            <option value="">All Levels</option>
-            <option value="Grade 1–5">Grade 1–5</option>
-            <option value="Grade 6–O/L">Grade 6–O/L</option>
-            <option value="A/Level">A/Level</option>
-            <option value="London">London</option>
-            <option value="Cambridge">Cambridge</option>
-          </select>
-        </div>
-        <div class="subject-list" id="adminSubjectList"></div>
-      </div>
-    </div>
-
-    <!-- ── CENTERS ── -->
-    <div class="panel" id="panel-centers">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><span class="ct-icon">📍</span>Center — Panadura</div>
-        </div>
-        <div class="form-grid">
-          <div class="form-group form-full">
-            <label>Center Name</label>
-            <input type="text" id="c1Name" value="Samathwee Panadura"/>
-          </div>
-          <div class="form-group form-full">
-            <label>Description</label>
-            <textarea id="c1Desc">Our flagship center in Panadura, offering premium classrooms, a vast resource library, and a focused study environment for all students.</textarea>
-          </div>
-          <div class="form-group">
-            <label>Tag Label</label>
-            <input type="text" id="c1Tag" value="Main Branch"/>
-          </div>
-          <div class="form-group">
-            <label>Google Maps Link</label>
-            <input type="text" id="c1Map" value="https://maps.app.goo.gl/wZSjj3zwNjdNAKVc9"/>
-          </div>
-          <div class="form-group">
-            <label>Phone Number</label>
-            <input type="text" id="c1Phone" value="+94 77 000 0000"/>
-          </div>
-          <div class="form-group">
-            <label>Email</label>
-            <input type="text" id="c1Email" value="panadura@samathwee.lk"/>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><span class="ct-icon">📍</span>Center — Moratuwa</div>
-        </div>
-        <div class="form-grid">
-          <div class="form-group form-full">
-            <label>Center Name</label>
-            <input type="text" id="c2Name" value="Samathwee Moratuwa"/>
-          </div>
-          <div class="form-group form-full">
-            <label>Description</label>
-            <textarea id="c2Desc">Serving the Moratuwa community with expert faculty, modern learning resources, and a welcoming environment for every learner.</textarea>
-          </div>
-          <div class="form-group">
-            <label>Tag Label</label>
-            <input type="text" id="c2Tag" value="Premium Center"/>
-          </div>
-          <div class="form-group">
-            <label>Google Maps Link</label>
-            <input type="text" id="c2Map" value="#"/>
-          </div>
-          <div class="form-group">
-            <label>Phone Number</label>
-            <input type="text" id="c2Phone" value="+94 77 000 0001"/>
-          </div>
-          <div class="form-group">
-            <label>Email</label>
-            <input type="text" id="c2Email" value="moratuwa@samathwee.lk"/>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><span class="ct-icon">🕐</span>Opening Hours</div>
-        </div>
-        <div class="form-grid cols-3">
-          <div class="form-group">
-            <label>Weekdays</label>
-            <input type="text" id="hoursWeekday" value="Mon–Fri: 7:00 AM – 9:00 PM"/>
-          </div>
-          <div class="form-group">
-            <label>Saturday</label>
-            <input type="text" id="hoursSat" value="Sat: 7:00 AM – 7:00 PM"/>
-          </div>
-          <div class="form-group">
-            <label>Sunday</label>
-            <input type="text" id="hoursSun" value="Sun: 8:00 AM – 5:00 PM"/>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── APPEARANCE ── -->
-    <div class="panel" id="panel-appearance">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><span class="ct-icon">🎨</span>Brand Colors</div>
-        </div>
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Primary Purple</label>
-            <input type="color" id="colorPurple" value="#5a2d91" style="height:48px;cursor:pointer;"/>
-          </div>
-          <div class="form-group">
-            <label>Accent Orange</label>
-            <input type="color" id="colorOrange" value="#f39223" style="height:48px;cursor:pointer;"/>
-          </div>
-          <div class="form-group">
-            <label>Dark Background</label>
-            <input type="color" id="colorDark" value="#0f0a1e" style="height:48px;cursor:pointer;"/>
-          </div>
-          <div class="form-group">
-            <label>Light Background</label>
-            <input type="color" id="colorLight" value="#f8f4ff" style="height:48px;cursor:pointer;"/>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><span class="ct-icon">⚙️</span>Animations & Effects</div>
-        </div>
-        <div class="toggle-row">
-          <div class="toggle-info">
-            <p>Particle Background</p>
-            <span>Animated canvas particles in hero section</span>
-          </div>
-          <label class="toggle"><input type="checkbox" id="togParticles" checked/><span class="toggle-slider"></span></label>
-        </div>
-        <div class="toggle-row">
-          <div class="toggle-info">
-            <p>Shiny Text Effect</p>
-            <span>Metallic shimmer on hero headline</span>
-          </div>
-          <label class="toggle"><input type="checkbox" id="togShiny" checked/><span class="toggle-slider"></span></label>
-        </div>
-        <div class="toggle-row">
-          <div class="toggle-info">
-            <p>Loading Screen</p>
-            <span>Show loading animation on page entry</span>
-          </div>
-          <label class="toggle"><input type="checkbox" id="togLoading" checked/><span class="toggle-slider"></span></label>
-        </div>
-        <div class="toggle-row">
-          <div class="toggle-info">
-            <p>Scroll Animations</p>
-            <span>Cards animate in on scroll</span>
-          </div>
-          <label class="toggle"><input type="checkbox" id="togScroll" checked/><span class="toggle-slider"></span></label>
-        </div>
-        <div class="toggle-row">
-          <div class="toggle-info">
-            <p>Stats Counter Animation</p>
-            <span>Numbers count up from zero</span>
-          </div>
-          <label class="toggle"><input type="checkbox" id="togCounter" checked/><span class="toggle-slider"></span></label>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><span class="ct-icon">🔤</span>Typography</div>
-        </div>
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Heading Font</label>
-            <select id="fontHeading">
-              <option value="Sora">Sora (Current)</option>
-              <option value="Poppins">Poppins</option>
-              <option value="Space Grotesk">Space Grotesk</option>
-              <option value="DM Serif Display">DM Serif Display</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Body Font</label>
-            <select id="fontBody">
-              <option value="Nunito">Nunito (Current)</option>
-              <option value="DM Sans">DM Sans</option>
-              <option value="Inter">Inter</option>
-              <option value="Lato">Lato</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── SETTINGS ── -->
-    <div class="panel" id="panel-settings">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><span class="ct-icon">🌐</span>Site Information</div>
-        </div>
-        <div class="form-grid">
-          <div class="form-group form-full">
-            <label>Site Title</label>
-            <input type="text" id="siteTitle" value="Samathwee Higher Education Center | Elevate Your Future"/>
-          </div>
-          <div class="form-group">
-            <label>Established Year</label>
-            <input type="text" id="siteYear" value="2010"/>
-          </div>
-          <div class="form-group">
-            <label>Copyright Year</label>
-            <input type="text" id="siteCopyYear" value="2025"/>
-          </div>
-          <div class="form-group form-full">
-            <label>Footer Text</label>
-            <input type="text" id="siteFooter" value="Panadura & Moratuwa, Sri Lanka."/>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><span class="ct-icon">📱</span>Social & Contact</div>
-        </div>
-        <div class="form-grid">
-          <div class="form-group">
-            <label>WhatsApp Number</label>
-            <input type="text" id="contactWhatsapp" value="+94 77 000 0000"/>
-          </div>
-          <div class="form-group">
-            <label>General Email</label>
-            <input type="text" id="contactEmail" value="info@samathwee.lk"/>
-          </div>
-          <div class="form-group">
-            <label>Facebook URL</label>
-            <input type="text" id="socialFb" value="https://facebook.com/samathwee"/>
-          </div>
-          <div class="form-group">
-            <label>Instagram URL</label>
-            <input type="text" id="socialIg" value="https://instagram.com/samathwee"/>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><span class="ct-icon">🔄</span>Data Management</div>
-        </div>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;">
-          <button class="tb-btn" onclick="exportData()">📤 Export Site Data (JSON)</button>
-          <button class="tb-btn" onclick="importData()">📥 Import Data</button>
-          <button class="tb-btn" style="color:#fca5a5;border-color:rgba(239,68,68,.3);" onclick="resetToDefaults()">🗑 Reset to Defaults</button>
-        </div>
-        <div class="sep"></div>
-        <p style="font-size:.82rem;color:var(--muted);line-height:1.7;">All data is saved to your browser's localStorage. Use <strong style="color:var(--text)">Export Site Data</strong> to download a JSON backup you can import later or share with a developer to update the live site.</p>
-      </div>
-    </div>
-
-  </div><!-- /content -->
-</div><!-- /main -->
-
-<!-- ═══════════════════════════════════════ MODALS ═══ -->
-
-<!-- Add/Edit Subject Modal -->
-<div class="modal-bg" id="subjectModal">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="subModalTitle">Add New Subject</div>
-      <button class="modal-close" onclick="closeModal('subjectModal')">✕</button>
-    </div>
-    <div class="form-grid">
-      <div class="form-group form-full">
-        <label>Subject Name</label>
-        <input type="text" id="subNameInput" placeholder="e.g. Mathematics"/>
-      </div>
-      <div class="form-group form-full">
-        <label>Grade Level</label>
-        <input type="text" id="subLevelInput" placeholder="e.g. All Levels / Grade 6–O/L"/>
-      </div>
-      <div class="form-group">
-        <label>Emoji Icon</label>
-        <input type="text" id="subIconInput" placeholder="🔢"/>
-      </div>
-      <div class="form-group">
-        <label>Icon Color</label>
-        <input type="color" id="subIconColor" value="#8b5cf6" style="height:44px;cursor:pointer;"/>
-      </div>
-      <div class="form-group form-full">
-        <label>Background Color</label>
-        <input type="color" id="subBgColor" value="#ede9fe" style="height:44px;cursor:pointer;"/>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="tb-btn" onclick="closeModal('subjectModal')">Cancel</button>
-      <button class="tb-btn primary" onclick="saveSubject()">✅ Save Subject</button>
     </div>
   </div>
 </div>
 
-<!-- Toast -->
-<div class="toast" id="toast"></div>
+<!-- DASHBOARD -->
+<div id="dashboard" class="dashboard" style="display:none;">
 
-<script>
-// ═══════════════════════ DATA ═══════════════════════
-const defaultSubjects=[
-  {name:'Sinhala',level:'Grade 1–5',icon:'📖',color:'#fee2e2',iconColor:'#ef4444'},
-  {name:'English',level:'Grade 1–5 / O/L / A/L',icon:'🔤',color:'#dbeafe',iconColor:'#3b82f6'},
-  {name:'Mathematics',level:'All Levels',icon:'🔢',color:'#ede9fe',iconColor:'#8b5cf6'},
-  {name:'Environmental Studies',level:'Grade 1–5',icon:'🌿',color:'#dcfce7',iconColor:'#22c55e'},
-  {name:'Buddhism',level:'All Levels',icon:'🙏',color:'#fef9c3',iconColor:'#eab308'},
-  {name:'Art',level:'All Levels',icon:'🎨',color:'#fce7f3',iconColor:'#ec4899'},
-  {name:'Music',level:'All Levels',icon:'🎵',color:'#fff7ed',iconColor:'#f97316'},
-  {name:'Physical Education',level:'All Levels',icon:'⚽',color:'#dcfce7',iconColor:'#16a34a'},
-  {name:'Science',level:'Grade 6–O/L',icon:'🧪',color:'#dbeafe',iconColor:'#2563eb'},
-  {name:'History',level:'Grade 6–O/L',icon:'🏛️',color:'#fef3c7',iconColor:'#d97706'},
-  {name:'Geography',level:'Grade 6–O/L',icon:'🌍',color:'#dcfce7',iconColor:'#059669'},
-  {name:'Civic Education',level:'Grade 6–O/L',icon:'⚖️',color:'#e0e7ff',iconColor:'#4f46e5'},
-  {name:'Health Education',level:'Grade 6–O/L',icon:'🏥',color:'#fee2e2',iconColor:'#dc2626'},
-  {name:'ICT',level:'O/L / A/L',icon:'💻',color:'#ede9fe',iconColor:'#7c3aed'},
-  {name:'Commerce',level:'Grade 6–O/L',icon:'💼',color:'#fef3c7',iconColor:'#b45309'},
-  {name:'Home Economics',level:'Grade 6–O/L',icon:'🏡',color:'#fce7f3',iconColor:'#db2777'},
-  {name:'Technical Drawing',level:'Grade 6–O/L',icon:'📐',color:'#e0f2fe',iconColor:'#0284c7'},
-  {name:'Agriculture',level:'Grade 6–O/L',icon:'🌾',color:'#dcfce7',iconColor:'#15803d'},
-  {name:'Drama & Theatre',level:'Grade 6–O/L',icon:'🎭',color:'#fce7f3',iconColor:'#9333ea'},
-  {name:'Dancing',level:'Grade 6–O/L',icon:'💃',color:'#fff1f2',iconColor:'#e11d48'},
-  {name:'Combined Mathematics',level:'A/Level',icon:'📊',color:'#ede9fe',iconColor:'#6d28d9'},
-  {name:'Physics',level:'A/Level / Cambridge / London',icon:'⚛️',color:'#dbeafe',iconColor:'#1d4ed8'},
-  {name:'Chemistry',level:'A/Level / Cambridge / London',icon:'🧬',color:'#dcfce7',iconColor:'#16a34a'},
-  {name:'Biology',level:'A/Level / Cambridge / London',icon:'🔬',color:'#dcfce7',iconColor:'#15803d'},
-  {name:'Economics',level:'A/Level / London / Cambridge',icon:'📈',color:'#fef3c7',iconColor:'#92400e'},
-  {name:'Business Studies',level:'A/Level / London',icon:'🏢',color:'#e0f2fe',iconColor:'#0369a1'},
-  {name:'Accounting',level:'A/Level',icon:'🧾',color:'#fef9c3',iconColor:'#ca8a04'},
-  {name:'Political Science',level:'A/Level',icon:'🗳️',color:'#e0e7ff',iconColor:'#4338ca'},
-  {name:'Logic & Scientific Method',level:'A/Level',icon:'🧠',color:'#fce7f3',iconColor:'#db2777'},
-  {name:'Further Mathematics',level:'London A/Level',icon:'∞',color:'#ede9fe',iconColor:'#7c3aed'},
-  {name:'Psychology',level:'London A/Level',icon:'🧘',color:'#fce7f3',iconColor:'#be185d'},
-  {name:'Sociology',level:'London A/Level',icon:'👥',color:'#e0f2fe',iconColor:'#0284c7'},
-  {name:'Literature in English',level:'London / Cambridge',icon:'📚',color:'#fef3c7',iconColor:'#b45309'},
-  {name:'Tamil',level:'Grade 1–5 / O/L',icon:'📝',color:'#fef9c3',iconColor:'#d97706'}
-];
-
-const defaultGrades=[
-  {emoji:'🌟',title:'Grade 1–5',sub:'Primary School',count:'8 Subjects',link:'grades-1-5.html',color:'linear-gradient(145deg,#ff6b6b,#ee5a24)'},
-  {emoji:'📘',title:'Grade 6–O/L',sub:'Junior & O/Levels',count:'17 Subjects',link:'grades-6-ol.html',color:'linear-gradient(145deg,#5a2d91,#8b5cf6)'},
-  {emoji:'🔬',title:'A / Levels',sub:'Advanced Level',count:'14 Subjects',link:'grades-al.html',color:'linear-gradient(145deg,#0ea5e9,#0369a1)'},
-  {emoji:'🇬🇧',title:'London',sub:'Edexcel / IGCSE',count:'10 Subjects',link:'grades-london.html',color:'linear-gradient(145deg,#10b981,#059669)'},
-  {emoji:'🏛️',title:'Cambridge',sub:'CAIE / IGCSE',count:'10 Subjects',link:'grades-cambridge.html',color:'linear-gradient(145deg,#f59e0b,#d97706)'}
-];
-
-let subjects=[...defaultSubjects];
-let grades=[...defaultGrades];
-let editingSubjectIndex=-1;
-let editingGradeIndex=-1;
-
-// ═══════════════════════ INIT ═══════════════════════
-function init(){
-  const saved=localStorage.getItem('samathwee_subjects');
-  if(saved) subjects=JSON.parse(saved);
-  const savedGrades=localStorage.getItem('samathwee_grades');
-  if(savedGrades) grades=JSON.parse(savedGrades);
-  loadStoredFormValues();
-  renderAdminSubjects(subjects);
-  renderGradeEditorCards();
-  updateBadgeCount();
-}
-
-function loadStoredFormValues(){
-  const stored=localStorage.getItem('samathwee_hero');
-  if(stored){
-    const d=JSON.parse(stored);
-    Object.keys(d).forEach(k=>{const el=document.getElementById(k);if(el)el.value=d[k];});
-  }
-}
-
-// ═══════════════════════ PANEL NAV ═══════════════════
-const panelTitles={
-  dashboard:['Dashboard','Welcome back — your site is live'],
-  hero:['Hero Section','Edit homepage headline & buttons'],
-  stats:['Stats Counter','Update animated numbers'],
-  grades:['Grade Cards','Manage program cards'],
-  subjects:['Subject Manager','Add, edit, and remove subjects'],
-  centers:['Centers','Update location information'],
-  appearance:['Appearance','Colors, fonts & animations'],
-  settings:['Site Settings','SEO, contact & data management']
-};
-
-function showPanel(name,el){
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.sb-nav a').forEach(a=>a.classList.remove('active'));
-  const p=document.getElementById('panel-'+name);
-  if(p)p.classList.add('active');
-  if(el)el.classList.add('active');
-  const t=panelTitles[name]||[name,''];
-  document.getElementById('pageTitle').textContent=t[0];
-  document.getElementById('pageSubtitle').textContent=t[1];
-  if(window.innerWidth<=900){
-    document.getElementById('sidebar').classList.remove('open');
-  }
-}
-
-// ═══════════════════════ SUBJECTS ═══════════════════
-function renderAdminSubjects(list){
-  const grid=document.getElementById('adminSubjectList');
-  grid.innerHTML='';
-  list.forEach((s,i)=>{
-    const realIdx=subjects.indexOf(s);
-    const div=document.createElement('div');
-    div.className='subject-item';
-    div.innerHTML=`
-      <div class="si-icon" style="background:${s.color}"><span style="color:${s.iconColor}">${s.icon}</span></div>
-      <div class="si-info">
-        <div class="si-name">${s.name}</div>
-        <div class="si-level">${s.level}</div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-logo">S</div>
+      <div>
+        <div class="sidebar-title">Samathwee</div>
+        <div class="sidebar-sub">Admin Panel</div>
       </div>
-      <div class="si-actions">
-        <button class="icon-btn edit" onclick="editSubject(${realIdx})" title="Edit">✏️</button>
-        <button class="icon-btn del" onclick="deleteSubject(${realIdx})" title="Delete">🗑</button>
-      </div>`;
-    grid.appendChild(div);
-  });
-}
+    </div>
+    <nav class="sidebar-nav">
+      <button class="nav-item active" onclick="showSection('hero', this)">🏠 Hero Section</button>
+      <button class="nav-item" onclick="showSection('stats', this)">📊 Statistics</button>
+      <button class="nav-item" onclick="showSection('grades', this)">📚 Grade Cards</button>
+      <button class="nav-item" onclick="showSection('subjects', this)">🔬 Subjects</button>
+      <button class="nav-item" onclick="showSection('teachers', this)">👨‍🏫 Teachers</button>
+      <button class="nav-item" onclick="showSection('center', this)">📍 Center Info</button>
+      <button class="nav-item" onclick="showSection('contact', this)">📞 Contact</button>
+      <button class="nav-item" onclick="showSection('footer', this)">🔗 Footer</button>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="index.html" target="_blank" class="view-site-btn">↗ View Site</a>
+      <button class="logout-btn" onclick="doLogout()">Sign Out</button>
+    </div>
+  </aside>
 
-function filterSubjectsAdmin(q,level=''){
-  let list=subjects;
-  if(q) list=list.filter(s=>s.name.toLowerCase().includes(q.toLowerCase())||s.level.toLowerCase().includes(q.toLowerCase()));
-  if(level) list=list.filter(s=>s.level.toLowerCase().includes(level.toLowerCase()));
-  renderAdminSubjects(list);
-}
+  <main class="main-content">
+    <div class="mobile-header">
+      <button class="hamburger" onclick="toggleSidebar()">☰</button>
+      <span>Samathwee Admin</span>
+    </div>
 
-function openAddSubject(){
-  editingSubjectIndex=-1;
-  document.getElementById('subModalTitle').textContent='Add New Subject';
-  document.getElementById('subNameInput').value='';
-  document.getElementById('subLevelInput').value='';
-  document.getElementById('subIconInput').value='📖';
-  document.getElementById('subIconColor').value='#8b5cf6';
-  document.getElementById('subBgColor').value='#ede9fe';
-  openModal('subjectModal');
-}
+    <div class="top-statusbar">
+      <div class="top-statusbar-left">
+        <div class="page-title">Dashboard</div>
+        <div class="page-subtitle">Live editing · instant publish</div>
+      </div>
+      <div class="top-statusbar-right">
+        <div id="saveStatus" class="save-status" aria-live="polite">
+          <span class="dot"></span>
+          <span id="saveStatusText">Ready</span>
+        </div>
+      </div>
+    </div>
 
-function editSubject(idx){
-  editingSubjectIndex=idx;
-  const s=subjects[idx];
-  document.getElementById('subModalTitle').textContent='Edit Subject';
-  document.getElementById('subNameInput').value=s.name;
-  document.getElementById('subLevelInput').value=s.level;
-  document.getElementById('subIconInput').value=s.icon;
-  document.getElementById('subIconColor').value=s.iconColor;
-  document.getElementById('subBgColor').value=s.color;
-  openModal('subjectModal');
-}
+    <div id="toast" class="toast" style="display:none;"></div>
 
-function saveSubject(){
-  const name=document.getElementById('subNameInput').value.trim();
-  const level=document.getElementById('subLevelInput').value.trim();
-  const icon=document.getElementById('subIconInput').value.trim();
-  const iconColor=document.getElementById('subIconColor').value;
-  const color=document.getElementById('subBgColor').value;
-  if(!name||!level){showToast('Please fill all required fields','warning');return;}
-  const obj={name,level,icon,color,iconColor};
-  if(editingSubjectIndex>=0){
-    subjects[editingSubjectIndex]=obj;
-    logActivity('✏️','Subject updated: '+name,'Just now','blue');
-    showToast('Subject updated successfully','success');
-  }else{
-    subjects.push(obj);
-    logActivity('📚','Subject added: '+name,'Just now','orange');
-    showToast('Subject added!','success');
-  }
-  closeModal('subjectModal');
-  renderAdminSubjects(subjects);
-  updateBadgeCount();
-}
+    <!-- ═══ HERO ═══ -->
+    <section id="sec-hero" class="admin-section active">
+      <div class="section-header">
+        <h2>🏠 Hero Section</h2>
+        <p>Edit the main banner text displayed on the homepage.</p>
+      </div>
+      <div class="card">
+        <div class="form-group">
+          <label>Tagline (small text above title)</label>
+          <input type="text" id="heroTagline" placeholder="🎓 Excellence in Education Since 2010" />
+        </div>
+        <div class="form-group">
+          <label>Main Title</label>
+          <input type="text" id="heroTitle" placeholder="Empowering the Next Generation…" />
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="heroDesc" rows="4" placeholder="Enter hero description..."></textarea>
+        </div>
+        <button class="btn-save" onclick="saveHero()">💾 Save Hero</button>
+      </div>
+    </section>
 
-function deleteSubject(idx){
-  const name=subjects[idx].name;
-  if(!confirm(`Delete "${name}"? This cannot be undone.`))return;
-  subjects.splice(idx,1);
-  renderAdminSubjects(subjects);
-  updateBadgeCount();
-  logActivity('🗑️','Subject removed: '+name,'Just now','red');
-  showToast('Subject deleted','warning');
-}
+    <!-- ═══ STATS ═══ -->
+    <section id="sec-stats" class="admin-section">
+      <div class="section-header">
+        <h2>📊 Statistics</h2>
+        <p>Update the counters shown below the hero section.</p>
+      </div>
+      <div class="card">
+        <div class="form-row">
+          <div class="form-group"><label>Students</label><input type="number" id="statStudents" placeholder="500" min="0" /></div>
+          <div class="form-group"><label>Expert Teachers</label><input type="number" id="statTeachers" placeholder="40" min="0" /></div>
+          <div class="form-group"><label>Subjects</label><input type="number" id="statSubjects" placeholder="59" min="0" /></div>
+          <div class="form-group"><label>Centers</label><input type="number" id="statCenters" placeholder="1" min="0" /></div>
+        </div>
+        <button class="btn-save" onclick="saveStats()">💾 Save Stats</button>
+      </div>
+    </section>
 
-function updateBadgeCount(){
-  document.getElementById('subCountBadge').textContent=subjects.length;
-  document.getElementById('d-subjects').textContent=subjects.length;
-}
+    <!-- ═══ GRADES ═══ -->
+    <section id="sec-grades" class="admin-section">
+      <div class="section-header">
+        <h2>📚 Grade Cards</h2>
+        <p>Manage the grade level cards on the homepage.</p>
+      </div>
+      <div class="card">
+        <div id="gradesList"></div>
+        <button class="btn-add" onclick="addGradeRow()">＋ Add Grade Card</button>
+        <button class="btn-save" onclick="saveGrades()" style="margin-top:16px;">💾 Save All Grades</button>
+      </div>
+    </section>
 
-// ═══════════════════════ GRADE CARDS ═══════════════
-function renderGradeEditorCards(){
-  const grid=document.getElementById('gradeEditorGrid');
-  grid.innerHTML='';
-  grades.forEach((g,i)=>{
-    const div=document.createElement('div');
-    div.className='grade-editor-card';
-    div.style.background=g.color;
-    div.innerHTML=`
-      <span class="gec-emoji">${g.emoji}</span>
-      <div class="gec-title">${g.title}</div>
-      <div class="gec-sub">${g.sub}</div>
-      <div class="gec-count">${g.count}</div>
-      <div class="gec-edit-overlay">
-        <span style="font-size:1.5rem">✏️</span>
-        <span style="color:#fff;font-weight:700;font-size:.85rem">Click to Edit</span>
-      </div>`;
-    div.onclick=()=>openGradeEdit(i);
-    grid.appendChild(div);
-  });
-}
+    <!-- ═══ SUBJECTS ═══ -->
+    <section id="sec-subjects" class="admin-section">
+      <div class="section-header">
+        <h2>🔬 Subjects</h2>
+        <p>Add, edit, or remove subjects from the subject list.</p>
+      </div>
+      <div class="card">
+        <div id="subjectsList"></div>
+        <button class="btn-add" onclick="addSubjectRow()">＋ Add Subject</button>
+        <button class="btn-save" onclick="saveSubjects()" style="margin-top:16px;">💾 Save All Subjects</button>
+      </div>
+    </section>
 
-function openGradeEdit(idx){
-  editingGradeIndex=idx;
-  const g=grades[idx];
-  document.getElementById('gradeEditTitle').innerHTML=`<span class="ct-icon">✏️</span>Editing: ${g.title}`;
-  document.getElementById('gEmojiInput').value=g.emoji;
-  document.getElementById('gTitleInput').value=g.title;
-  document.getElementById('gSubInput').value=g.sub;
-  document.getElementById('gCountInput').value=g.count;
-  document.getElementById('gLinkInput').value=g.link;
-  document.getElementById('gradeEditForm').style.display='block';
-  document.getElementById('gradeEditForm').scrollIntoView({behavior:'smooth'});
-}
+    <!-- ═══ TEACHERS ═══ (NEW) -->
+    <section id="sec-teachers" class="admin-section">
+      <div class="section-header">
+        <h2>👨‍🏫 Teachers</h2>
+        <p>Add, edit, or remove teacher profiles. Photos are uploaded to Firebase Storage.</p>
+      </div>
+      <div class="card">
+        <div id="teachersList"></div>
+        <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;">
+          <button class="btn-add" onclick="addTeacher()">＋ Add Teacher</button>
+          <button class="btn-save" onclick="saveTeachers()">💾 Save All Teachers</button>
+        </div>
+      </div>
+    </section>
 
-function saveGradeCard(){
-  if(editingGradeIndex<0)return;
-  grades[editingGradeIndex]={
-    ...grades[editingGradeIndex],
-    emoji:document.getElementById('gEmojiInput').value,
-    title:document.getElementById('gTitleInput').value,
-    sub:document.getElementById('gSubInput').value,
-    count:document.getElementById('gCountInput').value,
-    link:document.getElementById('gLinkInput').value
-  };
-  renderGradeEditorCards();
-  document.getElementById('gradeEditForm').style.display='none';
-  showToast('Grade card updated!','success');
-  logActivity('🎓','Grade card updated: '+grades[editingGradeIndex].title,'Just now','purple');
-}
+    <!-- ═══ CENTER ═══ -->
+    <section id="sec-center" class="admin-section">
+      <div class="section-header">
+        <h2>📍 Center Info</h2>
+        <p>Edit the Panadura center information shown on the homepage.</p>
+      </div>
+      <div class="card">
+        <div class="form-group"><label>Center Name</label><input type="text" id="centerName" placeholder="Samathwee Panadura" /></div>
+        <div class="form-group"><label>Description</label><textarea id="centerDesc" rows="3" placeholder="Center description..."></textarea></div>
+        <div class="form-group"><label>Address</label><input type="text" id="centerAddress" placeholder="Panadura, Sri Lanka" /></div>
+        <div class="form-group"><label>Phone</label><input type="text" id="centerPhone" placeholder="+94 77 000 0000" /></div>
+        <div class="form-group"><label>Google Maps URL</label><input type="url" id="centerMapUrl" placeholder="https://maps.app.goo.gl/..." /></div>
+        <button class="btn-save" onclick="saveCenter()">💾 Save Center</button>
+      </div>
+    </section>
 
-// ═══════════════════════ STATS PREVIEW ══════════════
-function updateStatPreview(key,val){
-  const el=document.getElementById('prev-'+key);
-  if(el)el.textContent=val;
-  if(key==='students')document.getElementById('d-students').textContent=val;
-  if(key==='teachers')document.getElementById('d-teachers').textContent=val;
-}
+    <!-- ═══ CONTACT ═══ -->
+    <section id="sec-contact" class="admin-section">
+      <div class="section-header">
+        <h2>📞 Contact Details</h2>
+        <p>Update the contact information shown in the contact section.</p>
+      </div>
+      <div class="card">
+        <div class="form-group"><label>Phone Number</label><input type="text" id="contactPhone" placeholder="+94 77 000 0000" /></div>
+        <div class="form-group"><label>Email Address</label><input type="email" id="contactEmail" placeholder="info@samathwee.lk" /></div>
+        <div class="form-group"><label>Address</label><input type="text" id="contactAddress" placeholder="Panadura, Sri Lanka" /></div>
+        <button class="btn-save" onclick="saveContact()">💾 Save Contact</button>
+      </div>
+    </section>
 
-// ═══════════════════════ SAVE ALL ═══════════════════
-function saveAll(){
-  localStorage.setItem('samathwee_subjects',JSON.stringify(subjects));
-  localStorage.setItem('samathwee_grades',JSON.stringify(grades));
-  const heroData={
-    heroBadge:v('heroBadge'),heroLine1:v('heroLine1'),heroShiny:v('heroShiny'),heroLine3:v('heroLine3'),
-    heroDesc:v('heroDesc'),heroBtn1:v('heroBtn1'),heroBtn2:v('heroBtn2'),
-    nav1:v('nav1'),nav2:v('nav2'),nav3:v('nav3'),nav4:v('nav4'),navCta:v('navCta'),
-    statStudents:v('statStudents'),statTeachers:v('statTeachers'),statSubjects:v('statSubjects'),statCenters:v('statCenters'),
-    statStudentsLabel:v('statStudentsLabel'),statTeachersLabel:v('statTeachersLabel'),
-    statSubjectsLabel:v('statSubjectsLabel'),statCentersLabel:v('statCentersLabel'),
-    c1Name:v('c1Name'),c1Desc:v('c1Desc'),c1Tag:v('c1Tag'),c1Map:v('c1Map'),c1Phone:v('c1Phone'),c1Email:v('c1Email'),
-    c2Name:v('c2Name'),c2Desc:v('c2Desc'),c2Tag:v('c2Tag'),c2Map:v('c2Map'),c2Phone:v('c2Phone'),c2Email:v('c2Email'),
-    siteTitle:v('siteTitle'),siteYear:v('siteYear'),siteCopyYear:v('siteCopyYear'),siteFooter:v('siteFooter'),
-    hoursWeekday:v('hoursWeekday'),hoursSat:v('hoursSat'),hoursSun:v('hoursSun'),
-    contactWhatsapp:v('contactWhatsapp'),contactEmail:v('contactEmail'),
-    socialFb:v('socialFb'),socialIg:v('socialIg'),
-    colorPurple:v('colorPurple'),colorOrange:v('colorOrange'),colorDark:v('colorDark'),colorLight:v('colorLight'),
-    fontHeading:v('fontHeading'),fontBody:v('fontBody'),
-    togParticles:document.getElementById('togParticles').checked,
-    togShiny:document.getElementById('togShiny').checked,
-    togLoading:document.getElementById('togLoading').checked,
-    togScroll:document.getElementById('togScroll').checked,
-    togCounter:document.getElementById('togCounter').checked,
-  };
-  localStorage.setItem('samathwee_hero',JSON.stringify(heroData));
-  const si=document.getElementById('saveIndicator');
-  si.classList.add('show');
-  setTimeout(()=>si.classList.remove('show'),3000);
-  showToast('All changes saved to browser storage!','success');
-  logActivity('💾','All changes saved','Just now','green');
-}
+    <!-- ═══ FOOTER ═══ -->
+    <section id="sec-footer" class="admin-section">
+      <div class="section-header">
+        <h2>🔗 Footer</h2>
+        <p>Update the footer text shown at the bottom of the site.</p>
+      </div>
+      <div class="card">
+        <div class="form-group"><label>Footer Text</label><input type="text" id="footerText" placeholder="© 2026 Samathwee Higher Education Center..." /></div>
+        <button class="btn-save" onclick="saveFooter()">💾 Save Footer</button>
+      </div>
+    </section>
 
-function v(id){const el=document.getElementById(id);return el?el.value:'';}
+  </main>
+</div>
 
-// ═══════════════════════ EXPORT / IMPORT ════════════
-function exportData(){
-  const data={
-    subjects,grades,
-    hero:JSON.parse(localStorage.getItem('samathwee_hero')||'{}'),
-    exportedAt:new Date().toISOString(),version:'1.0'
-  };
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='samathwee-site-data.json';
-  a.click();
-  showToast('Data exported successfully!','success');
-}
-
-function importData(){
-  const input=document.createElement('input');
-  input.type='file';input.accept='.json';
-  input.onchange=e=>{
-    const file=e.target.files[0];
-    if(!file)return;
-    const reader=new FileReader();
-    reader.onload=ev=>{
-      try{
-        const data=JSON.parse(ev.target.result);
-        if(data.subjects){subjects=data.subjects;renderAdminSubjects(subjects);updateBadgeCount();}
-        if(data.grades){grades=data.grades;renderGradeEditorCards();}
-        if(data.hero){Object.keys(data.hero).forEach(k=>{const el=document.getElementById(k);if(el&&el.type!=='checkbox')el.value=data.hero[k];else if(el&&el.type==='checkbox')el.checked=data.hero[k];});}
-        showToast('Data imported successfully!','success');
-      }catch{showToast('Invalid JSON file','error');}
-    };
-    reader.readAsText(file);
-  };
-  input.click();
-}
-
-function resetToDefaults(){
-  if(!confirm('Reset ALL data to defaults? This will erase all changes.'))return;
-  subjects=[...defaultSubjects];grades=[...defaultGrades];
-  localStorage.removeItem('samathwee_subjects');
-  localStorage.removeItem('samathwee_grades');
-  localStorage.removeItem('samathwee_hero');
-  renderAdminSubjects(subjects);renderGradeEditorCards();updateBadgeCount();
-  showToast('Reset to defaults!','warning');
-}
-
-// ═══════════════════════ MODAL HELPERS ══════════════
-function openModal(id){document.getElementById(id).classList.add('open');}
-function closeModal(id){document.getElementById(id).classList.remove('open');}
-
-// ═══════════════════════ TOAST ══════════════════════
-let toastTimer;
-function showToast(msg,type='success'){
-  const t=document.getElementById('toast');
-  t.className='toast '+type;
-  t.innerHTML=(type==='success'?'✅ ':type==='warning'?'⚠️ ':'❌ ')+msg;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>t.classList.remove('show'),3200);
-}
-
-// ═══════════════════════ ACTIVITY LOG ═══════════════
-function logActivity(icon,text,time,color){
-  const list=document.getElementById('activityList');
-  const item=document.createElement('div');
-  item.className='activity-item';
-  item.innerHTML=`<div class="ai-dot ${color}">${icon}</div><div class="ai-text"><p>${text}</p><span>${time}</span></div>`;
-  list.insertBefore(item,list.firstChild);
-  if(list.children.length>8)list.removeChild(list.lastChild);
-}
-
-// ═══════════════════════ HAMBURGER ══════════════════
-document.getElementById('hamburger').addEventListener('click',()=>{
-  document.getElementById('sidebar').classList.toggle('open');
-});
-document.addEventListener('click',e=>{
-  const sb=document.getElementById('sidebar');
-  const hb=document.getElementById('hamburger');
-  if(!sb.contains(e.target)&&!hb.contains(e.target)&&window.innerWidth<=900){
-    sb.classList.remove('open');
-  }
-});
-
-// ═══════════════════════ MODAL CLOSE ON BG ══════════
-document.querySelectorAll('.modal-bg').forEach(bg=>{
-  bg.addEventListener('click',e=>{if(e.target===bg)bg.classList.remove('open');});
-});
-
-// ═══════════════════════ RUN ════════════════════════
-init();
-</script>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="admin.js"></script>
 </body>
 </html>

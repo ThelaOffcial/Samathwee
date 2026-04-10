@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduNext Academy — Neural Learning Interface</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;600;700&family=Exo+2:wght@100;200;300;400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #05050f;
+            overflow: hidden;
+            font-family: 'Rajdhani', sans-serif;
+            cursor: none;
+        }
+
+        /* ── Custom cursor ─────────────────────────── */
+        .cursor-dot {
+            position: fixed; width: 8px; height: 8px;
+            background: #8b7fff; border-radius: 50%;
+            pointer-events: none; z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.08s;
+            mix-blend-mode: screen;
+        }
+        .cursor-ring {
+            position: fixed; width: 34px; height: 34px;
+            border: 1px solid rgba(139,127,255,0.45);
+            border-radius: 50%; pointer-events: none;
+            z-index: 9998; transform: translate(-50%,-50%);
+            transition: all 0.16s ease;
+        }
+
+        /* ── Canvas mount ──────────────────────────── */
+        #canvas-container { position: fixed; inset: 0; }
+
+        /* ── UI Overlay ────────────────────────────── */
+        #overlay {
+            position: fixed; inset: 0;
+            pointer-events: none; z-index: 100;
+            display: flex; flex-direction: column;
+            justify-content: space-between;
+            padding: 38px 50px;
+        }
+
+        /* Nav */
+        .nav {
+            display: flex; justify-content: space-between; align-items: center;
+            opacity: 0; transform: translateY(-22px);
+            transition: opacity 1.6s cubic-bezier(0.16,1,0.3,1),
+                        transform 1.6s cubic-bezier(0.16,1,0.3,1);
+        }
+        .nav.show { opacity: 1; transform: translateY(0); }
+        .logo {
+            font-weight: 700; font-size: 19px;
+            letter-spacing: 5px; color: #fff;
+        }
+        .logo em { color: #8b7fff; font-style: normal; }
+        .nav-links {
+            display: flex; gap: 30px;
+            font-size: 10px; letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.32);
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            opacity: 0; transform: translateY(28px);
+            transition: opacity 2s cubic-bezier(0.16,1,0.3,1) 0.4s,
+                        transform 2s cubic-bezier(0.16,1,0.3,1) 0.4s;
+        }
+        .hero.show { opacity: 1; transform: translateY(0); }
+        .hero-title {
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 100;
+            font-size: clamp(44px, 6.5vw, 90px);
+            line-height: 1.02;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+        .hero-title .outline {
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(139,127,255,0.75);
+        }
+        .hero-sub {
+            margin-top: 14px;
+            font-size: 11px; letter-spacing: 5px;
+            color: rgba(255,255,255,0.28);
+            text-transform: uppercase;
+        }
+
+        /* Status bar */
+        .status {
+            display: flex; justify-content: space-between;
+            font-size: 10px; letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.2);
+            opacity: 0;
+            transition: opacity 2s ease 0.9s;
+        }
+        .status.show { opacity: 1; }
+        .live-dot {
+            display: inline-block; width: 5px; height: 5px;
+            background: #4ade80; border-radius: 50%;
+            margin-right: 7px; vertical-align: middle;
+            animation: blink 2.2s ease infinite;
+        }
+        @keyframes blink {
+            0%,100% { opacity:1; transform:scale(1); }
+            50% { opacity:.4; transform:scale(0.65); }
+        }
+
+        /* Hover tooltip */
+        #hint {
+            position: fixed; bottom: 50px; left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px; letter-spacing: 2px;
+            color: rgba(255,255,255,0.18);
+            text-transform: uppercase;
+            z-index: 110; pointer-events: none;
+            opacity: 0; transition: opacity 1s ease 5s;
+        }
+        #hint.show { opacity: 1; }
+
+        /* ── Loader ────────────────────────────────── */
+        #loader {
+            position: fixed; inset: 0; background: #05050f;
+            z-index: 1000; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 22px;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+        #loader.gone { opacity: 0; visibility: hidden; }
+        .ld-brand {
+            font-family: 'Rajdhani', sans-serif; font-weight: 700;
+            font-size: 22px; letter-spacing: 8px;
+            color: rgba(255,255,255,0.55); text-transform: uppercase;
+        }
+        .ld-track {
+            width: 180px; height: 1px;
+            background: rgba(255,255,255,0.08); overflow: hidden;
+        }
+        .ld-fill {
+            height: 100%;
+            background: linear-gradient(90deg,#7c6dff,#a855f7);
+            width: 0; animation: fill 2.4s cubic-bezier(.4,0,.2,1) forwards;
+        }
+        @keyframes fill { 0%{width:0%} 55%{width:65%} 100%{width:100%} }
+        .ld-label {
+            font-size: 9px; letter-spacing: 3px;
+            color: rgba(255,255,255,0.18);
+        }
+
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+
+<!-- ── Loader ─────────────────────────────────────────── -->
+<div id="loader">
+    <div class="ld-brand">EduNext</div>
+    <div class="ld-track"><div class="ld-fill"></div></div>
+    <div class="ld-label">Initializing Neural Learning Interface</div>
+</div>
+
+<!-- ── Cursors ────────────────────────────────────────── -->
+<div class="cursor-dot" id="c-dot"></div>
+<div class="cursor-ring" id="c-ring"></div>
+
+<!-- ── Scene container ───────────────────────────────── -->
+<div id="canvas-container"></div>
+
+<!-- ── UI Overlay ─────────────────────────────────────── -->
+<div id="overlay">
+    <nav class="nav" id="nav">
+        <div class="logo">EDU<em>NEXT</em> // ACADEMY</div>
+        <div class="nav-links">
+            <span>Courses</span>
+            <span>Analytics</span>
+            <span>Community</span>
+            <span>v 2.04</span>
+        </div>
+    </nav>
+
+    <div class="hero" id="hero">
+        <div class="hero-title">The Future<br><span class="outline">of Learning</span></div>
+        <div class="hero-sub">Neural-powered education ecosystem</div>
+    </div>
+
+    <div class="status" id="status">
+        <div><span class="live-dot"></span>System Online — 2,847 Active Learners</div>
+        <div>Neural Interface v2.04 // Secure Session</div>
+    </div>
+</div>
+
+<div id="hint">Click to pause · Mouse to explore</div>
+
+<!-- ── GSAP (global, non-module) ──────────────────────── -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+<!-- ── Three.js import map ────────────────────────────── -->
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer }  from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass }      from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { ShaderPass }      from 'three/addons/postprocessing/ShaderPass.js';
+import { GammaCorrectionShader } from 'three/addons/shaders/GammaCorrectionShader.js';
+
+const gsap = window.gsap; // loaded via <script> tag above
+
+// ═══════════════════════════════════════════════════════════════
+// 1. RENDERER + SCENE
+// ═══════════════════════════════════════════════════════════════
+const container = document.getElementById('canvas-container');
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x05050f, 0.05);
+scene.background = new THREE.Color(0x05050f);
+
+const camera = new THREE.PerspectiveCamera(
+    42, window.innerWidth / window.innerHeight, 0.1, 300
+);
+camera.position.set(0, 1.6, 17);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.1;
+container.appendChild(renderer.domElement);
+
+// ═══════════════════════════════════════════════════════════════
+// 2. POST-PROCESSING
+// ═══════════════════════════════════════════════════════════════
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+
+const bloom = new UnrealBloomPass(
+    new THREE.Vector2(window.innerWidth, window.innerHeight),
+    0.7, 0.5, 0.55
+);
+composer.addPass(bloom);
+composer.addPass(new ShaderPass(GammaCorrectionShader));
+
+// ═══════════════════════════════════════════════════════════════
+// 3. LIGHTING
+// ═══════════════════════════════════════════════════════════════
+scene.add(new THREE.AmbientLight(0x12103a, 3));
+
+// Main key light — violet-blue from upper right
+const keyLight = new THREE.PointLight(0x7c6dff, 100, 35);
+keyLight.position.set(7, 9, 7);
+keyLight.castShadow = true;
+scene.add(keyLight);
+
+// Cool fill from the left
+const fillLight = new THREE.PointLight(0x1e40ff, 55, 28);
+fillLight.position.set(-7, 2, 5);
+scene.add(fillLight);
+
+// Warm rim from below (emulates page glow)
+const rimLight = new THREE.PointLight(0xc026d3, 40, 22);
+rimLight.position.set(1, -5, 7);
+scene.add(rimLight);
+
+// Soft top directional for shadow casting
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
+dirLight.position.set(3, 12, 6);
+dirLight.castShadow = true;
+dirLight.shadow.mapSize.set(2048, 2048);
+dirLight.shadow.camera.near = 0.5;
+dirLight.shadow.camera.far = 60;
+dirLight.shadow.camera.left = dirLight.shadow.camera.bottom = -10;
+dirLight.shadow.camera.right = dirLight.shadow.camera.top = 10;
+scene.add(dirLight);
+
+// ═══════════════════════════════════════════════════════════════
+// 4. CANVAS TEXTURE HELPERS
+// ═══════════════════════════════════════════════════════════════
+
+/** Draw a rounded rectangle path */
+function rrect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+}
+
+/* ── Dashboard canvas ───────────────────────────────── */
+function makeDashboardTexture() {
+    const W = 1024, H = 1024;
+    const c = document.createElement('canvas');
+    c.width = W; c.height = H;
+    const ctx = c.getContext('2d');
+
+    // Background
+    const bg = ctx.createLinearGradient(0, 0, W, H);
+    bg.addColorStop(0, '#08081c');
+    bg.addColorStop(1, '#0c0c24');
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+
+    // Outer glow border
+    ctx.shadowBlur = 20; ctx.shadowColor = '#7c6dff55';
+    ctx.strokeStyle = '#5549cc'; ctx.lineWidth = 2.5;
+    rrect(ctx, 18, 18, W - 36, H - 36, 14); ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // Inner subtle border
+    ctx.strokeStyle = 'rgba(124,109,255,0.12)'; ctx.lineWidth = 1;
+    rrect(ctx, 28, 28, W - 56, H - 56, 10); ctx.stroke();
+
+    // ── Header bar ──────────────────────────────────
+    const hbg = ctx.createLinearGradient(0, 0, W, 0);
+    hbg.addColorStop(0, 'rgba(124,109,255,0.14)');
+    hbg.addColorStop(1, 'rgba(124,109,255,0.04)');
+    ctx.fillStyle = hbg;
+    rrect(ctx, 18, 18, W - 36, 76, 14); ctx.fill();
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 26px "Arial"';
+    ctx.fillText('STUDENT DASHBOARD', 50, 66);
+
+    // Live badge
+    ctx.fillStyle = '#4ade80';
+    ctx.beginPath(); ctx.arc(W - 90, 56, 7, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = 'rgba(74,222,128,0.25)';
+    ctx.beginPath(); ctx.arc(W - 90, 56, 15, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.55)'; ctx.font = '13px Arial';
+    ctx.fillText('LIVE', W - 74, 61);
+
+    // ── Stat cards (row 1) ───────────────────────────
+    const stats = [
+        { v:'12', l:'Courses',  s:'+2 this week',  col:'#7c6dff' },
+        { v:'87%', l:'Progress', s:'Advanced track', col:'#a855f7' },
+        { v:'940', l:'Score',    s:'Top 5%',         col:'#06b6d4' },
+        { v:'28d', l:'Streak',   s:'Personal best',  col:'#f59e0b' },
+    ];
+    stats.forEach((st, i) => {
+        const sx = 36 + i * 238, sy = 112, sw = 216, sh = 130;
+        ctx.fillStyle = 'rgba(255,255,255,0.035)';
+        rrect(ctx, sx, sy, sw, sh, 9); ctx.fill();
+        ctx.fillStyle = st.col;
+        ctx.fillRect(sx, sy, 3, sh);                     // accent bar
+        ctx.shadowBlur = 8; ctx.shadowColor = st.col;
+        ctx.fillStyle = '#ffffff'; ctx.font = 'bold 40px Arial';
+        ctx.fillText(st.v, sx + 18, sy + 62);
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = st.col; ctx.font = 'bold 11px Arial';
+        ctx.fillText(st.l.toUpperCase(), sx + 18, sy + 84);
+        ctx.fillStyle = 'rgba(255,255,255,0.3)'; ctx.font = '11px Arial';
+        ctx.fillText(st.s, sx + 18, sy + 104);
+    });
+
+    // ── Weekly progress bar chart ─────────────────────
+    ctx.fillStyle = 'rgba(255,255,255,0.035)';
+    rrect(ctx, 36, 260, 598, 210, 9); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.55)';
+    ctx.font = 'bold 12px Arial';
+    ctx.fillText('LEARNING PROGRESS — LAST 7 WEEKS', 56, 285);
+
+    const bars = [62, 75, 58, 88, 70, 95, 87];
+    const barW = 58, maxH = 130, baseY = 450;
+    bars.forEach((v, i) => {
+        const bh = (v / 100) * maxH;
+        const bx = 56 + i * (barW + 10);
+        // Track
+        ctx.fillStyle = 'rgba(255,255,255,0.05)';
+        ctx.fillRect(bx, baseY - maxH, barW, maxH);
+        // Gradient bar
+        const bg2 = ctx.createLinearGradient(bx, baseY, bx, baseY - bh);
+        bg2.addColorStop(0, 'rgba(100,85,230,0.95)');
+        bg2.addColorStop(1, 'rgba(180,100,255,0.95)');
+        ctx.shadowBlur = 12; ctx.shadowColor = '#8b7fff88';
+        ctx.fillStyle = bg2;
+        ctx.fillRect(bx, baseY - bh, barW, bh);
+        ctx.shadowBlur = 0;
+        // Value
+        ctx.fillStyle = 'rgba(255,255,255,0.85)';
+        ctx.font = 'bold 11px Arial';
+        ctx.fillText(v + '%', bx + 10, baseY - bh - 6);
+        // Week label
+        ctx.fillStyle = 'rgba(255,255,255,0.25)';
+        ctx.font = '10px Arial';
+        ctx.fillText('W' + (i+1), bx + 20, baseY + 16);
+    });
+
+    // ── Skill matrix panel ───────────────────────────
+    ctx.fillStyle = 'rgba(255,255,255,0.035)';
+    rrect(ctx, 650, 260, 338, 210, 9); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.55)'; ctx.font = 'bold 12px Arial';
+    ctx.fillText('SKILL MATRIX', 670, 285);
+
+    const skills = [
+        { n:'Mathematics',  v: 0.92, c:'#7c6dff' },
+        { n:'Physics',      v: 0.78, c:'#a855f7' },
+        { n:'Chemistry',    v: 0.65, c:'#06b6d4' },
+        { n:'Programming',  v: 0.88, c:'#4ade80' },
+        { n:'Data Science', v: 0.73, c:'#f59e0b' },
+    ];
+    skills.forEach((sk, i) => {
+        const py = 310 + i * 34;
+        ctx.fillStyle = 'rgba(255,255,255,0.45)'; ctx.font = '11px Arial';
+        ctx.fillText(sk.n, 670, py);
+        // Track
+        ctx.fillStyle = 'rgba(255,255,255,0.06)';
+        ctx.fillRect(670, py + 6, 250, 5);
+        // Bar
+        ctx.shadowBlur = 8; ctx.shadowColor = sk.c + '88';
+        const sg = ctx.createLinearGradient(670, 0, 670 + 250 * sk.v, 0);
+        sg.addColorStop(0, sk.c); sg.addColorStop(1, sk.c + 'aa');
+        ctx.fillStyle = sg;
+        ctx.fillRect(670, py + 6, 250 * sk.v, 5);
+        ctx.shadowBlur = 0;
+        // Pct
+        ctx.fillStyle = sk.c; ctx.font = 'bold 10px Arial';
+        ctx.fillText(Math.round(sk.v * 100) + '%', 930, py + 13);
+    });
+
+    // ── Activity feed ────────────────────────────────
+    ctx.fillStyle = 'rgba(255,255,255,0.035)';
+    rrect(ctx, 36, 488, 952, 210, 9); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.55)'; ctx.font = 'bold 12px Arial';
+    ctx.fillText('RECENT ACTIVITY', 56, 512);
+
+    const acts = [
+        { ic:'◆', t:'Completed: Advanced Calculus Module 4',  at:'2m ago', c:'#7c6dff' },
+        { ic:'●', t:'Achievement: 28-Day Streak Unlocked',     at:'1h ago', c:'#f59e0b' },
+        { ic:'▲', t:'Started: Quantum Physics — Chapter 3',   at:'3h ago', c:'#06b6d4' },
+        { ic:'★', t:'Score: 98/100 on Linear Algebra Quiz',   at:'1d ago', c:'#4ade80' },
+        { ic:'◉', t:'Peer Review: Thermodynamics Report',      at:'2d ago', c:'#a855f7' },
+    ];
+    acts.forEach((a, i) => {
+        const ay = 536 + i * 34;
+        if (i % 2 === 0) {
+            ctx.fillStyle = 'rgba(255,255,255,0.018)';
+            ctx.fillRect(56, ay - 11, 912, 28);
+        }
+        ctx.fillStyle = a.c; ctx.font = '13px Arial'; ctx.fillText(a.ic, 66, ay + 6);
+        ctx.fillStyle = 'rgba(255,255,255,0.72)'; ctx.font = '12px Arial'; ctx.fillText(a.t, 90, ay + 6);
+        ctx.fillStyle = 'rgba(255,255,255,0.22)'; ctx.fillText(a.at, 885, ay + 6);
+    });
+
+    // ── Footer ───────────────────────────────────────
+    ctx.fillStyle = 'rgba(124,109,255,0.15)';
+    ctx.fillRect(36, 714, 952, 1);
+    ctx.fillStyle = 'rgba(124,109,255,0.5)'; ctx.font = '10px Arial';
+    ctx.fillText(
+        'EDUNEXT NEURAL LEARNING PLATFORM  //  SECURE SESSION ACTIVE  //  AES-256',
+        50, 738
+    );
+
+    // ── Decorative scan-line shimmer ─────────────────
+    for (let y = 0; y < H; y += 4) {
+        ctx.fillStyle = 'rgba(0,0,0,0.04)';
+        ctx.fillRect(0, y, W, 2);
+    }
+
+    return new THREE.CanvasTexture(c);
+}
+
+/* ── Plain page texture ─────────────────────────────── */
+function makePageTexture(idx) {
+    const W = 512, H = 512;
+    const c = document.createElement('canvas');
+    c.width = W; c.height = H;
+    const ctx = c.getContext('2d');
+
+    // Aged paper tone
+    const hue = 45, l = 94 - idx;
+    ctx.fillStyle = `hsl(${hue},12%,${l}%)`;
+    ctx.fillRect(0, 0, W, H);
+
+    // Horizontal rules
+    for (let i = 0; i < 26; i++) {
+        ctx.fillStyle = `rgba(80,80,160,${0.06 + (i % 3) * 0.02})`;
+        ctx.fillRect(32, 56 + i * 15, W - 64, 1);
+    }
+
+    // Fake text lines
+    for (let i = 0; i < 20; i++) {
+        const tw = 80 + Math.random() * 260;
+        ctx.fillStyle = `rgba(60,60,120,${0.07 + Math.random() * 0.06})`;
+        ctx.fillRect(32, 60 + i * 15, tw, 5);
+    }
+
+    // Page number
+    ctx.fillStyle = 'rgba(80,80,160,0.35)';
+    ctx.font = '13px serif'; ctx.textAlign = 'center';
+    ctx.fillText(String(idx + 1), W / 2, H - 22);
+
+    return new THREE.CanvasTexture(c);
+}
+
+/* ── Book cover texture ─────────────────────────────── */
+function makeCoverTexture() {
+    const W = 512, H = 512;
+    const c = document.createElement('canvas');
+    c.width = W; c.height = H;
+    const ctx = c.getContext('2d');
+
+    // Dark leatherette
+    const bg = ctx.createLinearGradient(0, 0, W, H);
+    bg.addColorStop(0, '#17082c');
+    bg.addColorStop(0.5, '#0d0420');
+    bg.addColorStop(1, '#17082c');
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+
+    // Outer glow border
+    ctx.shadowBlur = 18; ctx.shadowColor = '#8b7fff44';
+    ctx.strokeStyle = 'rgba(139,127,255,0.6)'; ctx.lineWidth = 2.5;
+    ctx.strokeRect(22, 22, W - 44, H - 44);
+    ctx.shadowBlur = 0;
+    ctx.strokeStyle = 'rgba(139,127,255,0.18)'; ctx.lineWidth = 1;
+    ctx.strokeRect(32, 32, W - 64, H - 64);
+
+    // Hex logo mark
+    ctx.shadowBlur = 20; ctx.shadowColor = '#8b7fff';
+    ctx.strokeStyle = 'rgba(139,127,255,0.7)'; ctx.lineWidth = 1.5;
+    const cx = W/2, cy = H/2 - 70, r = 36;
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+        const a = (Math.PI / 3) * i - Math.PI / 6;
+        i === 0 ? ctx.moveTo(cx + r*Math.cos(a), cy + r*Math.sin(a))
+                : ctx.lineTo(cx + r*Math.cos(a), cy + r*Math.sin(a));
+    }
+    ctx.closePath(); ctx.stroke();
+    ctx.beginPath();
+    const r2 = 22;
+    for (let i = 0; i < 6; i++) {
+        const a = (Math.PI / 3) * i - Math.PI / 6;
+        i === 0 ? ctx.moveTo(cx + r2*Math.cos(a), cy + r2*Math.sin(a))
+                : ctx.lineTo(cx + r2*Math.cos(a), cy + r2*Math.sin(a));
+    }
+    ctx.closePath(); ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(139,127,255,0.9)';
+    ctx.font = 'bold 38px Arial'; ctx.fillText('EDUNEXT', cx, H/2 + 10);
+
+    ctx.fillStyle = 'rgba(255,255,255,0.55)';
+    ctx.font = '13px Arial'; ctx.fillText('NEURAL LEARNING INTERFACE', cx, H/2 + 36);
+
+    ctx.fillStyle = 'rgba(139,127,255,0.45)';
+    ctx.font = '10px Arial'; ctx.fillText('v2.04 // CURRICULUM ATLAS', cx, H/2 + 58);
+
+    // Scan-line texture
+    for (let y = 0; y < H; y += 3) {
+        ctx.fillStyle = 'rgba(0,0,0,0.07)'; ctx.fillRect(0, y, W, 1);
+    }
+
+    return new THREE.CanvasTexture(c);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// 5. BOOK CONSTRUCTION
+// ═══════════════════════════════════════════════════════════════
+
+const BW = 3.0;   // single-page width
+const BH = 4.2;   // page height
+const PAGES = 8;  // how many pages flip
+
+const bookGroup = new THREE.Group();
+scene.add(bookGroup);
+
+/** Geometry with pivot at the LEFT edge (spine side) */
+function makePageGeo(segs = 24) {
+    const g = new THREE.PlaneGeometry(BW, BH, segs, segs);
+    g.translate(BW / 2, 0, 0);   // shift so x=0 is the spine
+    return g;
+}
+
+// Materials
+const coverMat = new THREE.MeshStandardMaterial({
+    map: makeCoverTexture(),
+    roughness: 0.45, metalness: 0.12,
+    side: THREE.DoubleSide,
+});
+
+const backCoverMat = new THREE.MeshStandardMaterial({
+    color: 0x120820, roughness: 0.75,
+    side: THREE.DoubleSide,
+});
+
+const dashMat = new THREE.MeshStandardMaterial({
+    map: makeDashboardTexture(),
+    roughness: 0.25, metalness: 0.05,
+    emissive: new THREE.Color(0x5040ff),
+    emissiveIntensity: 0.12,
+    side: THREE.DoubleSide,
+});
+
+// Front cover
+const frontCover = new THREE.Mesh(makePageGeo(), coverMat);
+frontCover.castShadow = true;
+bookGroup.add(frontCover);
+
+// Pages
+const pages = [];
+for (let i = 0; i < PAGES; i++) {
+    const isLast = i === PAGES - 1;
+    const mat = isLast
+        ? dashMat
+        : new THREE.MeshStandardMaterial({
+            map: makePageTexture(i),
+            roughness: 0.65, side: THREE.DoubleSide,
+        });
+    const pg = new THREE.Mesh(makePageGeo(16), mat);
+    pg.position.z = (i + 1) * 0.013;
+    pg.castShadow = true;
+    pages.push(pg);
+    bookGroup.add(pg);
+}
+
+// Back cover
+const backCover = new THREE.Mesh(makePageGeo(), backCoverMat);
+backCover.position.z = (PAGES + 1) * 0.013;
+backCover.rotation.y = -Math.PI;
+bookGroup.add(backCover);
+
+// Spine box
+const spineGeo = new THREE.BoxGeometry(0.22, BH + 0.05, 0.32);
+const spineMat = new THREE.MeshStandardMaterial({
+    color: 0x180930, roughness: 0.7, metalness: 0.1,
+});
+const spine = new THREE.Mesh(spineGeo, spineMat);
+spine.position.x = -0.11;
+spine.castShadow = true;
+bookGroup.add(spine);
+
+// Subtle page-stack thickness (visible from side)
+const stackGeo = new THREE.BoxGeometry(BW - 0.05, BH - 0.1, (PAGES + 2) * 0.013);
+const stackMat = new THREE.MeshStandardMaterial({ color: 0xf0ede6, roughness: 0.8 });
+const pageStack = new THREE.Mesh(stackGeo, stackMat);
+pageStack.position.set(BW / 2 - 0.025, 0, (PAGES + 2) * 0.013 / 2);
+bookGroup.add(pageStack);
+
+// ═══════════════════════════════════════════════════════════════
+// 6. ENVIRONMENT — FLOOR, GRID, RINGS
+// ═══════════════════════════════════════════════════════════════
+
+// Glossy floor with slight reflection appearance
+const floorMat = new THREE.MeshStandardMaterial({
+    color: 0x050510, roughness: 0.08, metalness: 0.9,
+});
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), floorMat);
+floor.rotation.x = -Math.PI / 2;
+floor.position.y = -4;
+floor.receiveShadow = true;
+scene.add(floor);
+
+// Grid overlay
+const grid = new THREE.GridHelper(80, 50, 0x18104a, 0x0e0930);
+grid.position.y = -4;
+scene.add(grid);
+
+// Subtle fog plane (atmospheric depth)
+const fogPlane = new THREE.Mesh(
+    new THREE.PlaneGeometry(60, 60),
+    new THREE.MeshBasicMaterial({
+        color: 0x05050f, transparent: true, opacity: 0.45, depthWrite: false,
+    })
+);
+fogPlane.rotation.x = -Math.PI / 2;
+fogPlane.position.y = -3.8;
+scene.add(fogPlane);
+
+// Decorative floating rings
+function makeRing(r, tube, col, opacity = 0.22) {
+    const m = new THREE.Mesh(
+        new THREE.TorusGeometry(r, tube, 8, 72),
+        new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity })
+    );
+    return m;
+}
+const ring1 = makeRing(4.2,  0.012, 0x7c6dff, 0.25); ring1.rotation.x = Math.PI/2;
+const ring2 = makeRing(5.8,  0.009, 0xa855f7, 0.18); ring2.rotation.set(Math.PI/3, 0, Math.PI/8);
+const ring3 = makeRing(7.4,  0.007, 0x06b6d4, 0.14); ring3.rotation.set(Math.PI/5, Math.PI/4, 0);
+const ring4 = makeRing(9.0,  0.005, 0xc026d3, 0.10); ring4.rotation.set(Math.PI/7, Math.PI/3, Math.PI/6);
+scene.add(ring1, ring2, ring3, ring4);
+
+// ═══════════════════════════════════════════════════════════════
+// 7. PARTICLES
+// ═══════════════════════════════════════════════════════════════
+
+function makeParticles(count, spread, size, col) {
+    const geo = new THREE.BufferGeometry();
+    const pos = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+        const theta = Math.random() * Math.PI * 2;
+        const phi   = Math.acos(2 * Math.random() - 1);
+        const r     = spread * 0.4 + Math.random() * spread * 0.6;
+        pos[i*3]   = r * Math.sin(phi) * Math.cos(theta);
+        pos[i*3+1] = (Math.random() - 0.5) * spread;
+        pos[i*3+2] = r * Math.sin(phi) * Math.sin(theta);
+    }
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    const mat = new THREE.PointsMaterial({
+        size, color: col, transparent: true, opacity: 0.45, sizeAttenuation: true,
+    });
+    return new THREE.Points(geo, mat);
+}
+
+const dust1 = makeParticles(1500, 22, 0.038, 0x7c6dff);
+const dust2 = makeParticles(500,  14, 0.065, 0xa855f7);
+const dust3 = makeParticles(250,   9, 0.048, 0x06b6d4);
+scene.add(dust1, dust2, dust3);
+
+// ═══════════════════════════════════════════════════════════════
+// 8. GSAP ANIMATION TIMELINE
+// ═══════════════════════════════════════════════════════════════
+
+let tlPaused = false;
+
+// Continuous gentle float
+gsap.to(bookGroup.position, {
+    y: 0.45, duration: 3, repeat: -1, yoyo: true, ease: 'sine.inOut',
+});
+
+// Rings slowly orbit
+gsap.to(ring1.rotation, { z: Math.PI*2, duration: 18, repeat:-1, ease:'none' });
+gsap.to(ring2.rotation, { z:-Math.PI*2, duration: 25, repeat:-1, ease:'none' });
+gsap.to(ring3.rotation, { z: Math.PI*2, duration: 34, repeat:-1, ease:'none' });
+gsap.to(ring4.rotation, { z:-Math.PI*2, duration: 42, repeat:-1, ease:'none' });
+
+// ── Master cinematic sequence ──────────────────────────────
+const tl = gsap.timeline({ delay: 2.8 });
+
+// 1) Front cover flips open
+tl.to(frontCover.rotation, {
+    y: -Math.PI + 0.05,
+    duration: 1.8,
+    ease: 'power3.inOut',
+}, 0);
+
+// 2) Pages flip one by one with stagger
+pages.forEach((pg, i) => {
+    const isLast = i === PAGES - 1;
+    tl.to(pg.rotation, {
+        y: isLast ? -Math.PI * 0.08 : -(Math.PI - 0.06),   // last page barely opens
+        duration: isLast ? 1.2 : 1.5,
+        ease: isLast ? 'power3.out' : 'power2.inOut',
+    }, 0.18 + i * 0.4);
+});
+
+// 3) Camera cinematic push-in
+const camEnd = pages.length * 0.4 + 0.9;
+tl.to(camera.position, {
+    z: 5.8, x: 1.8, y: 0.2,
+    duration: 3.8,
+    ease: 'expo.inOut',
+    onStart() {
+        // Reveal UI chrome
+        document.getElementById('nav').classList.add('show');
+        document.getElementById('hero').classList.add('show');
+        document.getElementById('status').classList.add('show');
+        document.getElementById('hint').classList.add('show');
+        // Dashboard emissive glow ramps up
+        gsap.to(dashMat, { emissiveIntensity: 0.45, duration: 2.5 });
+        // Bloom intensifies on the page
+        gsap.to(bloom, { strength: 1.1, duration: 2.5 });
+    },
+}, camEnd);
+
+// 4) Keylight drifts to illuminate the open page
+tl.to(keyLight.position, { x: 3, y: 4, z: 6, duration: 3 }, camEnd);
+
+// ═══════════════════════════════════════════════════════════════
+// 9. INTERACTIVITY
+// ═══════════════════════════════════════════════════════════════
+
+const mouse = { x:0, y:0, tx:0, ty:0 };
+
+window.addEventListener('mousemove', e => {
+    mouse.tx = (e.clientX / window.innerWidth  - 0.5);
+    mouse.ty = (e.clientY / window.innerHeight - 0.5);
+    // Cursor elements
+    document.getElementById('c-dot').style.cssText  += `left:${e.clientX}px;top:${e.clientY}px`;
+    document.getElementById('c-ring').style.cssText += `left:${e.clientX}px;top:${e.clientY}px`;
+});
+
+window.addEventListener('touchmove', e => {
+    const t = e.touches[0];
+    mouse.tx = (t.clientX / window.innerWidth  - 0.5);
+    mouse.ty = (t.clientY / window.innerHeight - 0.5);
+}, { passive: true });
+
+// Click — pause / resume master timeline
+renderer.domElement.addEventListener('click', () => {
+    tlPaused = !tlPaused;
+    tlPaused ? tl.pause() : tl.resume();
+});
+
+// ═══════════════════════════════════════════════════════════════
+// 10. RENDER LOOP
+// ═══════════════════════════════════════════════════════════════
+
+const clock = new THREE.Clock();
+
+function tick() {
+    requestAnimationFrame(tick);
+    const t = clock.getElapsedTime();
+
+    // Smooth mouse lerp
+    mouse.x += (mouse.tx - mouse.x) * 0.042;
+    mouse.y += (mouse.ty - mouse.y) * 0.042;
+
+    // Parallax on book (gentle, doesn't fight GSAP position)
+    bookGroup.rotation.y += (mouse.x * 0.38 - bookGroup.rotation.y) * 0.038;
+    bookGroup.rotation.x += (-mouse.y * 0.22 - bookGroup.rotation.x) * 0.038;
+
+    // Dust orbit
+    dust1.rotation.y =  t * 0.04;
+    dust2.rotation.y = -t * 0.07;
+    dust3.rotation.x =  t * 0.035;
+
+    // Light pulse (adds life)
+    keyLight.intensity = 85 + Math.sin(t * 1.4) * 18;
+    rimLight.intensity = 32 + Math.sin(t * 0.9 + 1.2) * 10;
+
+    // Camera subtle drift (after zoom completes)
+    if (camera.position.z < 7) {
+        camera.position.x += (1.8 + mouse.x * 0.3 - camera.position.x) * 0.008;
+        camera.position.y += (0.2 - mouse.y * 0.2 - camera.position.y) * 0.008;
+    }
+
+    composer.render();
+}
+
+// Dismiss loader
+window.addEventListener('load', () => {
+    setTimeout(() => document.getElementById('loader').classList.add('gone'), 2500);
+});
+
+// Resize
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    composer.setSize(window.innerWidth, window.innerHeight);
+});
+
+tick();
+</script>
+</body>
+</html>

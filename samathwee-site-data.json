@@ -1,0 +1,287 @@
+{
+  "subjects": [
+    {
+      "name": "Sinhala",
+      "level": "Grade 1–5",
+      "icon": "📖",
+      "color": "#fee2e2",
+      "iconColor": "#ef4444"
+    },
+    {
+      "name": "English",
+      "level": "Grade 1–5 / O/L / A/L",
+      "icon": "🔤",
+      "color": "#dbeafe",
+      "iconColor": "#3b82f6"
+    },
+    {
+      "name": "Mathematics",
+      "level": "All Levels",
+      "icon": "🔢",
+      "color": "#ede9fe",
+      "iconColor": "#8b5cf6"
+    },
+    {
+      "name": "Environmental Studies",
+      "level": "Grade 1–5",
+      "icon": "🌿",
+      "color": "#dcfce7",
+      "iconColor": "#22c55e"
+    },
+    {
+      "name": "Buddhism",
+      "level": "All Levels",
+      "icon": "🙏",
+      "color": "#fef9c3",
+      "iconColor": "#eab308"
+    },
+    {
+      "name": "Art",
+      "level": "All Levels",
+      "icon": "🎨",
+      "color": "#fce7f3",
+      "iconColor": "#ec4899"
+    },
+    {
+      "name": "Music",
+      "level": "All Levels",
+      "icon": "🎵",
+      "color": "#fff7ed",
+      "iconColor": "#f97316"
+    },
+    {
+      "name": "Physical Education",
+      "level": "All Levels",
+      "icon": "⚽",
+      "color": "#dcfce7",
+      "iconColor": "#16a34a"
+    },
+    {
+      "name": "Science",
+      "level": "Grade 6–O/L",
+      "icon": "🧪",
+      "color": "#dbeafe",
+      "iconColor": "#2563eb"
+    },
+    {
+      "name": "History",
+      "level": "Grade 6–O/L",
+      "icon": "🏛️",
+      "color": "#fef3c7",
+      "iconColor": "#d97706"
+    },
+    {
+      "name": "Geography",
+      "level": "Grade 6–O/L",
+      "icon": "🌍",
+      "color": "#dcfce7",
+      "iconColor": "#059669"
+    },
+    {
+      "name": "Civic Education",
+      "level": "Grade 6–O/L",
+      "icon": "⚖️",
+      "color": "#e0e7ff",
+      "iconColor": "#4f46e5"
+    },
+    {
+      "name": "Health Education",
+      "level": "Grade 6–O/L",
+      "icon": "🏥",
+      "color": "#fee2e2",
+      "iconColor": "#dc2626"
+    },
+    {
+      "name": "ICT",
+      "level": "O/L / A/L",
+      "icon": "💻",
+      "color": "#ede9fe",
+      "iconColor": "#7c3aed"
+    },
+    {
+      "name": "Commerce",
+      "level": "Grade 6–O/L",
+      "icon": "💼",
+      "color": "#fef3c7",
+      "iconColor": "#b45309"
+    },
+    {
+      "name": "Home Economics",
+      "level": "Grade 6–O/L",
+      "icon": "🏡",
+      "color": "#fce7f3",
+      "iconColor": "#db2777"
+    },
+    {
+      "name": "Technical Drawing",
+      "level": "Grade 6–O/L",
+      "icon": "📐",
+      "color": "#e0f2fe",
+      "iconColor": "#0284c7"
+    },
+    {
+      "name": "Agriculture",
+      "level": "Grade 6–O/L",
+      "icon": "🌾",
+      "color": "#dcfce7",
+      "iconColor": "#15803d"
+    },
+    {
+      "name": "Drama & Theatre",
+      "level": "Grade 6–O/L",
+      "icon": "🎭",
+      "color": "#fce7f3",
+      "iconColor": "#9333ea"
+    },
+    {
+      "name": "Dancing",
+      "level": "Grade 6–O/L",
+      "icon": "💃",
+      "color": "#fff1f2",
+      "iconColor": "#e11d48"
+    },
+    {
+      "name": "Combined Mathematics",
+      "level": "A/Level",
+      "icon": "📊",
+      "color": "#ede9fe",
+      "iconColor": "#6d28d9"
+    },
+    {
+      "name": "Physics",
+      "level": "A/Level / Cambridge / London",
+      "icon": "⚛️",
+      "color": "#dbeafe",
+      "iconColor": "#1d4ed8"
+    },
+    {
+      "name": "Chemistry",
+      "level": "A/Level / Cambridge / London",
+      "icon": "🧬",
+      "color": "#dcfce7",
+      "iconColor": "#16a34a"
+    },
+    {
+      "name": "Biology",
+      "level": "A/Level / Cambridge / London",
+      "icon": "🔬",
+      "color": "#dcfce7",
+      "iconColor": "#15803d"
+    },
+    {
+      "name": "Economics",
+      "level": "A/Level / London / Cambridge",
+      "icon": "📈",
+      "color": "#fef3c7",
+      "iconColor": "#92400e"
+    },
+    {
+      "name": "Business Studies",
+      "level": "A/Level / London",
+      "icon": "🏢",
+      "color": "#e0f2fe",
+      "iconColor": "#0369a1"
+    },
+    {
+      "name": "Accounting",
+      "level": "A/Level",
+      "icon": "🧾",
+      "color": "#fef9c3",
+      "iconColor": "#ca8a04"
+    },
+    {
+      "name": "Political Science",
+      "level": "A/Level",
+      "icon": "🗳️",
+      "color": "#e0e7ff",
+      "iconColor": "#4338ca"
+    },
+    {
+      "name": "Logic & Scientific Method",
+      "level": "A/Level",
+      "icon": "🧠",
+      "color": "#fce7f3",
+      "iconColor": "#db2777"
+    },
+    {
+      "name": "Further Mathematics",
+      "level": "London A/Level",
+      "icon": "∞",
+      "color": "#ede9fe",
+      "iconColor": "#7c3aed"
+    },
+    {
+      "name": "Psychology",
+      "level": "London A/Level",
+      "icon": "🧘",
+      "color": "#fce7f3",
+      "iconColor": "#be185d"
+    },
+    {
+      "name": "Sociology",
+      "level": "London A/Level",
+      "icon": "👥",
+      "color": "#e0f2fe",
+      "iconColor": "#0284c7"
+    },
+    {
+      "name": "Literature in English",
+      "level": "London / Cambridge",
+      "icon": "📚",
+      "color": "#fef3c7",
+      "iconColor": "#b45309"
+    },
+    {
+      "name": "Tamil",
+      "level": "Grade 1–5 / O/L",
+      "icon": "📝",
+      "color": "#fef9c3",
+      "iconColor": "#d97706"
+    }
+  ],
+  "grades": [
+    {
+      "emoji": "🌟",
+      "title": "Grade 1–5",
+      "sub": "Primary School",
+      "count": "8 Subjects",
+      "link": "grades-1-5.html",
+      "color": "linear-gradient(145deg,#ff6b6b,#ee5a24)"
+    },
+    {
+      "emoji": "📘",
+      "title": "Grade 6–O/L",
+      "sub": "Junior & O/Levels",
+      "count": "17 Subjects",
+      "link": "grades-6-ol.html",
+      "color": "linear-gradient(145deg,#5a2d91,#8b5cf6)"
+    },
+    {
+      "emoji": "🔬",
+      "title": "A / Levels",
+      "sub": "Advanced Level",
+      "count": "14 Subjects",
+      "link": "grades-al.html",
+      "color": "linear-gradient(145deg,#0ea5e9,#0369a1)"
+    },
+    {
+      "emoji": "🇬🇧",
+      "title": "London",
+      "sub": "Edexcel / IGCSE",
+      "count": "10 Subjects",
+      "link": "grades-london.html",
+      "color": "linear-gradient(145deg,#10b981,#059669)"
+    },
+    {
+      "emoji": "🏛️",
+      "title": "Cambridge",
+      "sub": "CAIE / IGCSE",
+      "count": "10 Subjects",
+      "link": "grades-cambridge.html",
+      "color": "linear-gradient(145deg,#f59e0b,#d97706)"
+    }
+  ],
+  "hero": {},
+  "exportedAt": "2026-04-08T15:50:14.416Z",
+  "version": "1.0"
+}
