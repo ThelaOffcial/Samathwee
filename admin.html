@@ -3,356 +3,266 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Samathwee Admin Dashboard</title>
+  <title>Samathwee — Admin</title>
   <link rel="stylesheet" href="admin.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
 </head>
 <body>
 
-  <!-- LOGIN SCREEN -->
-  <div id="loginScreen" class="auth-container">
-    <div class="auth-box">
-      <div class="auth-visual">
-        <div class="visual-orb orb1"></div>
-        <div class="visual-orb orb2"></div>
-        <div class="visual-content">
-          <div class="visual-logo">S</div>
-          <h2>Samathwee Panadura</h2>
-          <p>Managing excellence at Samathwee Education Center starts here.</p>
-          <div class="visual-dots">
-            <span></span><span></span><span></span>
-          </div>
+<!-- ══════════════════════════════════════════
+     LOGIN SCREEN
+══════════════════════════════════════════ -->
+<div id="loginScreen" class="auth-container">
+  <div class="auth-box">
+
+    <div class="auth-visual">
+      <div class="visual-badge">Admin Portal</div>
+      <div class="visual-main">
+        <span class="visual-logo-mark">S</span>
+        <h2 class="visual-headline">Samathwee Education Center</h2>
+        <p class="visual-sub">Manage your institute's content, teachers, and data — all in one place.</p>
+      </div>
+      <div class="visual-stats">
+        <div><div class="vstat-num">500+</div><div class="vstat-label">Students</div></div>
+        <div><div class="vstat-num">40+</div><div class="vstat-label">Teachers</div></div>
+        <div><div class="vstat-num">59</div><div class="vstat-label">Subjects</div></div>
+      </div>
+    </div>
+
+    <div class="auth-form-wrapper">
+      <!-- Login -->
+      <div id="loginForm" class="auth-form-content">
+        <div class="auth-eyebrow">Secure Access</div>
+        <h1 class="auth-title">Welcome back</h1>
+        <p class="auth-sub">Sign in to your admin dashboard</p>
+        <div id="loginError" class="auth-error" style="display:none;"></div>
+        <div class="form-floating">
+          <input type="email" id="loginEmail" placeholder=" " autocomplete="email" />
+          <label>Email Address</label>
         </div>
+        <div class="form-floating">
+          <input type="password" id="loginPassword" placeholder=" " autocomplete="current-password" />
+          <label>Password</label>
+        </div>
+        <div class="auth-options">
+          <label class="remember-me">
+            <input type="checkbox" id="rememberMe" /><span>Remember me</span>
+          </label>
+          <a href="#" class="forgot-link">Forgot password?</a>
+        </div>
+        <button class="auth-btn" id="loginBtn" onclick="doLogin()">Sign In →</button>
+        <p class="switch-form">New admin? <a href="javascript:void(0)" onclick="toggleAuth('signup')">Create account</a></p>
       </div>
 
-      <div class="auth-form-wrapper">
-
-        <!-- LOGIN FORM -->
-        <div id="loginForm" class="auth-form-content">
-          <div class="auth-badge">Admin Portal</div>
-          <h1 class="auth-title">Welcome Back</h1>
-          <p class="auth-sub">Enter your details to access the dashboard</p>
-
-          <div id="loginError" class="auth-error" style="display:none;"></div>
-
-          <div class="form-floating">
-            <input type="email" id="loginEmail" placeholder=" " required autocomplete="email" />
-            <label>Email Address</label>
-          </div>
-
-          <div class="form-floating">
-            <input type="password" id="loginPassword" placeholder=" " required autocomplete="current-password" />
-            <label>Password</label>
-          </div>
-
-          <div class="auth-options">
-            <label class="remember-me">
-              <input type="checkbox" id="rememberMe">
-              <span class="checkbox-custom"></span>
-              <span>Remember me</span>
-            </label>
-            <a href="#" class="forgot-link">Forgot Password?</a>
-          </div>
-
-          <button class="auth-btn" id="loginBtn" onclick="doLogin()">
-            Sign In <span class="arrow">→</span>
-          </button>
-
-          <p class="switch-form">Don't have an account?
-            <a href="javascript:void(0)" onclick="toggleAuth('signup')">Create one</a>
-          </p>
+      <!-- Signup -->
+      <div id="signupForm" class="auth-form-content" style="display:none;">
+        <div class="auth-eyebrow">Registration</div>
+        <h1 class="auth-title">Create account</h1>
+        <p class="auth-sub">Authorized administrators only</p>
+        <div id="signupError" class="auth-error" style="display:none;"></div>
+        <div class="form-floating">
+          <input type="email" id="signupEmail" placeholder=" " autocomplete="email" />
+          <label>Email Address</label>
         </div>
-
-        <!-- SIGNUP FORM -->
-        <div id="signupForm" class="auth-form-content" style="display:none;">
-          <div class="auth-badge">New Admin</div>
-          <h1 class="auth-title">Create Account</h1>
-          <p class="auth-sub">Only for authorized administrators</p>
-
-          <div id="signupError" class="auth-error" style="display:none;"></div>
-
-          <div class="form-floating">
-            <input type="email" id="signupEmail" placeholder=" " required />
-            <label>Email Address</label>
-          </div>
-
-          <div class="form-floating">
-            <input type="password" id="signupPassword" placeholder=" " required />
-            <label>Password</label>
-          </div>
-
-          <button class="auth-btn" id="signupBtn" onclick="doSignup()">Register Admin</button>
-
-          <p class="switch-form">Already an admin?
-            <a href="javascript:void(0)" onclick="toggleAuth('login')">Sign In</a>
-          </p>
+        <div class="form-floating">
+          <input type="password" id="signupPassword" placeholder=" " autocomplete="new-password" />
+          <label>Password</label>
         </div>
-
+        <button class="auth-btn" onclick="doSignup()">Register Admin →</button>
+        <p class="switch-form">Already an admin? <a href="javascript:void(0)" onclick="toggleAuth('login')">Sign In</a></p>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- DASHBOARD -->
-  <div id="dashboard" class="dashboard" style="display:none;">
+<!-- ══════════════════════════════════════════
+     DASHBOARD
+══════════════════════════════════════════ -->
+<div id="dashboard" class="dashboard" style="display:none;">
 
-    <!-- Sidebar Overlay -->
-    <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
-
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-brand">
-        <div class="sidebar-logo">S</div>
-        <div>
-          <div class="sidebar-title">Samathwee</div>
-          <div class="sidebar-sub">Admin Panel</div>
-        </div>
-        <button class="sidebar-close" onclick="closeSidebar()" title="Close menu">✕</button>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-logo-mark">S</div>
+      <div>
+        <div class="sidebar-name">Samathwee</div>
+        <div class="sidebar-tag">Admin Panel</div>
       </div>
+    </div>
 
-      <nav class="sidebar-nav">
-        <div class="nav-label">Content</div>
-        <button class="nav-item active" onclick="showSection('hero', this)">
-          <span class="nav-icon">🏠</span> Hero Section
-        </button>
-        <button class="nav-item" onclick="showSection('stats', this)">
-          <span class="nav-icon">📊</span> Statistics
-        </button>
-        <button class="nav-item" onclick="showSection('grades', this)">
-          <span class="nav-icon">📚</span> Grade Cards
-        </button>
-        <button class="nav-item" onclick="showSection('subjects', this)">
-          <span class="nav-icon">🔬</span> Subjects
-        </button>
-        <div class="nav-label">Info</div>
-        <button class="nav-item" onclick="showSection('center', this)">
-          <span class="nav-icon">📍</span> Center Info
-        </button>
-        <button class="nav-item" onclick="showSection('contact', this)">
-          <span class="nav-icon">📞</span> Contact
-        </button>
-        <button class="nav-item" onclick="showSection('footer', this)">
-          <span class="nav-icon">🔗</span> Footer
-        </button>
-      </nav>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Content</div>
+      <button class="nav-item active" onclick="showSection('hero', this)"><span class="nav-icon">🏠</span> Hero Section</button>
+      <button class="nav-item" onclick="showSection('stats', this)"><span class="nav-icon">📊</span> Statistics</button>
+      <button class="nav-item" onclick="showSection('grades', this)"><span class="nav-icon">📚</span> Grade Cards</button>
+      <button class="nav-item" onclick="showSection('subjects', this)"><span class="nav-icon">🔬</span> Subjects</button>
+      <div class="nav-section-label">People</div>
+      <button class="nav-item" onclick="showSection('teachers', this)"><span class="nav-icon">👨‍🏫</span> Teachers</button>
+      <div class="nav-section-label">Settings</div>
+      <button class="nav-item" onclick="showSection('center', this)"><span class="nav-icon">📍</span> Center Info</button>
+      <button class="nav-item" onclick="showSection('contact', this)"><span class="nav-icon">📞</span> Contact</button>
+      <button class="nav-item" onclick="showSection('footer', this)"><span class="nav-icon">🔗</span> Footer</button>
+    </nav>
 
-      <div class="sidebar-footer">
-        <a href="index.html" target="_blank" class="view-site-btn">
-          <span>↗</span> View Live Site
-        </a>
-        <button class="logout-btn" onclick="doLogout()">
-          <span>⎋</span> Sign Out
-        </button>
+    <div class="sidebar-footer">
+      <a href="index.html" target="_blank" class="view-site-btn">↗ View Live Site</a>
+      <button class="logout-btn" onclick="doLogout()">⎋ Sign Out</button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="mobile-header">
+      <button class="hamburger" onclick="toggleSidebar()">☰</button>
+      <span>Samathwee Admin</span>
+    </div>
+
+    <div class="top-statusbar">
+      <div>
+        <div class="page-title">Dashboard</div>
+        <div class="page-subtitle">Realtime DB · changes sync instantly</div>
       </div>
-    </aside>
-
-    <!-- Main content -->
-    <main class="main-content">
-
-      <!-- Mobile Header -->
-      <div class="mobile-header">
-        <button class="hamburger" onclick="toggleSidebar()" aria-label="Open menu">
-          <span></span><span></span><span></span>
-        </button>
-        <span class="mobile-title">Samathwee Admin</span>
-        <a href="index.html" target="_blank" class="mobile-view-btn">↗ Site</a>
+      <div id="saveStatus" class="save-status">
+        <span class="dot"></span>
+        <span id="saveStatusText">Ready</span>
       </div>
+    </div>
 
-      <!-- Toast -->
-      <div id="toast" class="toast"></div>
+    <div id="toast" class="toast" style="display:none;"></div>
 
-      <!-- ═══ HERO SECTION ═══ -->
-      <section id="sec-hero" class="admin-section active">
-        <div class="section-header">
-          <div class="section-icon">🏠</div>
-          <div>
-            <h2>Hero Section</h2>
-            <p>Edit the main banner text displayed on the homepage.</p>
-          </div>
+    <!-- HERO -->
+    <section id="sec-hero" class="admin-section active">
+      <div class="section-header">
+        <h2>🏠 Hero Section</h2>
+        <p>Edit the main banner text displayed on the homepage.</p>
+      </div>
+      <div class="card">
+        <div class="form-group">
+          <label>Tagline — small text above title</label>
+          <input type="text" id="heroTagline" placeholder="🎓 Excellence in Education Since 2010" />
         </div>
-        <div class="card">
-          <div class="form-group">
-            <label>Tagline <span class="label-hint">small text above title</span></label>
-            <input type="text" id="heroTagline" placeholder="🎓 Excellence in Education Since 2010" />
-          </div>
-          <div class="form-group">
-            <label>Main Title</label>
-            <input type="text" id="heroTitle" placeholder="Empowering the Next Generation…" />
-          </div>
-          <div class="form-group">
-            <label>Description</label>
-            <textarea id="heroDesc" rows="4" placeholder="Enter hero description…"></textarea>
-          </div>
-          <div class="card-actions">
-            <button class="btn-save" onclick="saveHero(this)">💾 Save Hero</button>
-          </div>
+        <div class="form-group">
+          <label>Main Title</label>
+          <input type="text" id="heroTitle" placeholder="Empowering the Next Generation…" />
         </div>
-      </section>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="heroDesc" rows="4" placeholder="Enter hero description..."></textarea>
+        </div>
+        <button class="btn-save" onclick="saveHero()">💾 Save Hero</button>
+      </div>
+    </section>
 
-      <!-- ═══ STATS SECTION ═══ -->
-      <section id="sec-stats" class="admin-section">
-        <div class="section-header">
-          <div class="section-icon">📊</div>
-          <div>
-            <h2>Statistics</h2>
-            <p>Update the counters shown below the hero section.</p>
-          </div>
+    <!-- STATS -->
+    <section id="sec-stats" class="admin-section">
+      <div class="section-header">
+        <h2>📊 Statistics</h2>
+        <p>Update the counters shown below the hero section.</p>
+      </div>
+      <div class="card">
+        <div class="stats-grid">
+          <div class="stat-card"><label>Students</label><input type="number" id="statStudents" placeholder="500" min="0" /></div>
+          <div class="stat-card"><label>Expert Teachers</label><input type="number" id="statTeachers" placeholder="40" min="0" /></div>
+          <div class="stat-card"><label>Subjects</label><input type="number" id="statSubjects" placeholder="59" min="0" /></div>
+          <div class="stat-card"><label>Centers</label><input type="number" id="statCenters" placeholder="1" min="0" /></div>
         </div>
-        <div class="card">
-          <div class="form-row">
-            <div class="form-group">
-              <label>👨‍🎓 Students</label>
-              <input type="number" id="statStudents" placeholder="500" min="0" />
-            </div>
-            <div class="form-group">
-              <label>👩‍🏫 Expert Teachers</label>
-              <input type="number" id="statTeachers" placeholder="40" min="0" />
-            </div>
-            <div class="form-group">
-              <label>📖 Subjects</label>
-              <input type="number" id="statSubjects" placeholder="59" min="0" />
-            </div>
-            <div class="form-group">
-              <label>🏫 Centers</label>
-              <input type="number" id="statCenters" placeholder="1" min="0" />
-            </div>
-          </div>
-          <div class="card-actions">
-            <button class="btn-save" onclick="saveStats(this)">💾 Save Stats</button>
-          </div>
-        </div>
-      </section>
+        <button class="btn-save" onclick="saveStats()">💾 Save Stats</button>
+      </div>
+    </section>
 
-      <!-- ═══ GRADES SECTION ═══ -->
-      <section id="sec-grades" class="admin-section">
-        <div class="section-header">
-          <div class="section-icon">📚</div>
-          <div>
-            <h2>Grade Cards</h2>
-            <p>Manage the grade level cards on the homepage.</p>
-          </div>
+    <!-- GRADES -->
+    <section id="sec-grades" class="admin-section">
+      <div class="section-header">
+        <h2>📚 Grade Cards</h2>
+        <p>Manage the grade level cards on the homepage.</p>
+      </div>
+      <div class="card">
+        <div id="gradesList"></div>
+        <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;">
+          <button class="btn-add" onclick="addGradeRow()">＋ Add Grade Card</button>
+          <button class="btn-save" onclick="saveGrades()">💾 Save All Grades</button>
         </div>
-        <div class="card">
-          <div id="gradesList" class="rows-container"></div>
-          <div class="card-actions spread">
-            <button class="btn-add" onclick="addGradeRow()">＋ Add Grade Card</button>
-            <button class="btn-save" id="saveGradesBtn" onclick="saveGrades(this)">💾 Save All Grades</button>
-          </div>
-        </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- ═══ SUBJECTS SECTION ═══ -->
-      <section id="sec-subjects" class="admin-section">
-        <div class="section-header">
-          <div class="section-icon">🔬</div>
-          <div>
-            <h2>Subjects</h2>
-            <p>Add, edit, or remove subjects from the subject list.</p>
-          </div>
+    <!-- SUBJECTS -->
+    <section id="sec-subjects" class="admin-section">
+      <div class="section-header">
+        <h2>🔬 Subjects</h2>
+        <p>Add, edit, or remove subjects from the subject list.</p>
+      </div>
+      <div class="card">
+        <div id="subjectsList"></div>
+        <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;">
+          <button class="btn-add" onclick="addSubjectRow()">＋ Add Subject</button>
+          <button class="btn-save" onclick="saveSubjects()">💾 Save All Subjects</button>
         </div>
-        <div class="card">
-          <div id="subjectsList" class="rows-container"></div>
-          <div class="card-actions spread">
-            <button class="btn-add" onclick="addSubjectRow()">＋ Add Subject</button>
-            <button class="btn-save" id="saveSubjectsBtn" onclick="saveSubjects(this)">💾 Save All Subjects</button>
-          </div>
-        </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- ═══ CENTER SECTION ═══ -->
-      <section id="sec-center" class="admin-section">
-        <div class="section-header">
-          <div class="section-icon">📍</div>
-          <div>
-            <h2>Center Info</h2>
-            <p>Edit the Panadura center information shown on the homepage.</p>
-          </div>
+    <!-- TEACHERS -->
+    <section id="sec-teachers" class="admin-section">
+      <div class="section-header">
+        <h2>👨‍🏫 Teachers</h2>
+        <p>Add, edit, or remove teacher profiles.</p>
+      </div>
+      <div class="card">
+        <div id="teachersList"></div>
+        <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;">
+          <button class="btn-add" onclick="addTeacher()">＋ Add Teacher</button>
+          <button class="btn-save" onclick="saveTeachers()">💾 Save All Teachers</button>
         </div>
-        <div class="card">
-          <div class="form-group">
-            <label>Center Name</label>
-            <input type="text" id="centerName" placeholder="Samathwee Panadura" />
-          </div>
-          <div class="form-group">
-            <label>Description</label>
-            <textarea id="centerDesc" rows="3" placeholder="Center description…"></textarea>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Address</label>
-              <input type="text" id="centerAddress" placeholder="Panadura, Sri Lanka" />
-            </div>
-            <div class="form-group">
-              <label>Phone</label>
-              <input type="text" id="centerPhone" placeholder="+94 77 000 0000" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Google Maps URL</label>
-            <input type="url" id="centerMapUrl" placeholder="https://maps.app.goo.gl/…" />
-          </div>
-          <div class="card-actions">
-            <button class="btn-save" onclick="saveCenter(this)">💾 Save Center</button>
-          </div>
-        </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- ═══ CONTACT SECTION ═══ -->
-      <section id="sec-contact" class="admin-section">
-        <div class="section-header">
-          <div class="section-icon">📞</div>
-          <div>
-            <h2>Contact Details</h2>
-            <p>Update the contact information shown in the contact section.</p>
-          </div>
+    <!-- CENTER -->
+    <section id="sec-center" class="admin-section">
+      <div class="section-header">
+        <h2>📍 Center Info</h2>
+        <p>Edit the Panadura center information shown on the homepage.</p>
+      </div>
+      <div class="card">
+        <div class="form-row-2">
+          <div class="form-group"><label>Center Name</label><input type="text" id="centerName" placeholder="Samathwee Panadura" /></div>
+          <div class="form-group"><label>Phone</label><input type="text" id="centerPhone" placeholder="+94 77 000 0000" /></div>
         </div>
-        <div class="card">
-          <div class="form-row">
-            <div class="form-group">
-              <label>Phone Number</label>
-              <input type="text" id="contactPhone" placeholder="+94 77 000 0000" />
-            </div>
-            <div class="form-group">
-              <label>Email Address</label>
-              <input type="email" id="contactEmail" placeholder="info@samathwee.lk" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Address</label>
-            <input type="text" id="contactAddress" placeholder="Panadura, Sri Lanka" />
-          </div>
-          <div class="card-actions">
-            <button class="btn-save" onclick="saveContact(this)">💾 Save Contact</button>
-          </div>
-        </div>
-      </section>
+        <div class="form-group"><label>Description</label><textarea id="centerDesc" rows="3" placeholder="Center description..."></textarea></div>
+        <div class="form-group"><label>Address</label><input type="text" id="centerAddress" placeholder="Panadura, Sri Lanka" /></div>
+        <div class="form-group"><label>Google Maps URL</label><input type="url" id="centerMapUrl" placeholder="https://maps.app.goo.gl/..." /></div>
+        <button class="btn-save" onclick="saveCenter()">💾 Save Center</button>
+      </div>
+    </section>
 
-      <!-- ═══ FOOTER SECTION ═══ -->
-      <section id="sec-footer" class="admin-section">
-        <div class="section-header">
-          <div class="section-icon">🔗</div>
-          <div>
-            <h2>Footer</h2>
-            <p>Update the footer text shown at the bottom of the site.</p>
-          </div>
-        </div>
-        <div class="card">
-          <div class="form-group">
-            <label>Footer Text</label>
-            <input type="text" id="footerText" placeholder="© 2026 Samathwee Higher Education Center…" />
-          </div>
-          <div class="card-actions">
-            <button class="btn-save" onclick="saveFooter(this)">💾 Save Footer</button>
-          </div>
-        </div>
-      </section>
+    <!-- CONTACT -->
+    <section id="sec-contact" class="admin-section">
+      <div class="section-header">
+        <h2>📞 Contact Details</h2>
+        <p>Update the contact information shown in the contact section.</p>
+      </div>
+      <div class="card">
+        <div class="form-group"><label>Phone Number</label><input type="text" id="contactPhone" placeholder="+94 77 000 0000" /></div>
+        <div class="form-group"><label>Email Address</label><input type="email" id="contactEmail" placeholder="info@samathwee.lk" /></div>
+        <div class="form-group"><label>Address</label><input type="text" id="contactAddress" placeholder="Panadura, Sri Lanka" /></div>
+        <button class="btn-save" onclick="saveContact()">💾 Save Contact</button>
+      </div>
+    </section>
 
-    </main>
-  </div>
+    <!-- FOOTER -->
+    <section id="sec-footer" class="admin-section">
+      <div class="section-header">
+        <h2>🔗 Footer</h2>
+        <p>Update the footer text shown at the bottom of the site.</p>
+      </div>
+      <div class="card">
+        <div class="form-group"><label>Footer Text</label><input type="text" id="footerText" placeholder="© 2026 Samathwee Higher Education Center…" /></div>
+        <button class="btn-save" onclick="saveFooter()">💾 Save Footer</button>
+      </div>
+    </section>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script src="admin.js"></script>
+  </main>
+</div>
+
+<!-- Firebase SDKs (compat) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="admin.js"></script>
 </body>
 </html>

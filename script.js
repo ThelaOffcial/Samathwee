@@ -1,25 +1,27 @@
 // =============================================
-//  SAMATHWEE – script.js  (optimised)
-//  Defaults render instantly → Firebase updates in background
+//  SAMATHWEE – script.js
+//  Firebase Realtime Database ONLY
+//  No Firestore used anywhere
+//  Admin changes reflect instantly on site
 // =============================================
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDlBLrs-WquiVIivoOCuJq2g7BFhNwAtas",
-  authDomain: "samathwee.firebaseapp.com",
-  projectId: "samathwee",
-  storageBucket: "samathwee.firebasestorage.app",
+  apiKey:            "AIzaSyDlBLrs-WquiVIivoOCuJq2g7BFhNwAtas",
+  authDomain:        "samathwee.firebaseapp.com",
+  projectId:         "samathwee",
+  storageBucket:     "samathwee.firebasestorage.app",
   messagingSenderId: "1094489861098",
-  appId: "1:1094489861098:web:e61feb13a5f69a8b78e093",
-  measurementId: "G-GX673DWVTQ"
+  appId:             "1:1094489861098:web:e61feb13a5f69a8b78e093",
+  databaseURL:       "https://samathwee-default-rtdb.firebaseio.com"
 };
 
 firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+const rtdb = firebase.database(); // Realtime Database ONLY
 
-// ── Enable offline persistence (cache for instant repeat visits) ──
-db.enablePersistence({ synchronizeTabs: true }).catch(() => {/* ignore – not critical */});
-
-// ── Default fallback data ─────────────────────────────────────────
+// ══════════════════════════════════════════════
+//  DEFAULT FALLBACK DATA
+//  Shown immediately while Firebase loads
+// ══════════════════════════════════════════════
 const DEFAULTS = {
   hero: {
     tagline: "🎓 Excellence in Education Since 2010",
@@ -39,90 +41,94 @@ const DEFAULTS = {
     email:   "info@samathwee.lk",
     address: "Panadura, Sri Lanka"
   },
-  footer: "© 2025 Samathwee Higher Education Center. All rights reserved. Panadura, Sri Lanka.",
+  footer: "© 2026 Samathwee Higher Education Center. All rights reserved. Panadura, Sri Lanka.",
   grades: [
-    { emoji: "🌟", name: "Grade 1–5",   sub: "Primary School",    count: "8 Subjects",  url: "grades-1-5.html",       order: 1 },
-    { emoji: "📘", name: "Grade 6–O/L", sub: "Junior & O/Levels", count: "17 Subjects", url: "grades-6-ol.html",      order: 2 },
-    { emoji: "🔬", name: "A / Levels",  sub: "Advanced Level",    count: "14 Subjects", url: "grades-al.html",        order: 3 },
-    { emoji: "🇬🇧", name: "London",     sub: "Edexcel / IGCSE",   count: "10 Subjects", url: "grades-london.html",    order: 4 },
-    { emoji: "🏛️", name: "Cambridge",  sub: "CAIE / IGCSE",      count: "10 Subjects", url: "grades-cambridge.html", order: 5 }
+    { emoji:"🌟", name:"Grade 1–5",   sub:"Primary School",    count:"8 Subjects",  url:"grades-1-5.html",       order:1 },
+    { emoji:"📘", name:"Grade 6–O/L", sub:"Junior & O/Levels", count:"17 Subjects", url:"grades-6-ol.html",      order:2 },
+    { emoji:"🔬", name:"A / Levels",  sub:"Advanced Level",    count:"14 Subjects", url:"grades-al.html",        order:3 },
+    { emoji:"🇬🇧", name:"London",     sub:"Edexcel / IGCSE",   count:"10 Subjects", url:"grades-london.html",    order:4 },
+    { emoji:"🏛️", name:"Cambridge",  sub:"CAIE / IGCSE",      count:"10 Subjects", url:"grades-cambridge.html", order:5 }
   ],
   subjects: [
-    { name: "Sinhala",               tag: "Grade 1–5",                   icon: "📖", color: "#fee2e2", iconColor: "#ef4444" },
-    { name: "English",               tag: "All Levels",                  icon: "🔤", color: "#dbeafe", iconColor: "#3b82f6" },
-    { name: "Mathematics",           tag: "All Levels",                  icon: "🔢", color: "#ede9fe", iconColor: "#8b5cf6" },
-    { name: "Environmental Studies", tag: "Grade 1–5",                   icon: "🌿", color: "#dcfce7", iconColor: "#22c55e" },
-    { name: "Buddhism",              tag: "All Levels",                  icon: "🙏", color: "#fef9c3", iconColor: "#eab308" },
-    { name: "Art",                   tag: "All Levels",                  icon: "🎨", color: "#fce7f3", iconColor: "#ec4899" },
-    { name: "Music",                 tag: "All Levels",                  icon: "🎵", color: "#fff7ed", iconColor: "#f97316" },
-    { name: "Physical Education",    tag: "All Levels",                  icon: "⚽", color: "#dcfce7", iconColor: "#16a34a" },
-    { name: "Science",               tag: "Grade 6–O/L",                 icon: "🧪", color: "#dbeafe", iconColor: "#2563eb" },
-    { name: "History",               tag: "Grade 6–O/L",                 icon: "🏛️", color: "#fef3c7", iconColor: "#d97706" },
-    { name: "Geography",             tag: "Grade 6–O/L",                 icon: "🌍", color: "#dcfce7", iconColor: "#059669" },
-    { name: "Civic Education",       tag: "Grade 6–O/L",                 icon: "⚖️", color: "#e0e7ff", iconColor: "#4f46e5" },
-    { name: "Health Education",      tag: "Grade 6–O/L",                 icon: "🏥", color: "#fee2e2", iconColor: "#dc2626" },
-    { name: "ICT",                   tag: "O/L / A/L",                   icon: "💻", color: "#ede9fe", iconColor: "#7c3aed" },
-    { name: "Commerce",              tag: "Grade 6–O/L",                 icon: "💼", color: "#fef3c7", iconColor: "#b45309" },
-    { name: "Home Economics",        tag: "Grade 6–O/L",                 icon: "🏡", color: "#fce7f3", iconColor: "#db2777" },
-    { name: "Technical Drawing",     tag: "Grade 6–O/L",                 icon: "📐", color: "#e0f2fe", iconColor: "#0284c7" },
-    { name: "Agriculture",           tag: "Grade 6–O/L",                 icon: "🌾", color: "#dcfce7", iconColor: "#15803d" },
-    { name: "Drama & Theatre",       tag: "Grade 6–O/L",                 icon: "🎭", color: "#fce7f3", iconColor: "#9333ea" },
-    { name: "Dancing",               tag: "Grade 6–O/L",                 icon: "💃", color: "#fff1f2", iconColor: "#e11d48" },
-    { name: "Combined Mathematics",  tag: "A/Level",                     icon: "📊", color: "#ede9fe", iconColor: "#6d28d9" },
-    { name: "Physics",               tag: "A/Level / Cambridge / London",icon: "⚛️", color: "#dbeafe", iconColor: "#1d4ed8" },
-    { name: "Chemistry",             tag: "A/Level / Cambridge / London",icon: "🧬", color: "#dcfce7", iconColor: "#16a34a" },
-    { name: "Biology",               tag: "A/Level / Cambridge / London",icon: "🔬", color: "#dcfce7", iconColor: "#15803d" },
-    { name: "Economics",             tag: "A/Level / London / Cambridge",icon: "📈", color: "#fef3c7", iconColor: "#92400e" },
-    { name: "Business Studies",      tag: "A/Level / London",            icon: "🏢", color: "#e0f2fe", iconColor: "#0369a1" },
-    { name: "Accounting",            tag: "A/Level",                     icon: "🧾", color: "#fef9c3", iconColor: "#ca8a04" },
-    { name: "Political Science",     tag: "A/Level",                     icon: "🗳️", color: "#e0e7ff", iconColor: "#4338ca" },
-    { name: "Logic & Scientific Method", tag: "A/Level",                 icon: "🧠", color: "#fce7f3", iconColor: "#db2777" },
-    { name: "Further Mathematics",   tag: "London A/Level",              icon: "∞",  color: "#ede9fe", iconColor: "#7c3aed" },
-    { name: "Psychology",            tag: "London A/Level",              icon: "🧘", color: "#fce7f3", iconColor: "#be185d" },
-    { name: "Sociology",             tag: "London A/Level",              icon: "👥", color: "#e0f2fe", iconColor: "#0284c7" },
-    { name: "Literature in English", tag: "London / Cambridge",          icon: "📚", color: "#fef3c7", iconColor: "#b45309" },
-    { name: "Tamil",                 tag: "Grade 1–5 / O/L",             icon: "📝", color: "#fef9c3", iconColor: "#d97706" }
-  ]
+    { name:"Sinhala",               tag:"Grade 1–5",                    icon:"📖", color:"#fee2e2", iconColor:"#ef4444" },
+    { name:"English",               tag:"All Levels",                   icon:"🔤", color:"#dbeafe", iconColor:"#3b82f6" },
+    { name:"Mathematics",           tag:"All Levels",                   icon:"🔢", color:"#ede9fe", iconColor:"#8b5cf6" },
+    { name:"Environmental Studies", tag:"Grade 1–5",                    icon:"🌿", color:"#dcfce7", iconColor:"#22c55e" },
+    { name:"Buddhism",              tag:"All Levels",                   icon:"🙏", color:"#fef9c3", iconColor:"#eab308" },
+    { name:"Art",                   tag:"All Levels",                   icon:"🎨", color:"#fce7f3", iconColor:"#ec4899" },
+    { name:"Music",                 tag:"All Levels",                   icon:"🎵", color:"#fff7ed", iconColor:"#f97316" },
+    { name:"Physical Education",    tag:"All Levels",                   icon:"⚽", color:"#dcfce7", iconColor:"#16a34a" },
+    { name:"Science",               tag:"Grade 6–O/L",                  icon:"🧪", color:"#dbeafe", iconColor:"#2563eb" },
+    { name:"History",               tag:"Grade 6–O/L",                  icon:"🏛️",color:"#fef3c7", iconColor:"#d97706" },
+    { name:"Geography",             tag:"Grade 6–O/L",                  icon:"🌍", color:"#dcfce7", iconColor:"#059669" },
+    { name:"Civic Education",       tag:"Grade 6–O/L",                  icon:"⚖️", color:"#e0e7ff", iconColor:"#4f46e5" },
+    { name:"Health Education",      tag:"Grade 6–O/L",                  icon:"🏥", color:"#fee2e2", iconColor:"#dc2626" },
+    { name:"ICT",                   tag:"O/L / A/L",                    icon:"💻", color:"#ede9fe", iconColor:"#7c3aed" },
+    { name:"Commerce",              tag:"Grade 6–O/L",                  icon:"💼", color:"#fef3c7", iconColor:"#b45309" },
+    { name:"Home Economics",        tag:"Grade 6–O/L",                  icon:"🏡", color:"#fce7f3", iconColor:"#db2777" },
+    { name:"Technical Drawing",     tag:"Grade 6–O/L",                  icon:"📐", color:"#e0f2fe", iconColor:"#0284c7" },
+    { name:"Agriculture",           tag:"Grade 6–O/L",                  icon:"🌾", color:"#dcfce7", iconColor:"#15803d" },
+    { name:"Drama & Theatre",       tag:"Grade 6–O/L",                  icon:"🎭", color:"#fce7f3", iconColor:"#9333ea" },
+    { name:"Dancing",               tag:"Grade 6–O/L",                  icon:"💃", color:"#fff1f2", iconColor:"#e11d48" },
+    { name:"Combined Mathematics",  tag:"A/Level",                      icon:"📊", color:"#ede9fe", iconColor:"#6d28d9" },
+    { name:"Physics",               tag:"A/Level / Cambridge / London", icon:"⚛️", color:"#dbeafe", iconColor:"#1d4ed8" },
+    { name:"Chemistry",             tag:"A/Level / Cambridge / London", icon:"🧬", color:"#dcfce7", iconColor:"#16a34a" },
+    { name:"Biology",               tag:"A/Level / Cambridge / London", icon:"🔬", color:"#dcfce7", iconColor:"#15803d" },
+    { name:"Economics",             tag:"A/Level / London / Cambridge", icon:"📈", color:"#fef3c7", iconColor:"#92400e" },
+    { name:"Business Studies",      tag:"A/Level / London",             icon:"🏢", color:"#e0f2fe", iconColor:"#0369a1" },
+    { name:"Accounting",            tag:"A/Level",                      icon:"🧾", color:"#fef9c3", iconColor:"#ca8a04" },
+    { name:"Political Science",     tag:"A/Level",                      icon:"🗳️",color:"#e0e7ff", iconColor:"#4338ca" },
+    { name:"Logic & Scientific Method", tag:"A/Level",                  icon:"🧠", color:"#fce7f3", iconColor:"#db2777" },
+    { name:"Further Mathematics",   tag:"London A/Level",               icon:"∞",  color:"#ede9fe", iconColor:"#7c3aed" },
+    { name:"Psychology",            tag:"London A/Level",               icon:"🧘", color:"#fce7f3", iconColor:"#be185d" },
+    { name:"Sociology",             tag:"London A/Level",               icon:"👥", color:"#e0f2fe", iconColor:"#0284c7" },
+    { name:"Literature in English", tag:"London / Cambridge",           icon:"📚", color:"#fef3c7", iconColor:"#b45309" },
+    { name:"Tamil",                 tag:"Grade 1–5 / O/L",              icon:"📝", color:"#fef9c3", iconColor:"#d97706" }
+  ],
+  teachers: []
 };
 
-// ── Subject icon lookup (fallback for Firebase subjects without icons) ──
+// ══════════════════════════════════════════════
+//  ICON MAP — auto-assigns icons for subjects
+//  added via admin that don't have icons yet
+// ══════════════════════════════════════════════
 const ICON_MAP = {
-  "mathematics": { icon: "🔢", color: "#ede9fe", iconColor: "#8b5cf6" },
-  "combined mathematics": { icon: "📊", color: "#ede9fe", iconColor: "#6d28d9" },
-  "further mathematics": { icon: "∞", color: "#ede9fe", iconColor: "#7c3aed" },
-  "physics":     { icon: "⚛️", color: "#dbeafe", iconColor: "#1d4ed8" },
-  "chemistry":   { icon: "🧬", color: "#dcfce7", iconColor: "#16a34a" },
-  "biology":     { icon: "🔬", color: "#dcfce7", iconColor: "#15803d" },
-  "science":     { icon: "🧪", color: "#dbeafe", iconColor: "#2563eb" },
-  "english":     { icon: "🔤", color: "#dbeafe", iconColor: "#3b82f6" },
-  "sinhala":     { icon: "📖", color: "#fee2e2", iconColor: "#ef4444" },
-  "tamil":       { icon: "📝", color: "#fef9c3", iconColor: "#d97706" },
-  "history":     { icon: "🏛️", color: "#fef3c7", iconColor: "#d97706" },
-  "geography":   { icon: "🌍", color: "#dcfce7", iconColor: "#059669" },
-  "economics":   { icon: "📈", color: "#fef3c7", iconColor: "#92400e" },
-  "business studies": { icon: "🏢", color: "#e0f2fe", iconColor: "#0369a1" },
-  "accounting":  { icon: "🧾", color: "#fef9c3", iconColor: "#ca8a04" },
-  "ict":         { icon: "💻", color: "#ede9fe", iconColor: "#7c3aed" },
-  "art":         { icon: "🎨", color: "#fce7f3", iconColor: "#ec4899" },
-  "music":       { icon: "🎵", color: "#fff7ed", iconColor: "#f97316" },
-  "drama":       { icon: "🎭", color: "#fce7f3", iconColor: "#9333ea" },
-  "dancing":     { icon: "💃", color: "#fff1f2", iconColor: "#e11d48" },
-  "physical education": { icon: "⚽", color: "#dcfce7", iconColor: "#16a34a" },
-  "agriculture": { icon: "🌾", color: "#dcfce7", iconColor: "#15803d" },
-  "home economics": { icon: "🏡", color: "#fce7f3", iconColor: "#db2777" },
-  "commerce":    { icon: "💼", color: "#fef3c7", iconColor: "#b45309" },
-  "buddhism":    { icon: "🙏", color: "#fef9c3", iconColor: "#eab308" },
-  "civic education": { icon: "⚖️", color: "#e0e7ff", iconColor: "#4f46e5" },
-  "health education": { icon: "🏥", color: "#fee2e2", iconColor: "#dc2626" },
-  "psychology":  { icon: "🧘", color: "#fce7f3", iconColor: "#be185d" },
-  "sociology":   { icon: "👥", color: "#e0f2fe", iconColor: "#0284c7" },
-  "political science": { icon: "🗳️", color: "#e0e7ff", iconColor: "#4338ca" },
-  "literature":  { icon: "📚", color: "#fef3c7", iconColor: "#b45309" },
-  "technical drawing": { icon: "📐", color: "#e0f2fe", iconColor: "#0284c7" },
-  "environmental": { icon: "🌿", color: "#dcfce7", iconColor: "#22c55e" },
-  "logic":       { icon: "🧠", color: "#fce7f3", iconColor: "#db2777" }
+  "mathematics":            { icon:"🔢", color:"#ede9fe", iconColor:"#8b5cf6" },
+  "combined mathematics":   { icon:"📊", color:"#ede9fe", iconColor:"#6d28d9" },
+  "further mathematics":    { icon:"∞",  color:"#ede9fe", iconColor:"#7c3aed" },
+  "physics":                { icon:"⚛️", color:"#dbeafe", iconColor:"#1d4ed8" },
+  "chemistry":              { icon:"🧬", color:"#dcfce7", iconColor:"#16a34a" },
+  "biology":                { icon:"🔬", color:"#dcfce7", iconColor:"#15803d" },
+  "science":                { icon:"🧪", color:"#dbeafe", iconColor:"#2563eb" },
+  "english":                { icon:"🔤", color:"#dbeafe", iconColor:"#3b82f6" },
+  "sinhala":                { icon:"📖", color:"#fee2e2", iconColor:"#ef4444" },
+  "tamil":                  { icon:"📝", color:"#fef9c3", iconColor:"#d97706" },
+  "history":                { icon:"🏛️",color:"#fef3c7", iconColor:"#d97706" },
+  "geography":              { icon:"🌍", color:"#dcfce7", iconColor:"#059669" },
+  "economics":              { icon:"📈", color:"#fef3c7", iconColor:"#92400e" },
+  "business studies":       { icon:"🏢", color:"#e0f2fe", iconColor:"#0369a1" },
+  "accounting":             { icon:"🧾", color:"#fef9c3", iconColor:"#ca8a04" },
+  "ict":                    { icon:"💻", color:"#ede9fe", iconColor:"#7c3aed" },
+  "art":                    { icon:"🎨", color:"#fce7f3", iconColor:"#ec4899" },
+  "music":                  { icon:"🎵", color:"#fff7ed", iconColor:"#f97316" },
+  "drama":                  { icon:"🎭", color:"#fce7f3", iconColor:"#9333ea" },
+  "dancing":                { icon:"💃", color:"#fff1f2", iconColor:"#e11d48" },
+  "physical education":     { icon:"⚽", color:"#dcfce7", iconColor:"#16a34a" },
+  "agriculture":            { icon:"🌾", color:"#dcfce7", iconColor:"#15803d" },
+  "home economics":         { icon:"🏡", color:"#fce7f3", iconColor:"#db2777" },
+  "commerce":               { icon:"💼", color:"#fef3c7", iconColor:"#b45309" },
+  "buddhism":               { icon:"🙏", color:"#fef9c3", iconColor:"#eab308" },
+  "civic education":        { icon:"⚖️", color:"#e0e7ff", iconColor:"#4f46e5" },
+  "health education":       { icon:"🏥", color:"#fee2e2", iconColor:"#dc2626" },
+  "psychology":             { icon:"🧘", color:"#fce7f3", iconColor:"#be185d" },
+  "sociology":              { icon:"👥", color:"#e0f2fe", iconColor:"#0284c7" },
+  "political science":      { icon:"🗳️",color:"#e0e7ff", iconColor:"#4338ca" },
+  "literature":             { icon:"📚", color:"#fef3c7", iconColor:"#b45309" },
+  "technical drawing":      { icon:"📐", color:"#e0f2fe", iconColor:"#0284c7" },
+  "environmental":          { icon:"🌿", color:"#dcfce7", iconColor:"#22c55e" },
+  "logic":                  { icon:"🧠", color:"#fce7f3", iconColor:"#db2777" }
 };
-const DEFAULT_ICON = { icon: "📖", color: "#ede9fe", iconColor: "#8b5cf6" };
+const DEFAULT_ICON = { icon:"📖", color:"#ede9fe", iconColor:"#8b5cf6" };
 
 function getSubjectIcon(name) {
   const key = (name || '').toLowerCase().trim();
@@ -133,33 +139,40 @@ function getSubjectIcon(name) {
   return DEFAULT_ICON;
 }
 
-// ── Helpers ───────────────────────────────────────────────────────
+// ══════════════════════════════════════════════
+//  DOM HELPERS
+// ══════════════════════════════════════════════
 function setText(id, val) {
   const el = document.getElementById(id);
-  if (el && val !== undefined && val !== null) el.textContent = val;
+  if (el && val !== undefined && val !== null && val !== '') el.textContent = val;
 }
 function setHref(id, href) {
   const el = document.getElementById(id);
   if (el && href) el.href = href;
 }
 
-// ── Loading screen – dismiss quickly, don't wait for Firebase ─────
+// ══════════════════════════════════════════════
+//  LOADING SCREEN
+// ══════════════════════════════════════════════
 function dismissLoader() {
   const el = document.getElementById('loadingScreen');
   if (!el) return;
   el.classList.add('fade-out');
-  setTimeout(() => { if (el.parentNode) el.style.display = 'none'; }, 700);
+  setTimeout(() => { if (el) el.style.display = 'none'; }, 700);
 }
-// Dismiss after 400 ms (content already rendered from defaults below)
 setTimeout(dismissLoader, 400);
 
-// ── Hamburger ─────────────────────────────────────────────────────
+// ══════════════════════════════════════════════
+//  HAMBURGER MENU
+// ══════════════════════════════════════════════
 document.getElementById('hamburger')?.addEventListener('click', function () {
   this.classList.toggle('open');
   document.getElementById('nav-links')?.classList.toggle('open');
 });
 
-// ── Canvas particles ──────────────────────────────────────────────
+// ══════════════════════════════════════════════
+//  CANVAS PARTICLES
+// ══════════════════════════════════════════════
 (function () {
   const canvas = document.getElementById('bg-canvas');
   if (!canvas) return;
@@ -169,7 +182,6 @@ document.getElementById('hamburger')?.addEventListener('click', function () {
     canvas.height = canvas.parentElement.clientHeight;
   }
   resizeCanvas();
-
   const COLORS = [[90,45,145],[243,146,35],[124,63,184],[255,180,60]];
   let particles = [];
   function initParticles() {
@@ -186,7 +198,6 @@ document.getElementById('hamburger')?.addEventListener('click', function () {
       });
     }
   }
-
   let animId;
   function drawParticles() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -196,20 +207,17 @@ document.getElementById('hamburger')?.addEventListener('click', function () {
         const dy = particles[i].y - particles[j].y;
         const dist = Math.hypot(dx, dy);
         if (dist < 130) {
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(particles[j].x, particles[j].y);
           ctx.strokeStyle = `rgba(255,255,255,${(1 - dist / 130) * 0.07})`;
-          ctx.lineWidth = 0.6;
-          ctx.stroke();
+          ctx.lineWidth = 0.6; ctx.stroke();
         }
       }
     }
     particles.forEach(p => {
       p.pulse += p.pulseSpeed;
       const r = p.r + Math.sin(p.pulse) * 1.1;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+      ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
       ctx.fillStyle = `rgba(${p.color[0]},${p.color[1]},${p.color[2]},${p.alpha})`;
       ctx.fill();
       p.x += p.dx; p.y += p.dy;
@@ -220,42 +228,47 @@ document.getElementById('hamburger')?.addEventListener('click', function () {
     });
     animId = requestAnimationFrame(drawParticles);
   }
-
   resizeCanvas(); initParticles(); drawParticles();
   window.addEventListener('resize', () => {
-    cancelAnimationFrame(animId);
-    resizeCanvas(); initParticles(); drawParticles();
+    cancelAnimationFrame(animId); resizeCanvas(); initParticles(); drawParticles();
   });
 })();
 
-// ── Grade card render ─────────────────────────────────────────────
+// ══════════════════════════════════════════════
+//  GRADE CARDS RENDER
+// ══════════════════════════════════════════════
 function renderGrades(grades) {
   const grid = document.getElementById('gradesGrid');
   if (!grid) return;
-  const sorted = [...grades].sort((a, b) => (a.order || 0) - (b.order || 0));
+  const sorted = [...grades].filter(Boolean).sort((a, b) => (a.order || 0) - (b.order || 0));
+  if (!sorted.length) return;
   grid.innerHTML = sorted.map((g, idx) => `
     <a href="${g.url || '#'}" class="grade-card gc-${idx % 8}">
       <span class="gc-emoji">${g.emoji || '📚'}</span>
-      <div class="gc-title">${g.name}</div>
+      <div class="gc-title">${g.name || ''}</div>
       <div class="gc-sub">${g.sub || ''}</div>
       <div class="gc-count">${g.count || ''}</div>
       <span class="gc-arrow">↗</span>
     </a>
   `).join('');
-  setTimeout(() => {
+  // Animate visible cards
+  requestAnimationFrame(() => {
     document.querySelectorAll('.grade-card').forEach(c => {
       if (c.getBoundingClientRect().top < window.innerHeight - 80) c.classList.add('visible');
     });
     const gg = document.getElementById('gradesGrid');
     if (gg) cardObserver.observe(gg);
-  }, 50);
+  });
 }
 
-// ── Subject card render ───────────────────────────────────────────
+// ══════════════════════════════════════════════
+//  SUBJECTS RENDER
+// ══════════════════════════════════════════════
 let allSubjects = [];
+
 function renderSubjects(subjects) {
-  allSubjects = subjects;
-  buildSubjectGrid(subjects);
+  allSubjects = subjects.filter(Boolean);
+  buildSubjectGrid(allSubjects);
 }
 
 function buildSubjectGrid(list) {
@@ -270,9 +283,10 @@ function buildSubjectGrid(list) {
   if (noRes) noRes.style.display = 'none';
   grid.innerHTML = '';
   list.forEach((s, idx) => {
+    // Use stored icon/color if available, otherwise auto-detect
     const iconData = (s.icon && s.color && s.iconColor)
       ? { icon: s.icon, color: s.color, iconColor: s.iconColor }
-      : getSubjectIcon(s.name || s.tag || '');
+      : getSubjectIcon(s.name || '');
     const card = document.createElement('div');
     card.className = 'subject-card';
     card.innerHTML = `
@@ -280,7 +294,7 @@ function buildSubjectGrid(list) {
         <span style="color:${iconData.iconColor}">${iconData.icon}</span>
       </div>
       <div>
-        <div class="subject-name">${s.name}</div>
+        <div class="subject-name">${s.name || ''}</div>
         <div class="subject-level">${s.tag || s.level || ''}</div>
       </div>
     `;
@@ -290,15 +304,59 @@ function buildSubjectGrid(list) {
   });
 }
 
+// Search box filter
 document.getElementById('subjectSearch')?.addEventListener('input', e => {
   const q = e.target.value.trim().toLowerCase();
   const filtered = q
-    ? allSubjects.filter(s => s.name.toLowerCase().includes(q) || (s.tag || '').toLowerCase().includes(q))
+    ? allSubjects.filter(s =>
+        (s.name || '').toLowerCase().includes(q) ||
+        (s.tag  || '').toLowerCase().includes(q)
+      )
     : allSubjects;
   buildSubjectGrid(filtered);
 });
 
-// ── Intersection observers ────────────────────────────────────────
+// ══════════════════════════════════════════════
+//  TEACHERS RENDER
+// ══════════════════════════════════════════════
+function renderTeachers(teachers) {
+  const grid = document.getElementById('teachersGrid');
+  const noEl = document.getElementById('noTeachers');
+  if (!grid) return;
+
+  // Normalize — RTDB may return object or array
+  const list = Array.isArray(teachers)
+    ? teachers.filter(Boolean)
+    : Object.values(teachers || {}).filter(Boolean);
+
+  if (!list.length) {
+    grid.innerHTML = '';
+    if (noEl) noEl.style.display = 'block';
+    return;
+  }
+  if (noEl) noEl.style.display = 'none';
+
+  const sorted = [...list].sort((a, b) => (a.order || 0) - (b.order || 0));
+  grid.innerHTML = sorted.map((t, idx) => `
+    <div class="teacher-card" style="animation-delay:${idx * 0.07}s">
+      <div class="teacher-avatar">
+        ${t.photo
+          ? `<img src="${t.photo}" alt="${t.name || ''}" />`
+          : `<span class="teacher-initials">${(t.name || 'T').charAt(0).toUpperCase()}</span>`
+        }
+      </div>
+      <div class="teacher-name">${t.name || ''}</div>
+      <div class="teacher-subject">${t.subject || ''}</div>
+      ${t.qualification ? `<div class="teacher-qual">🎓 ${t.qualification}</div>` : ''}
+      ${t.experience    ? `<div class="teacher-exp">⏱ ${t.experience}</div>`      : ''}
+      ${t.bio           ? `<div class="teacher-bio">${t.bio}</div>`               : ''}
+    </div>
+  `).join('');
+}
+
+// ══════════════════════════════════════════════
+//  INTERSECTION OBSERVERS
+// ══════════════════════════════════════════════
 const cardObserver = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -310,162 +368,188 @@ const cardObserver = new IntersectionObserver(entries => {
 const singleObserver = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.15, rootMargin: "0px 0px -40px 0px" });
-
 document.querySelectorAll('.center-card').forEach(el => singleObserver.observe(el));
 
-// ── Animated counters ─────────────────────────────────────────────
+// ══════════════════════════════════════════════
+//  ANIMATED COUNTERS
+// ══════════════════════════════════════════════
+let currentStats = { ...DEFAULTS.stats };
+let countersRan  = false;
+
 function animateCounter(el, target, duration = 1400) {
+  const from  = parseInt((el.textContent || '0').replace(/[^\d]/g, ''), 10) || 0;
   const start = performance.now();
   const update = now => {
     const t    = Math.min((now - start) / duration, 1);
     const ease = 1 - Math.pow(1 - t, 3);
-    el.textContent = Math.floor(ease * target);
+    el.textContent = Math.floor(from + (target - from) * ease);
     if (t < 1) requestAnimationFrame(update);
   };
   requestAnimationFrame(update);
 }
 
 function runCounters(stats) {
-  const ids = { students: 'stat-students', teachers: 'stat-teachers', subjects: 'stat-subjects', centers: 'stat-centers' };
+  const ids = {
+    students: 'stat-students',
+    teachers: 'stat-teachers',
+    subjects: 'stat-subjects',
+    centers:  'stat-centers'
+  };
   for (const [key, id] of Object.entries(ids)) {
     const el = document.getElementById(id);
     if (el) animateCounter(el, stats[key] || 0);
   }
 }
 
-let countersRan = false;
+// Observe hero-stats section
 const statsEl = document.querySelector('.hero-stats');
 const statsObserver = new IntersectionObserver(entries => {
   if (entries[0].isIntersecting && !countersRan) {
     countersRan = true;
-    // Use defaults now; Firebase update will silently correct values afterwards
-    runCounters(DEFAULTS.stats);
-    loadStatsBackground();
+    runCounters(currentStats);
   }
 }, { threshold: 0.4 });
 if (statsEl) statsObserver.observe(statsEl);
 
-// ── Render all defaults IMMEDIATELY (no network wait) ─────────────
+// ══════════════════════════════════════════════
+//  RENDER DEFAULTS IMMEDIATELY
+//  Shows content before Firebase data arrives
+// ══════════════════════════════════════════════
 (function renderDefaults() {
   // Hero
   setText('hero-tagline', DEFAULTS.hero.tagline);
-  setText('hero-desc',    DEFAULTS.hero.desc);
+  setText('hero-desc', DEFAULTS.hero.desc);
   const shinyEl = document.getElementById('hero-title-shiny');
   if (shinyEl) shinyEl.textContent = DEFAULTS.hero.title;
 
   // Center
-  setText('center-name', DEFAULTS.center.name);
-  setText('center-desc', DEFAULTS.center.desc);
-  setHref('center-map',  DEFAULTS.center.mapUrl);
-  const addrEl  = document.getElementById('center-address');
-  const phoneEl = document.getElementById('center-phone');
-  if (addrEl  && DEFAULTS.center.address) addrEl.textContent  = '📍 ' + DEFAULTS.center.address;
-  if (phoneEl && DEFAULTS.center.phone)   phoneEl.textContent = '📞 ' + DEFAULTS.center.phone;
+  applyCenter(DEFAULTS.center);
 
   // Contact
-  setText('contact-phone',   DEFAULTS.contact.phone);
-  setText('contact-email',   DEFAULTS.contact.email);
-  setText('contact-address', DEFAULTS.contact.address);
+  applyContact(DEFAULTS.contact);
 
   // Footer
-  const footerEl = document.getElementById('footer-text');
-  if (footerEl) footerEl.innerHTML = DEFAULTS.footer;
+  applyFooter(DEFAULTS.footer);
 
   // Grades & Subjects
   renderGrades(DEFAULTS.grades);
   renderSubjects(DEFAULTS.subjects);
+  renderTeachers(DEFAULTS.teachers);
 
-  // Run counters if already in viewport
+  // If stats already in viewport on load
   if (statsEl && statsEl.getBoundingClientRect().top < window.innerHeight) {
-    if (!countersRan) { countersRan = true; runCounters(DEFAULTS.stats); loadStatsBackground(); }
+    if (!countersRan) { countersRan = true; runCounters(currentStats); }
   }
 })();
 
-// ── Firebase background loaders (silently update after defaults) ──
-async function loadHeroBackground() {
-  try {
-    const doc = await db.collection('config').doc('hero').get();
-    if (!doc.exists) return;
-    const d = doc.data();
-    if (d.tagline) setText('hero-tagline', d.tagline);
-    if (d.desc)    setText('hero-desc',    d.desc);
-    if (d.title) {
-      const shinyEl = document.getElementById('hero-title-shiny');
-      if (shinyEl) shinyEl.textContent = d.title;
-    }
-  } catch {}
+// ══════════════════════════════════════════════
+//  APPLY HELPERS — cleanly update each section
+// ══════════════════════════════════════════════
+function applyHero(v) {
+  if (!v) return;
+  if (v.tagline !== undefined && v.tagline !== '') setText('hero-tagline', v.tagline);
+  if (v.desc    !== undefined && v.desc    !== '') setText('hero-desc',    v.desc);
+  if (v.title   !== undefined && v.title   !== '') {
+    const el = document.getElementById('hero-title-shiny');
+    if (el) el.textContent = v.title;
+  }
 }
 
-async function loadStatsBackground() {
-  try {
-    const doc = await db.collection('config').doc('stats').get();
-    if (!doc.exists) return;
-    const d = { ...DEFAULTS.stats, ...doc.data() };
-    // Re-run counters only if values differ from defaults
-    runCounters(d);
-  } catch {}
+function applyStats(v) {
+  if (!v) return;
+  currentStats = {
+    students: v.students !== undefined ? v.students : DEFAULTS.stats.students,
+    teachers: v.teachers !== undefined ? v.teachers : DEFAULTS.stats.teachers,
+    subjects: v.subjects !== undefined ? v.subjects : DEFAULTS.stats.subjects,
+    centers:  v.centers  !== undefined ? v.centers  : DEFAULTS.stats.centers
+  };
+  if (countersRan) runCounters(currentStats);
 }
 
-async function loadCenterBackground() {
-  try {
-    const doc = await db.collection('config').doc('center').get();
-    if (!doc.exists) return;
-    const d = { ...DEFAULTS.center, ...doc.data() };
-    setText('center-name', d.name);
-    setText('center-desc', d.desc);
-    setHref('center-map',  d.mapUrl);
-    const addrEl  = document.getElementById('center-address');
-    const phoneEl = document.getElementById('center-phone');
-    if (addrEl)  addrEl.textContent  = d.address ? '📍 ' + d.address : '';
-    if (phoneEl) phoneEl.textContent = d.phone   ? '📞 ' + d.phone   : '';
-  } catch {}
+function applyCenter(v) {
+  if (!v) return;
+  if (v.name !== undefined)   setText('center-name', v.name);
+  if (v.desc !== undefined)   setText('center-desc', v.desc);
+  if (v.mapUrl)               setHref('center-map',  v.mapUrl);
+  const addrEl  = document.getElementById('center-address');
+  const phoneEl = document.getElementById('center-phone');
+  if (addrEl)  addrEl.textContent  = v.address ? '📍 ' + v.address : '';
+  if (phoneEl) phoneEl.textContent = v.phone   ? '📞 ' + v.phone   : '';
 }
 
-async function loadContactBackground() {
-  try {
-    const doc = await db.collection('config').doc('contact').get();
-    if (!doc.exists) return;
-    const d = { ...DEFAULTS.contact, ...doc.data() };
-    setText('contact-phone',   d.phone);
-    setText('contact-email',   d.email);
-    setText('contact-address', d.address);
-  } catch {}
+function applyContact(v) {
+  if (!v) return;
+  if (v.phone   !== undefined) setText('contact-phone',   v.phone);
+  if (v.email   !== undefined) setText('contact-email',   v.email);
+  if (v.address !== undefined) setText('contact-address', v.address);
 }
 
-async function loadFooterBackground() {
-  try {
-    const doc = await db.collection('config').doc('footer').get();
-    if (!doc.exists) return;
-    const d = doc.data();
-    if (d.text) {
-      const el = document.getElementById('footer-text');
-      if (el) el.innerHTML = d.text;
-    }
-  } catch {}
+function applyFooter(v) {
+  const el = document.getElementById('footer-text');
+  if (!el) return;
+  if (typeof v === 'string' && v) {
+    el.innerHTML = v;
+  } else if (v && v.text) {
+    el.innerHTML = v.text;
+  }
 }
 
-async function loadGradesBackground() {
-  try {
-    const snap = await db.collection('grades').orderBy('order').get();
-    if (snap.empty) return;
-    renderGrades(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-  } catch {}
+// ══════════════════════════════════════════════
+//  REALTIME DATABASE LISTENERS
+//  Each path uses .on('value') — fires immediately
+//  on connect AND on every admin change
+// ══════════════════════════════════════════════
+const listeners = []; // track for cleanup
+
+function listen(path, callback) {
+  const ref = rtdb.ref(path);
+  const handler = snap => {
+    try { callback(snap.val()); } catch (e) { console.warn('Listener error at', path, e); }
+  };
+  ref.on('value', handler, err => console.warn('RTDB read error at', path, err));
+  listeners.push({ ref, handler });
 }
 
-async function loadSubjectsBackground() {
-  try {
-    const snap = await db.collection('subjects').orderBy('name').get();
-    if (snap.empty) return;
-    renderSubjects(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-  } catch {}
-}
+// Hero
+listen('config/hero', v => { if (v) applyHero(v); });
 
-// ── Kick off all background fetches (non-blocking) ───────────────
-Promise.all([
-  loadHeroBackground(),
-  loadCenterBackground(),
-  loadContactBackground(),
-  loadFooterBackground(),
-  loadGradesBackground(),
-  loadSubjectsBackground()
-]).catch(() => {/* already handled inside each loader */});
+// Stats
+listen('config/stats', v => { if (v) applyStats(v); });
+
+// Center
+listen('config/center', v => { if (v) applyCenter(v); });
+
+// Contact
+listen('config/contact', v => { if (v) applyContact(v); });
+
+// Footer
+listen('config/footer', v => { if (v) applyFooter(v); });
+
+// Grades — re-render the whole grid on any change
+listen('grades', v => {
+  if (!v) return;
+  const list = Array.isArray(v) ? v : Object.values(v);
+  const clean = list.filter(Boolean);
+  if (clean.length) renderGrades(clean);
+});
+
+// Subjects — re-render the whole grid on any change
+listen('subjects', v => {
+  if (!v) return;
+  const list = Array.isArray(v) ? v : Object.values(v);
+  const clean = list.filter(Boolean);
+  if (clean.length) renderSubjects(clean);
+});
+
+// Teachers — re-render on any change
+listen('teachers', v => {
+  if (!v) return;
+  renderTeachers(v);
+});
+
+// Cleanup listeners on page unload
+window.addEventListener('beforeunload', () => {
+  listeners.forEach(({ ref, handler }) => {
+    try { ref.off('value', handler); } catch {}
+  });
+});

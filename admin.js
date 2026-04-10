@@ -1,44 +1,66 @@
 // =============================================
-//  SAMATHWEE – admin.js  (FULLY FIXED)
-//  Root cause: event.target bug removed
-//  Persistence removed (was blocking writes)
-//  btnEl passed explicitly to all save fns
+//  SAMATHWEE – admin.js
+//  Firebase Auth + Realtime Database ONLY
+//  NO Firestore used anywhere in this file
 // =============================================
 
+// ── PASTE YOUR FIREBASE CONFIG HERE ──────────
 const firebaseConfig = {
-  apiKey: "AIzaSyDlBLrs-WquiVIivoOCuJq2g7BFhNwAtas",
-  authDomain: "samathwee.firebaseapp.com",
-  projectId: "samathwee",
-  storageBucket: "samathwee.firebasestorage.app",
+  apiKey:            "AIzaSyDlBLrs-WquiVIivoOCuJq2g7BFhNwAtas",
+  authDomain:        "samathwee.firebaseapp.com",
+  projectId:         "samathwee",
+  storageBucket:     "samathwee.firebasestorage.app",
   messagingSenderId: "1094489861098",
-  appId: "1:1094489861098:web:e61feb13a5f69a8b78e093"
+  appId:             "1:1094489861098:web:e61feb13a5f69a8b78e093",
+  databaseURL:       "https://samathwee-default-rtdb.firebaseio.com"
 };
 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const db   = firebase.firestore();
+const db   = firebase.database(); // Realtime Database ONLY
 
-// ── Auth State ─────────────────────────────────────
+// ══════════════════════════════════════════════
+//  CORE RTDB HELPERS
+// ══════════════════════════════════════════════
+
+/**
+ * Write data to Realtime DB.
+ * Returns a Promise that resolves on success, rejects on failure.
+ * Strips undefined values (JSON.parse/stringify trick).
+ */
+function rtdbWrite(path, value) {
+  const clean = JSON.parse(JSON.stringify(value));
+  return db.ref(path).set(clean);
+}
+
+/**
+ * Read data from Realtime DB once.
+ * Returns a Promise that resolves with the value (or null).
+ */
+function rtdbRead(path) {
+  return db.ref(path).once('value').then(snap => snap.val());
+}
+
+// ══════════════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════════════
+
 auth.onAuthStateChanged(user => {
   if (user) {
     document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('dashboard').style.display  = 'flex';
+    document.getElementById('dashboard').style.display   = 'flex';
     loadAllData();
-    setupRealtimeListeners();
   } else {
     document.getElementById('loginScreen').style.display = 'flex';
-    document.getElementById('dashboard').style.display  = 'none';
-    stopRealtimeListeners();
+    document.getElementById('dashboard').style.display   = 'none';
   }
 });
 
-// ── Toggle Login / Signup ──────────────────────────
 function toggleAuth(type) {
   document.getElementById('loginForm').style.display  = type === 'login'  ? 'block' : 'none';
   document.getElementById('signupForm').style.display = type === 'signup' ? 'block' : 'none';
 }
 
-// ── Login ──────────────────────────────────────────
 async function doLogin() {
   const email    = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
@@ -46,280 +68,343 @@ async function doLogin() {
   const errEl    = document.getElementById('loginError');
   const btn      = document.getElementById('loginBtn');
 
+  if (!email || !password) {
+    errEl.textContent   = '❌ Please enter email and password.';
+    errEl.style.display = 'block';
+    return;
+  }
+
   errEl.style.display = 'none';
-  setBtn(btn, true, '<span class="btn-spinner"></span> Signing in…');
+  btn.disabled = true;
+  btn.textContent = 'Signing in…';
 
   try {
-    const persistence = remember
-      ? firebase.auth.Auth.Persistence.LOCAL
-      : firebase.auth.Auth.Persistence.SESSION;
-    await auth.setPersistence(persistence);
     await auth.signInWithEmailAndPassword(email, password);
     if (remember) {
       localStorage.setItem('adminEmail', email);
+      localStorage.setItem('adminPass',  password);
       localStorage.setItem('rememberMe', 'true');
     } else {
       localStorage.removeItem('adminEmail');
+      localStorage.removeItem('adminPass');
       localStorage.removeItem('rememberMe');
     }
   } catch (err) {
-    errEl.textContent = '❌ ' + (err.message || 'Invalid credentials');
+    errEl.textContent   = '❌ ' + friendlyAuthError(err.code);
     errEl.style.display = 'block';
-    setBtn(btn, false, 'Sign In <span class="arrow">→</span>');
+  } finally {
+    btn.disabled    = false;
+    btn.textContent = 'Sign In →';
   }
 }
 
-// ── Signup ─────────────────────────────────────────
 async function doSignup() {
   const email    = document.getElementById('signupEmail').value.trim();
   const password = document.getElementById('signupPassword').value;
   const errEl    = document.getElementById('signupError');
-  const btn      = document.getElementById('signupBtn');
-
   errEl.style.display = 'none';
-  setBtn(btn, true, '<span class="btn-spinner"></span> Creating…');
+
+  if (!email || !password) {
+    errEl.textContent   = '❌ Please fill in all fields.';
+    errEl.style.display = 'block';
+    return;
+  }
 
   try {
     await auth.createUserWithEmailAndPassword(email, password);
-    showToast('✅ Account created! You can now sign in.');
+    showToast('✅ Admin account created!');
     toggleAuth('login');
   } catch (err) {
-    errEl.textContent = '❌ ' + err.message;
+    errEl.textContent   = '❌ ' + friendlyAuthError(err.code);
     errEl.style.display = 'block';
-  } finally {
-    setBtn(btn, false, 'Register Admin');
   }
 }
 
-// ── Logout ─────────────────────────────────────────
-function doLogout() {
-  if (confirm('Sign out of admin panel?')) auth.signOut();
+function doLogout() { auth.signOut(); }
+
+function friendlyAuthError(code) {
+  const map = {
+    'auth/user-not-found':       'No account found with that email.',
+    'auth/wrong-password':       'Incorrect password.',
+    'auth/invalid-email':        'Invalid email address.',
+    'auth/email-already-in-use': 'That email is already registered.',
+    'auth/weak-password':        'Password must be at least 6 characters.',
+    'auth/too-many-requests':    'Too many attempts. Try again later.',
+    'auth/network-request-failed': 'Network error. Check your connection.',
+    'auth/invalid-credential':   'Invalid email or password.',
+  };
+  return map[code] || 'Authentication failed. Try again.';
 }
 
-// ── Button Helper ──────────────────────────────────
-function setBtn(btn, disabled, html) {
-  if (!btn) return;
-  btn.disabled = disabled;
-  btn.innerHTML = html;
-}
+// ══════════════════════════════════════════════
+//  UI HELPERS
+// ══════════════════════════════════════════════
 
-// ── Toast ──────────────────────────────────────────
-let toastTimer;
 function showToast(msg, type = 'success') {
   const t = document.getElementById('toast');
-  t.innerHTML = msg;
-  t.className = 'toast ' + type + ' show';
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { t.className = 'toast ' + type; }, 4000);
+  t.textContent   = msg;
+  t.className     = `toast ${type}`;
+  t.style.display = 'block';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.style.display = 'none'; }, 3500);
 }
 
-// ── Navigation ─────────────────────────────────────
+let _saveTimer;
+function setSaveStatus(state, text) {
+  const box = document.getElementById('saveStatus');
+  const el  = document.getElementById('saveStatusText');
+  if (!box || !el) return;
+  box.classList.remove('saving', 'saved', 'error');
+  if (state) box.classList.add(state);
+  const defaults = { saving: 'Saving…', saved: 'Saved ✓', error: 'Error!' };
+  el.textContent = text || defaults[state] || 'Ready';
+  clearTimeout(_saveTimer);
+  if (state === 'saved') _saveTimer = setTimeout(() => setSaveStatus('', 'Ready'), 3000);
+}
+
 function showSection(key, btnEl) {
   document.querySelectorAll('.admin-section').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-  const sec = document.getElementById('sec-' + key);
+  const sec = document.getElementById(`sec-${key}`);
   if (sec) sec.classList.add('active');
   if (btnEl) btnEl.classList.add('active');
-  closeSidebar();
+  document.getElementById('sidebar')?.classList.remove('open');
 }
 
 function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('sidebarOverlay').classList.toggle('show');
+  document.getElementById('sidebar')?.classList.toggle('open');
 }
 
-function closeSidebar() {
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('sidebarOverlay').classList.remove('show');
+function escHtml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }
 
-// ── Remember Me ────────────────────────────────────
+// Remember me restore on page load
 window.addEventListener('load', () => {
   if (localStorage.getItem('rememberMe') === 'true') {
-    const el = document.getElementById('loginEmail');
-    if (el) el.value = localStorage.getItem('adminEmail') || '';
-    const cb = document.getElementById('rememberMe');
-    if (cb) cb.checked = true;
+    const emailEl = document.getElementById('loginEmail');
+    const passEl  = document.getElementById('loginPassword');
+    const cbEl    = document.getElementById('rememberMe');
+    if (emailEl) emailEl.value = localStorage.getItem('adminEmail') || '';
+    if (passEl)  passEl.value  = localStorage.getItem('adminPass')  || '';
+    if (cbEl)    cbEl.checked  = true;
   }
 });
 
-// ══════════════════════════════════════════════════
-//  REAL-TIME LISTENERS
-// ══════════════════════════════════════════════════
-const unsubscribers = [];
+// ══════════════════════════════════════════════
+//  LOAD ALL DATA ON LOGIN
+// ══════════════════════════════════════════════
 
-function setupRealtimeListeners() {
-  stopRealtimeListeners();
-
-  ['hero','stats','center','contact','footer'].forEach(function(docId) {
-    var unsub = db.collection('config').doc(docId).onSnapshot(
-      function(doc) { if (doc.exists) applyConfigData(docId, doc.data()); },
-      function(err) { console.warn('Snapshot error [' + docId + ']:', err); }
-    );
-    unsubscribers.push(unsub);
-  });
-
-  unsubscribers.push(
-    db.collection('grades').orderBy('order').onSnapshot(
-      function(snap) { gradesData = snap.docs.map(function(d) { return Object.assign({id: d.id}, d.data()); }); renderGradeRows(); },
-      function(err) { console.warn('Grades snapshot error:', err); }
-    )
-  );
-
-  unsubscribers.push(
-    db.collection('subjects').orderBy('name').onSnapshot(
-      function(snap) { subjectsData = snap.docs.map(function(d) { return Object.assign({id: d.id}, d.data()); }); renderSubjectRows(); },
-      function(err) { console.warn('Subjects snapshot error:', err); }
-    )
-  );
-}
-
-function stopRealtimeListeners() {
-  unsubscribers.forEach(function(fn) { fn(); });
-  unsubscribers.length = 0;
-}
-
-// ── Apply data to form fields ──────────────────────
-function applyConfigData(docId, d) {
-  if (docId === 'hero')    { safeSet('heroTagline', d.tagline); safeSet('heroTitle', d.title); safeSet('heroDesc', d.desc); }
-  if (docId === 'stats')   { safeSet('statStudents', d.students); safeSet('statTeachers', d.teachers); safeSet('statSubjects', d.subjects); safeSet('statCenters', d.centers); }
-  if (docId === 'center')  { safeSet('centerName', d.name); safeSet('centerDesc', d.desc); safeSet('centerAddress', d.address); safeSet('centerPhone', d.phone); safeSet('centerMapUrl', d.mapUrl); }
-  if (docId === 'contact') { safeSet('contactPhone', d.phone); safeSet('contactEmail', d.email); safeSet('contactAddress', d.address); }
-  if (docId === 'footer')  { safeSet('footerText', d.text); }
-}
-
-function safeSet(id, val) {
-  var el = document.getElementById(id);
-  if (el && document.activeElement !== el) el.value = (val !== undefined && val !== null) ? val : '';
-}
-
-// ── Load All Data ──────────────────────────────────
 async function loadAllData() {
   await Promise.all([
-    loadConfig('hero'), loadConfig('stats'), loadConfig('center'),
-    loadConfig('contact'), loadConfig('footer'),
-    loadGrades(), loadSubjects()
+    loadHero(),
+    loadStats(),
+    loadCenter(),
+    loadContact(),
+    loadFooter(),
+    loadGrades(),
+    loadSubjects(),
+    loadTeachers()
   ]);
 }
 
-async function loadConfig(docId) {
+// ══════════════════════════════════════════════
+//  GENERIC SAVE — Realtime DB only
+//  path  : RTDB path string e.g. 'config/hero'
+//  data  : plain object to save
+//  label : success message
+// ══════════════════════════════════════════════
+
+async function saveData(path, data, label) {
+  setSaveStatus('saving');
   try {
-    var doc = await db.collection('config').doc(docId).get();
-    if (doc.exists) applyConfigData(docId, doc.data());
-  } catch(e) {
-    console.warn('loadConfig error [' + docId + ']:', e);
+    await rtdbWrite(path, data);
+    setSaveStatus('saved');
+    showToast('✅ ' + label);
+  } catch (err) {
+    setSaveStatus('error');
+    console.error('RTDB write failed:', err);
+    showToast('❌ ' + (err.message || 'Save failed'), 'error');
   }
 }
 
-// ══════════════════════════════════════════════════
-//  SAVE CONFIG — btnEl passed explicitly (BUG FIX)
-//  The old code used event?.target which was undefined
-//  when called from saveHero(), saveStats(), etc.
-// ══════════════════════════════════════════════════
-async function saveConfig(docId, data, label, btnEl) {
-  var originalHTML = btnEl ? btnEl.innerHTML : ('💾 Save ' + label);
-  setBtn(btnEl, true, '<span class="btn-spinner"></span> Saving…');
+// ══════════════════════════════════════════════
+//  HERO
+// ══════════════════════════════════════════════
 
+async function loadHero() {
   try {
-    await db.collection('config').doc(docId).set(data, { merge: true });
-    showToast('✅ ' + label + ' saved!');
-    console.log('[Firestore] Saved config/' + docId, data);
-  } catch(e) {
-    console.error('[Firestore] Error saving config/' + docId, e);
-    showToast('❌ Failed: ' + e.message, 'error');
-  } finally {
-    setBtn(btnEl, false, originalHTML);
-  }
+    const data = await rtdbRead('config/hero');
+    if (data) {
+      document.getElementById('heroTagline').value = data.tagline || '';
+      document.getElementById('heroTitle').value   = data.title   || '';
+      document.getElementById('heroDesc').value    = data.desc    || '';
+    }
+  } catch (e) { console.warn('loadHero:', e); }
 }
 
-// ── HERO ──────────────────────────────────────────
-function saveHero(btnEl) {
-  saveConfig('hero', {
+async function saveHero() {
+  await saveData('config/hero', {
     tagline: document.getElementById('heroTagline').value.trim(),
     title:   document.getElementById('heroTitle').value.trim(),
     desc:    document.getElementById('heroDesc').value.trim()
-  }, 'Hero', btnEl);
+  }, 'Hero section saved!');
 }
 
-// ── STATS ─────────────────────────────────────────
-function saveStats(btnEl) {
-  saveConfig('stats', {
+// ══════════════════════════════════════════════
+//  STATS
+// ══════════════════════════════════════════════
+
+async function loadStats() {
+  try {
+    const data = await rtdbRead('config/stats');
+    if (data) {
+      document.getElementById('statStudents').value = data.students ?? '';
+      document.getElementById('statTeachers').value = data.teachers ?? '';
+      document.getElementById('statSubjects').value = data.subjects ?? '';
+      document.getElementById('statCenters').value  = data.centers  ?? '';
+    }
+  } catch (e) { console.warn('loadStats:', e); }
+}
+
+async function saveStats() {
+  await saveData('config/stats', {
     students: parseInt(document.getElementById('statStudents').value) || 0,
     teachers: parseInt(document.getElementById('statTeachers').value) || 0,
     subjects: parseInt(document.getElementById('statSubjects').value) || 0,
     centers:  parseInt(document.getElementById('statCenters').value)  || 1
-  }, 'Stats', btnEl);
+  }, 'Statistics saved!');
 }
 
-// ── CENTER ────────────────────────────────────────
-function saveCenter(btnEl) {
-  saveConfig('center', {
+// ══════════════════════════════════════════════
+//  CENTER
+// ══════════════════════════════════════════════
+
+async function loadCenter() {
+  try {
+    const data = await rtdbRead('config/center');
+    if (data) {
+      document.getElementById('centerName').value    = data.name    || '';
+      document.getElementById('centerDesc').value    = data.desc    || '';
+      document.getElementById('centerAddress').value = data.address || '';
+      document.getElementById('centerPhone').value   = data.phone   || '';
+      document.getElementById('centerMapUrl').value  = data.mapUrl  || '';
+    }
+  } catch (e) { console.warn('loadCenter:', e); }
+}
+
+async function saveCenter() {
+  await saveData('config/center', {
     name:    document.getElementById('centerName').value.trim(),
     desc:    document.getElementById('centerDesc').value.trim(),
     address: document.getElementById('centerAddress').value.trim(),
     phone:   document.getElementById('centerPhone').value.trim(),
     mapUrl:  document.getElementById('centerMapUrl').value.trim()
-  }, 'Center', btnEl);
+  }, 'Center info saved!');
 }
 
-// ── CONTACT ───────────────────────────────────────
-function saveContact(btnEl) {
-  saveConfig('contact', {
+// ══════════════════════════════════════════════
+//  CONTACT
+// ══════════════════════════════════════════════
+
+async function loadContact() {
+  try {
+    const data = await rtdbRead('config/contact');
+    if (data) {
+      document.getElementById('contactPhone').value   = data.phone   || '';
+      document.getElementById('contactEmail').value   = data.email   || '';
+      document.getElementById('contactAddress').value = data.address || '';
+    }
+  } catch (e) { console.warn('loadContact:', e); }
+}
+
+async function saveContact() {
+  await saveData('config/contact', {
     phone:   document.getElementById('contactPhone').value.trim(),
     email:   document.getElementById('contactEmail').value.trim(),
     address: document.getElementById('contactAddress').value.trim()
-  }, 'Contact', btnEl);
+  }, 'Contact details saved!');
 }
 
-// ── FOOTER ────────────────────────────────────────
-function saveFooter(btnEl) {
-  saveConfig('footer', {
+// ══════════════════════════════════════════════
+//  FOOTER
+// ══════════════════════════════════════════════
+
+async function loadFooter() {
+  try {
+    const data = await rtdbRead('config/footer');
+    if (data) document.getElementById('footerText').value = data.text || '';
+  } catch (e) { console.warn('loadFooter:', e); }
+}
+
+async function saveFooter() {
+  await saveData('config/footer', {
     text: document.getElementById('footerText').value.trim()
-  }, 'Footer', btnEl);
+  }, 'Footer saved!');
 }
 
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════
 //  GRADES
-// ══════════════════════════════════════════════════
-var gradesData = [];
+//  Stored at: /grades  (array of objects)
+// ══════════════════════════════════════════════
+
+let gradesData = [];
 
 async function loadGrades() {
   try {
-    var snap = await db.collection('grades').orderBy('order').get();
-    gradesData = snap.docs.map(function(d) { return Object.assign({id: d.id}, d.data()); });
-  } catch(e) {
-    console.warn('loadGrades error:', e);
-    gradesData = [];
-  }
+    const data = await rtdbRead('grades');
+    // RTDB returns object with keys 0,1,2... or null
+    if (data) {
+      gradesData = Array.isArray(data)
+        ? data.filter(Boolean)
+        : Object.values(data).filter(Boolean);
+    } else {
+      gradesData = [];
+    }
+  } catch (e) { gradesData = []; }
   renderGradeRows();
 }
 
 function renderGradeRows() {
-  var list = document.getElementById('gradesList');
+  const list = document.getElementById('gradesList');
   if (!list) return;
-  if (gradesData.length === 0) {
-    list.innerHTML = '<div class="empty-state">No grade cards yet. Click "+ Add Grade Card" to begin.</div>';
+  if (!gradesData.length) {
+    list.innerHTML = '<p class="empty-msg">No grade cards yet. Click ＋ Add Grade Card.</p>';
     return;
   }
-  list.innerHTML = gradesData.map(function(g, i) {
-    return '<div class="data-row grade-row" data-idx="' + i + '">' +
-      '<div class="row-handle">⠿</div>' +
-      '<div class="form-group small"><label>Emoji</label><input type="text" data-field="emoji" value="' + esc(g.emoji) + '" placeholder="📚" /></div>' +
-      '<div class="form-group flex2"><label>Name</label><input type="text" data-field="name" value="' + esc(g.name) + '" placeholder="Grade 11" /></div>' +
-      '<div class="form-group flex2"><label>Subtitle</label><input type="text" data-field="sub" value="' + esc(g.sub) + '" placeholder="O/L Preparation" /></div>' +
-      '<div class="form-group small"><label>Count</label><input type="text" data-field="count" value="' + esc(g.count) + '" placeholder="120+" /></div>' +
-      '<div class="form-group flex3"><label>Link URL</label><input type="text" data-field="url" value="' + esc(g.url) + '" placeholder="https://..." /></div>' +
-      '<div class="form-group small"><label>Order</label><input type="number" data-field="order" value="' + (g.order !== undefined ? g.order : i+1) + '" min="1" /></div>' +
-      '<button class="btn-remove" onclick="removeGradeRow(' + i + ')" title="Remove">✕</button>' +
-    '</div>';
-  }).join('');
+  list.innerHTML = gradesData.map((g, i) => `
+    <div class="grade-row" data-idx="${i}">
+      <div class="form-group small"><label>Emoji</label>
+        <input type="text" data-field="emoji" data-idx="${i}" value="${escHtml(g.emoji)}" placeholder="📚" />
+      </div>
+      <div class="form-group"><label>Name</label>
+        <input type="text" data-field="name" data-idx="${i}" value="${escHtml(g.name)}" placeholder="Grade 6" />
+      </div>
+      <div class="form-group"><label>Subtitle</label>
+        <input type="text" data-field="sub" data-idx="${i}" value="${escHtml(g.sub)}" placeholder="Primary" />
+      </div>
+      <div class="form-group small"><label>Count</label>
+        <input type="text" data-field="count" data-idx="${i}" value="${escHtml(g.count)}" placeholder="120+" />
+      </div>
+      <div class="form-group"><label>Link URL</label>
+        <input type="text" data-field="url" data-idx="${i}" value="${escHtml(g.url)}" placeholder="/grade6" />
+      </div>
+      <div class="form-group small"><label>Order</label>
+        <input type="number" data-field="order" data-idx="${i}" value="${g.order || i + 1}" />
+      </div>
+      <div class="remove-btn-wrap">
+        <button class="btn-remove" onclick="removeGradeRow(${i})">✕ Remove</button>
+      </div>
+    </div>`).join('');
 }
 
 function addGradeRow() {
-  gradesData.push({ emoji: '📚', name: '', sub: '', count: '', url: '', order: gradesData.length + 1 });
+  gradesData.push({ emoji: '', name: '', sub: '', count: '', url: '', order: gradesData.length + 1 });
   renderGradeRows();
-  var last = document.getElementById('gradesList').lastElementChild;
-  if (last) last.scrollIntoView({ behavior: 'smooth' });
 }
 
 function removeGradeRow(i) {
@@ -327,79 +412,80 @@ function removeGradeRow(i) {
   renderGradeRows();
 }
 
-async function saveGrades(btnEl) {
-  var originalHTML = btnEl ? btnEl.innerHTML : '💾 Save All Grades';
-  setBtn(btnEl, true, '<span class="btn-spinner"></span> Saving…');
-
-  var rows = document.querySelectorAll('.grade-row');
-  var updated = [];
-  rows.forEach(function(row, i) {
-    var obj = { order: i + 1 };
-    row.querySelectorAll('[data-field]').forEach(function(inp) {
-      var f = inp.dataset.field;
-      obj[f] = f === 'order' ? (parseInt(inp.value) || i+1) : inp.value.trim();
+async function saveGrades() {
+  // Read ALL current input values from DOM into gradesData
+  document.querySelectorAll('.grade-row').forEach(row => {
+    const idx = parseInt(row.dataset.idx);
+    if (isNaN(idx) || !gradesData[idx]) return;
+    row.querySelectorAll('[data-field]').forEach(inp => {
+      const field = inp.dataset.field;
+      gradesData[idx][field] = field === 'order'
+        ? (parseInt(inp.value) || idx + 1)
+        : inp.value.trim();
     });
-    updated.push(obj);
   });
 
-  try {
-    var batch = db.batch();
-    var existing = await db.collection('grades').get();
-    existing.docs.forEach(function(d) { batch.delete(d.ref); });
-    updated.forEach(function(g, i) {
-      batch.set(db.collection('grades').doc('grade_' + (i+1)), g);
-    });
-    await batch.commit();
-    gradesData = updated;
-    showToast('✅ Grades saved!');
-    console.log('[Firestore] Grades saved:', updated);
-  } catch(e) {
-    console.error('[Firestore] saveGrades error:', e);
-    showToast('❌ Failed: ' + e.message, 'error');
-  } finally {
-    setBtn(btnEl, false, originalHTML);
-  }
+  // Save as plain array to RTDB
+  const toSave = gradesData.map((g, i) => ({
+    emoji: g.emoji  || '',
+    name:  g.name   || '',
+    sub:   g.sub    || '',
+    count: g.count  || '',
+    url:   g.url    || '',
+    order: g.order  || i + 1
+  }));
+
+  await saveData('grades', toSave, 'Grades saved!');
 }
 
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════
 //  SUBJECTS
-// ══════════════════════════════════════════════════
-var subjectsData = [];
+//  Stored at: /subjects  (array of objects)
+// ══════════════════════════════════════════════
+
+let subjectsData = [];
 
 async function loadSubjects() {
   try {
-    var snap = await db.collection('subjects').orderBy('name').get();
-    subjectsData = snap.docs.map(function(d) { return Object.assign({id: d.id}, d.data()); });
-  } catch(e) {
-    console.warn('loadSubjects error:', e);
-    subjectsData = [];
-  }
+    const data = await rtdbRead('subjects');
+    if (data) {
+      subjectsData = Array.isArray(data)
+        ? data.filter(Boolean)
+        : Object.values(data).filter(Boolean);
+    } else {
+      subjectsData = [];
+    }
+  } catch (e) { subjectsData = []; }
   renderSubjectRows();
 }
 
 function renderSubjectRows() {
-  var list = document.getElementById('subjectsList');
+  const list = document.getElementById('subjectsList');
   if (!list) return;
-  if (subjectsData.length === 0) {
-    list.innerHTML = '<div class="empty-state">No subjects yet. Click "+ Add Subject" to begin.</div>';
+  if (!subjectsData.length) {
+    list.innerHTML = '<p class="empty-msg">No subjects yet. Click ＋ Add Subject.</p>';
     return;
   }
-  list.innerHTML = subjectsData.map(function(s, i) {
-    return '<div class="data-row subject-row" data-idx="' + i + '">' +
-      '<div class="row-handle">⠿</div>' +
-      '<div class="form-group small"><label>Icon</label><input type="text" data-field="icon" value="' + esc(s.icon) + '" placeholder="🔬" /></div>' +
-      '<div class="form-group flex3"><label>Subject Name</label><input type="text" data-field="name" value="' + esc(s.name) + '" placeholder="Physics" /></div>' +
-      '<div class="form-group flex2"><label>Tag / Level</label><input type="text" data-field="tag" value="' + esc(s.tag) + '" placeholder="A/L · Science" /></div>' +
-      '<button class="btn-remove" onclick="removeSubjectRow(' + i + ')" title="Remove">✕</button>' +
-    '</div>';
-  }).join('');
+  list.innerHTML = subjectsData.map((s, i) => `
+    <div class="subject-row" data-idx="${i}">
+      <div class="form-group small"><label>Icon</label>
+        <input type="text" data-field="icon" data-idx="${i}" value="${escHtml(s.icon)}" placeholder="🔬" />
+      </div>
+      <div class="form-group"><label>Subject Name</label>
+        <input type="text" data-field="name" data-idx="${i}" value="${escHtml(s.name)}" placeholder="Mathematics" />
+      </div>
+      <div class="form-group"><label>Tag / Level</label>
+        <input type="text" data-field="tag" data-idx="${i}" value="${escHtml(s.tag)}" placeholder="A/L, O/L…" />
+      </div>
+      <div class="remove-btn-wrap">
+        <button class="btn-remove" onclick="removeSubjectRow(${i})">✕ Remove</button>
+      </div>
+    </div>`).join('');
 }
 
 function addSubjectRow() {
-  subjectsData.push({ icon: '📖', name: '', tag: '' });
+  subjectsData.push({ icon: '', name: '', tag: '' });
   renderSubjectRows();
-  var last = document.getElementById('subjectsList').lastElementChild;
-  if (last) last.scrollIntoView({ behavior: 'smooth' });
 }
 
 function removeSubjectRow(i) {
@@ -407,39 +493,116 @@ function removeSubjectRow(i) {
   renderSubjectRows();
 }
 
-async function saveSubjects(btnEl) {
-  var originalHTML = btnEl ? btnEl.innerHTML : '💾 Save All Subjects';
-  setBtn(btnEl, true, '<span class="btn-spinner"></span> Saving…');
-
-  var rows = document.querySelectorAll('.subject-row');
-  var updated = [];
-  rows.forEach(function(row) {
-    var obj = {};
-    row.querySelectorAll('[data-field]').forEach(function(inp) { obj[inp.dataset.field] = inp.value.trim(); });
-    if (obj.name) updated.push(obj);
+async function saveSubjects() {
+  // Read ALL current input values from DOM
+  document.querySelectorAll('.subject-row').forEach(row => {
+    const idx = parseInt(row.dataset.idx);
+    if (isNaN(idx) || !subjectsData[idx]) return;
+    row.querySelectorAll('[data-field]').forEach(inp => {
+      subjectsData[idx][inp.dataset.field] = inp.value.trim();
+    });
   });
 
-  try {
-    var batch = db.batch();
-    var existing = await db.collection('subjects').get();
-    existing.docs.forEach(function(d) { batch.delete(d.ref); });
-    updated.forEach(function(s, i) {
-      batch.set(db.collection('subjects').doc('subject_' + i), s);
-    });
-    await batch.commit();
-    subjectsData = updated;
-    showToast('✅ Subjects saved!');
-    console.log('[Firestore] Subjects saved:', updated);
-  } catch(e) {
-    console.error('[Firestore] saveSubjects error:', e);
-    showToast('❌ Failed: ' + e.message, 'error');
-  } finally {
-    setBtn(btnEl, false, originalHTML);
-  }
+  // Only save subjects that have a name
+  const toSave = subjectsData
+    .filter(s => s.name && s.name.trim())
+    .map(s => ({
+      icon: s.icon || '',
+      name: s.name || '',
+      tag:  s.tag  || ''
+    }));
+
+  await saveData('subjects', toSave, 'Subjects saved!');
 }
 
-// ── Utility ────────────────────────────────────────
-function esc(str) {
-  if (!str) return '';
-  return String(str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+// ══════════════════════════════════════════════
+//  TEACHERS
+//  Stored at: /teachers  (array of objects)
+// ══════════════════════════════════════════════
+
+let teachersData = [];
+
+async function loadTeachers() {
+  try {
+    const data = await rtdbRead('teachers');
+    if (data) {
+      teachersData = Array.isArray(data)
+        ? data.filter(Boolean)
+        : Object.values(data).filter(Boolean);
+    } else {
+      teachersData = [];
+    }
+  } catch (e) { teachersData = []; }
+  renderTeacherRows();
+}
+
+function renderTeacherRows() {
+  const list = document.getElementById('teachersList');
+  if (!list) return;
+  if (!teachersData.length) {
+    list.innerHTML = '<p class="empty-msg">No teachers yet. Click ＋ Add Teacher.</p>';
+    return;
+  }
+  list.innerHTML = teachersData.map((t, i) => `
+    <div class="teacher-row" data-idx="${i}">
+      <div class="teacher-fields">
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" data-field="name" data-idx="${i}" value="${escHtml(t.name)}" placeholder="Mr. Perera" />
+          </div>
+          <div class="form-group">
+            <label>Subject(s)</label>
+            <input type="text" data-field="subject" data-idx="${i}" value="${escHtml(t.subject)}" placeholder="Mathematics, Physics" />
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Qualification</label>
+            <input type="text" data-field="qualification" data-idx="${i}" value="${escHtml(t.qualification)}" placeholder="BSc (Hons)" />
+          </div>
+          <div class="form-group">
+            <label>Experience</label>
+            <input type="text" data-field="experience" data-idx="${i}" value="${escHtml(t.experience)}" placeholder="10+ Years" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Bio (optional)</label>
+          <input type="text" data-field="bio" data-idx="${i}" value="${escHtml(t.bio)}" placeholder="Short description…" />
+        </div>
+      </div>
+      <button class="btn-remove teacher-remove" onclick="removeTeacher(${i})">✕</button>
+    </div>`).join('');
+}
+
+function addTeacher() {
+  teachersData.push({ name: '', subject: '', qualification: '', experience: '', bio: '', order: teachersData.length + 1 });
+  renderTeacherRows();
+}
+
+function removeTeacher(i) {
+  teachersData.splice(i, 1);
+  renderTeacherRows();
+}
+
+async function saveTeachers() {
+  // Read ALL current input values from DOM
+  document.querySelectorAll('.teacher-row').forEach(row => {
+    const idx = parseInt(row.dataset.idx);
+    if (isNaN(idx) || !teachersData[idx]) return;
+    row.querySelectorAll('[data-field]').forEach(inp => {
+      teachersData[idx][inp.dataset.field] = inp.value.trim();
+    });
+  });
+
+  const toSave = teachersData.map((t, i) => ({
+    name:          t.name          || '',
+    subject:       t.subject       || '',
+    qualification: t.qualification || '',
+    experience:    t.experience    || '',
+    bio:           t.bio           || '',
+    order:         i + 1
+  }));
+
+  await saveData('teachers', toSave, 'Teachers saved!');
 }
