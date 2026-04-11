@@ -340,8 +340,8 @@ function renderTeachers(teachers) {
   grid.innerHTML = sorted.map((t, idx) => `
     <div class="teacher-card" style="animation-delay:${idx * 0.07}s">
       <div class="teacher-avatar">
-        ${t.photo
-          ? `<img src="${t.photo}" alt="${t.name || ''}" />`
+        ${t.image
+          ? `<img src="${t.image}" alt="${t.name || ''}" />`
           : `<span class="teacher-initials">${(t.name || 'T').charAt(0).toUpperCase()}</span>`
         }
       </div>

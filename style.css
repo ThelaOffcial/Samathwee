@@ -1,9 +1,9 @@
 /* =============================================
    SAMATHWEE – New Design Stylesheet
    ============================================= */
-
+ 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
+ 
 :root {
   --purple:       #5a2d91;
   --purple-light: #7c3fb8;
@@ -15,10 +15,10 @@
   --light:        #f8f4ff;
   --white:        #ffffff;
 }
-
+ 
 html { scroll-behavior: smooth; }
 body { font-family: 'Nunito', sans-serif; background: var(--white); overflow-x: hidden; }
-
+ 
 /* ── LOADING SCREEN ─────────────────────────────────────────── */
 .loading-screen {
   position: fixed;
@@ -60,7 +60,7 @@ body { font-family: 'Nunito', sans-serif; background: var(--white); overflow-x: 
   100% { opacity: 1;   letter-spacing: 3px; }
 }
 .loading-sub { font-size: 0.75rem; color: rgba(255,255,255,0.5); font-weight: 500; }
-
+ 
 /* ── HERO ────────────────────────────────────────────────────── */
 .hero-container {
   position: relative;
@@ -84,7 +84,7 @@ body { font-family: 'Nunito', sans-serif; background: var(--white); overflow-x: 
 .orb-2 { width: 350px; height: 350px; background: rgba(243,146,35,0.25); bottom: 10%; left: 5%;  animation: orbFloat 10s ease-in-out infinite reverse; }
 .orb-3 { width: 250px; height: 250px; background: rgba(124,63,184,0.3); top: 40%; left: 35%;    animation: orbFloat 12s ease-in-out infinite 2s; }
 @keyframes orbFloat { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-30px) scale(1.05); } }
-
+ 
 /* ── NAV ─────────────────────────────────────────────────────── */
 .nav-bar {
   position: relative; z-index: 20;
@@ -133,7 +133,7 @@ body { font-family: 'Nunito', sans-serif; background: var(--white); overflow-x: 
 .hamburger.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
 .hamburger.open span:nth-child(2) { opacity: 0; }
 .hamburger.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
-
+ 
 /* ── HERO CONTENT ────────────────────────────────────────────── */
 .hero-content {
   position: relative; z-index: 10; flex: 1;
@@ -193,7 +193,7 @@ body { font-family: 'Nunito', sans-serif; background: var(--white); overflow-x: 
   transition: background .3s, border-color .3s, transform .3s;
 }
 .btn-secondary:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); transform: translateY(-4px); }
-
+ 
 /* ── STATS ───────────────────────────────────────────────────── */
 .hero-stats {
   position: relative; z-index: 10;
@@ -205,9 +205,9 @@ body { font-family: 'Nunito', sans-serif; background: var(--white); overflow-x: 
 .stat-item:last-child { border-right: none; padding-right: 0; padding-left: 40px; }
 .stat-num { font-family: 'Sora', sans-serif; font-size: 2.2rem; font-weight: 800; color: var(--orange); line-height: 1; display: inline-block; }
 .stat-label { font-size: 0.78rem; color: rgba(255,255,255,0.5); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
-
+ 
 @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
+ 
 /* ── GRADE SECTION ───────────────────────────────────────────── */
 .grade-section { background: var(--light); padding: 100px 5% 60px; }
 .grade-inner { max-width: 1300px; margin: 0 auto; }
@@ -220,7 +220,7 @@ body { font-family: 'Nunito', sans-serif; background: var(--white); overflow-x: 
 }
 .section-title { font-family: 'Sora', sans-serif; font-size: clamp(1.8rem, 3vw, 2.8rem); color: var(--dark); font-weight: 800; margin-bottom: 14px; }
 .section-sub { color: var(--muted); font-size: 1.05rem; line-height: 1.7; max-width: 560px; margin-bottom: 60px; }
-
+ 
 /* ── GRADE CARDS ─────────────────────────────────────────────── */
 .grade-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 24px; }
 .grade-card {
@@ -255,7 +255,7 @@ body { font-family: 'Nunito', sans-serif; background: var(--white); overflow-x: 
 .gc-count { display: inline-block; margin-top: 14px; background: rgba(255,255,255,0.2); color: #fff; font-size: 0.78rem; font-weight: 700; padding: 5px 14px; border-radius: 50px; }
 .gc-arrow { position: absolute; bottom: 18px; right: 20px; color: rgba(255,255,255,0.5); font-size: 1.2rem; transition: transform 0.25s ease, color 0.2s; }
 .grade-card:hover .gc-arrow { transform: translate(5px, -5px); color: #fff; }
-
+ 
 /* ── SUBJECTS SECTION ────────────────────────────────────────── */
 .subjects-section { background: #fff; padding: 0 5% 100px; }
 .subjects-inner { max-width: 1300px; margin: 0 auto; }
@@ -269,9 +269,9 @@ body { font-family: 'Nunito', sans-serif; background: var(--white); overflow-x: 
   outline: none; transition: border-color .3s, box-shadow .3s;
 }
 .search-wrap input:focus { border-color: var(--purple); box-shadow: 0 4px 24px rgba(90,45,145,0.18); }
-
+ 
 .subjects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-
+ 
 .subject-card {
   display: flex; align-items: center; gap: 14px;
   padding: 18px 22px; border-radius: 20px;
@@ -300,13 +300,13 @@ body { font-family: 'Nunito', sans-serif; background: var(--white); overflow-x: 
 .subject-card:hover .subject-name { color: var(--purple); }
 .subject-level { font-size: 0.7rem; color: var(--muted); font-weight: 600; margin-top: 4px; letter-spacing: 0.3px; transition: color 0.25s ease; }
 .subject-card:hover .subject-level { color: var(--orange); }
-
+ 
 .no-results {
   grid-column: 1/-1; text-align: center; padding: 60px;
   color: var(--muted); font-size: 1rem; display: none;
   background: #fef9f0; border-radius: 48px; margin-top: 20px;
 }
-
+ 
 /* ── CENTERS SECTION ─────────────────────────────────────────── */
 .centers-section {
   background: linear-gradient(135deg, var(--dark) 0%, var(--dark2) 100%);
@@ -351,7 +351,7 @@ body { font-family: 'Nunito', sans-serif; background: var(--white); overflow-x: 
   transition: gap .3s;
 }
 .map-btn:hover { gap: 14px; }
-
+ 
 /* ── CONTACT SECTION ─────────────────────────────────────────── */
 .contact-section { background: var(--light); padding: 80px 5%; }
 .contact-inner { max-width: 900px; margin: 0 auto; text-align: center; }
@@ -371,14 +371,14 @@ body { font-family: 'Nunito', sans-serif; background: var(--white); overflow-x: 
 .contact-item:hover { transform: translateY(-4px); box-shadow: 0 16px 32px rgba(90,45,145,0.15); border-color: var(--purple); }
 .contact-icon { font-size: 1.6rem; }
 .contact-text { font-size: 0.95rem; font-weight: 700; color: var(--dark); }
-
+ 
 /* ── FOOTER ──────────────────────────────────────────────────── */
 footer {
   background: #08051a; padding: 40px 5%;
   text-align: center; color: rgba(255,255,255,0.35); font-size: 0.85rem;
 }
 footer span { color: var(--orange); }
-
+ 
 /* ── RESPONSIVE ──────────────────────────────────────────────── */
 @media (max-width: 1024px) {
   .grade-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
@@ -440,23 +440,48 @@ footer span { color: var(--orange); }
   animation: fadeUp .5s ease both;
 }
 .teacher-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 36px rgba(90,45,145,.15);
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 50px rgba(90,45,145,.22), 0 0 0 1px rgba(90,45,145,.08);
+  border-color: rgba(90,45,145,.25);
+}
+.teacher-card:hover .teacher-avatar {
+  animation: avatarPulse 1.6s ease-in-out infinite;
 }
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+@keyframes avatarGlow {
+  0%   { box-shadow: 0 0 0 3px #fff, 0 0 0 5px #5a2d91, 0 0 14px 5px rgba(90,45,145,.5),  0 0 28px 8px rgba(243,146,35,.25); }
+  50%  { box-shadow: 0 0 0 3px #fff, 0 0 0 5px #f39223, 0 0 22px 8px rgba(243,146,35,.55), 0 0 40px 12px rgba(90,45,145,.3); }
+  100% { box-shadow: 0 0 0 3px #fff, 0 0 0 5px #5a2d91, 0 0 14px 5px rgba(90,45,145,.5),  0 0 28px 8px rgba(243,146,35,.25); }
+}
+@keyframes avatarPulse {
+  0%   { box-shadow: 0 0 0 3px #fff, 0 0 0 5px #5a2d91, 0 0 20px 8px rgba(90,45,145,.7),  0 0 38px 12px rgba(243,146,35,.4); }
+  50%  { box-shadow: 0 0 0 3px #fff, 0 0 0 5px #f39223, 0 0 28px 10px rgba(243,146,35,.75), 0 0 50px 16px rgba(90,45,145,.4); }
+  100% { box-shadow: 0 0 0 3px #fff, 0 0 0 5px #5a2d91, 0 0 20px 8px rgba(90,45,145,.7),  0 0 38px 12px rgba(243,146,35,.4); }
+}
 .teacher-avatar {
   width: 90px; height: 90px; border-radius: 50%;
   margin: 0 auto 16px;
-  overflow: hidden;
+  overflow: visible;
   background: linear-gradient(135deg, #5a2d91, #f39223);
   display: flex; align-items: center; justify-content: center;
-  border: 3px solid rgba(90,45,145,.2);
   font-size: 2.2rem;
+  position: relative;
+  box-shadow:
+    0 0 0 3px #fff,
+    0 0 0 5px #5a2d91,
+    0 0 14px 5px rgba(90,45,145,.45),
+    0 0 28px 8px rgba(243,146,35,.2);
+  animation: avatarGlow 3s ease-in-out infinite;
+  transition: box-shadow .35s ease;
 }
-.teacher-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.teacher-avatar img {
+  width: 90px; height: 90px; object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
 .teacher-initials { color: #fff; font-size: 2rem; font-weight: 700; font-family: 'Sora', sans-serif; }
 .teacher-name {
   font-family: 'Sora', sans-serif; font-size: 1.05rem; font-weight: 700;
