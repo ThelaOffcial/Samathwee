@@ -4,7 +4,7 @@
 //  No Firestore used anywhere
 //  Admin changes reflect instantly on site
 // =============================================
-
+ 
 const firebaseConfig = {
   apiKey:            "AIzaSyDlBLrs-WquiVIivoOCuJq2g7BFhNwAtas",
   authDomain:        "samathwee.firebaseapp.com",
@@ -14,10 +14,10 @@ const firebaseConfig = {
   appId:             "1:1094489861098:web:e61feb13a5f69a8b78e093",
   databaseURL:       "https://samathwee-default-rtdb.firebaseio.com"
 };
-
+ 
 firebase.initializeApp(firebaseConfig);
 const rtdb = firebase.database(); // Realtime Database ONLY
-
+ 
 // ══════════════════════════════════════════════
 //  DEFAULT FALLBACK DATA
 //  Shown immediately while Firebase loads
@@ -87,7 +87,7 @@ const DEFAULTS = {
   ],
   teachers: []
 };
-
+ 
 // ══════════════════════════════════════════════
 //  ICON MAP — auto-assigns icons for subjects
 //  added via admin that don't have icons yet
@@ -129,7 +129,7 @@ const ICON_MAP = {
   "logic":                  { icon:"🧠", color:"#fce7f3", iconColor:"#db2777" }
 };
 const DEFAULT_ICON = { icon:"📖", color:"#ede9fe", iconColor:"#8b5cf6" };
-
+ 
 function getSubjectIcon(name) {
   const key = (name || '').toLowerCase().trim();
   if (ICON_MAP[key]) return ICON_MAP[key];
@@ -138,7 +138,7 @@ function getSubjectIcon(name) {
   }
   return DEFAULT_ICON;
 }
-
+ 
 // ══════════════════════════════════════════════
 //  DOM HELPERS
 // ══════════════════════════════════════════════
@@ -150,7 +150,7 @@ function setHref(id, href) {
   const el = document.getElementById(id);
   if (el && href) el.href = href;
 }
-
+ 
 // ══════════════════════════════════════════════
 //  LOADING SCREEN
 // ══════════════════════════════════════════════
@@ -161,7 +161,7 @@ function dismissLoader() {
   setTimeout(() => { if (el) el.style.display = 'none'; }, 700);
 }
 setTimeout(dismissLoader, 400);
-
+ 
 // ══════════════════════════════════════════════
 //  HAMBURGER MENU
 // ══════════════════════════════════════════════
@@ -169,7 +169,7 @@ document.getElementById('hamburger')?.addEventListener('click', function () {
   this.classList.toggle('open');
   document.getElementById('nav-links')?.classList.toggle('open');
 });
-
+ 
 // ══════════════════════════════════════════════
 //  CANVAS PARTICLES
 // ══════════════════════════════════════════════
@@ -233,7 +233,7 @@ document.getElementById('hamburger')?.addEventListener('click', function () {
     cancelAnimationFrame(animId); resizeCanvas(); initParticles(); drawParticles();
   });
 })();
-
+ 
 // ══════════════════════════════════════════════
 //  GRADE CARDS RENDER
 // ══════════════════════════════════════════════
@@ -243,7 +243,7 @@ function renderGrades(grades) {
   const sorted = [...grades].filter(Boolean).sort((a, b) => (a.order || 0) - (b.order || 0));
   if (!sorted.length) return;
   grid.innerHTML = sorted.map((g, idx) => `
-    <a href="${g.url || '#'}" class="grade-card gc-${idx % 8}">
+    <a href="${g.url || '#'}" class="grade-card gc-${idx % 8}" style="transition-delay:${idx * 0.08}s">
       <span class="gc-emoji">${g.emoji || '📚'}</span>
       <div class="gc-title">${g.name || ''}</div>
       <div class="gc-sub">${g.sub || ''}</div>
@@ -251,26 +251,28 @@ function renderGrades(grades) {
       <span class="gc-arrow">↗</span>
     </a>
   `).join('');
-  // Animate visible cards
+  // Observe each card individually for staggered reveal
   requestAnimationFrame(() => {
     document.querySelectorAll('.grade-card').forEach(c => {
-      if (c.getBoundingClientRect().top < window.innerHeight - 80) c.classList.add('visible');
+      if (c.getBoundingClientRect().top < window.innerHeight - 60) {
+        c.classList.add('visible');
+      } else {
+        revealObserver.observe(c);
+      }
     });
-    const gg = document.getElementById('gradesGrid');
-    if (gg) cardObserver.observe(gg);
   });
 }
-
+ 
 // ══════════════════════════════════════════════
 //  SUBJECTS RENDER
 // ══════════════════════════════════════════════
 let allSubjects = [];
-
+ 
 function renderSubjects(subjects) {
   allSubjects = subjects.filter(Boolean);
   buildSubjectGrid(allSubjects);
 }
-
+ 
 function buildSubjectGrid(list) {
   const grid  = document.getElementById('subjectsGrid');
   const noRes = document.getElementById('noResults');
@@ -298,12 +300,19 @@ function buildSubjectGrid(list) {
         <div class="subject-level">${s.tag || s.level || ''}</div>
       </div>
     `;
-    card.style.transitionDelay = `${Math.min(idx * 0.02, 0.3)}s`;
+    card.style.transitionDelay = `${Math.min(idx * 0.04, 0.5)}s`;
     grid.appendChild(card);
-    requestAnimationFrame(() => card.classList.add('visible'));
+    // Use observer for scroll reveal; add visible immediately if already in viewport
+    requestAnimationFrame(() => {
+      if (card.getBoundingClientRect().top < window.innerHeight - 60) {
+        card.classList.add('visible');
+      } else {
+        revealObserver.observe(card);
+      }
+    });
   });
 }
-
+ 
 // Search box filter
 document.getElementById('subjectSearch')?.addEventListener('input', e => {
   const q = e.target.value.trim().toLowerCase();
@@ -315,30 +324,40 @@ document.getElementById('subjectSearch')?.addEventListener('input', e => {
     : allSubjects;
   buildSubjectGrid(filtered);
 });
-
+ 
 // ══════════════════════════════════════════════
-//  TEACHERS RENDER
+//  TEACHERS RENDER + SEARCH
 // ══════════════════════════════════════════════
+let allTeachers = [];
+ 
 function renderTeachers(teachers) {
-  const grid = document.getElementById('teachersGrid');
-  const noEl = document.getElementById('noTeachers');
-  if (!grid) return;
-
   // Normalize — RTDB may return object or array
-  const list = Array.isArray(teachers)
+  allTeachers = Array.isArray(teachers)
     ? teachers.filter(Boolean)
     : Object.values(teachers || {}).filter(Boolean);
-
-  if (!list.length) {
+ 
+  buildTeacherGrid(allTeachers);
+}
+ 
+function buildTeacherGrid(list) {
+  const grid = document.getElementById('teachersGrid');
+  const noEl = document.getElementById('noTeachers');
+  const noMsg = document.getElementById('noTeachersMsg');
+  if (!grid) return;
+ 
+  const sorted = [...list].sort((a, b) => (a.order || 0) - (b.order || 0));
+ 
+  if (!sorted.length) {
     grid.innerHTML = '';
-    if (noEl) noEl.style.display = 'block';
+    if (noEl) noEl.style.display = allTeachers.length === 0 ? 'block' : 'none';
+    if (noMsg) noMsg.style.display = allTeachers.length > 0 ? 'block' : 'none';
     return;
   }
   if (noEl) noEl.style.display = 'none';
-
-  const sorted = [...list].sort((a, b) => (a.order || 0) - (b.order || 0));
+  if (noMsg) noMsg.style.display = 'none';
+ 
   grid.innerHTML = sorted.map((t, idx) => `
-    <div class="teacher-card" style="animation-delay:${idx * 0.07}s">
+    <div class="teacher-card" style="transition-delay:${idx * 0.08}s">
       <div class="teacher-avatar">
         ${t.image
           ? `<img src="${t.image}" alt="${t.name || ''}" />`
@@ -352,30 +371,64 @@ function renderTeachers(teachers) {
       ${t.bio           ? `<div class="teacher-bio">${t.bio}</div>`               : ''}
     </div>
   `).join('');
+ 
+  // Scroll reveal for each card
+  requestAnimationFrame(() => {
+    grid.querySelectorAll('.teacher-card').forEach(c => {
+      if (c.getBoundingClientRect().top < window.innerHeight - 60) {
+        c.classList.add('visible');
+      } else {
+        revealObserver.observe(c);
+      }
+    });
+  });
 }
-
+ 
+// Teacher search
+document.getElementById('teacherSearch')?.addEventListener('input', e => {
+  const q = e.target.value.trim().toLowerCase();
+  const filtered = q
+    ? allTeachers.filter(t =>
+        (t.name    || '').toLowerCase().includes(q) ||
+        (t.subject || '').toLowerCase().includes(q)
+      )
+    : allTeachers;
+  buildTeacherGrid(filtered);
+});
+ 
 // ══════════════════════════════════════════════
 //  INTERSECTION OBSERVERS
 // ══════════════════════════════════════════════
+// ── UNIVERSAL SCROLL-REVEAL OBSERVER ──────────────────────────
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target); // fire once
+    }
+  });
+}, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+ 
+// Legacy cardObserver kept for compatibility
 const cardObserver = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       entry.target.querySelectorAll('.grade-card, .center-card').forEach(el => el.classList.add('visible'));
     }
   });
-}, { threshold: 0.1, rootMargin: "0px 0px -40px 0px" });
-
+}, { threshold: 0.08, rootMargin: "0px 0px -40px 0px" });
+ 
 const singleObserver = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.15, rootMargin: "0px 0px -40px 0px" });
 document.querySelectorAll('.center-card').forEach(el => singleObserver.observe(el));
-
+ 
 // ══════════════════════════════════════════════
 //  ANIMATED COUNTERS
 // ══════════════════════════════════════════════
 let currentStats = { ...DEFAULTS.stats };
 let countersRan  = false;
-
+ 
 function animateCounter(el, target, duration = 1400) {
   const from  = parseInt((el.textContent || '0').replace(/[^\d]/g, ''), 10) || 0;
   const start = performance.now();
@@ -387,7 +440,7 @@ function animateCounter(el, target, duration = 1400) {
   };
   requestAnimationFrame(update);
 }
-
+ 
 function runCounters(stats) {
   const ids = {
     students: 'stat-students',
@@ -400,7 +453,7 @@ function runCounters(stats) {
     if (el) animateCounter(el, stats[key] || 0);
   }
 }
-
+ 
 // Observe hero-stats section
 const statsEl = document.querySelector('.hero-stats');
 const statsObserver = new IntersectionObserver(entries => {
@@ -410,7 +463,7 @@ const statsObserver = new IntersectionObserver(entries => {
   }
 }, { threshold: 0.4 });
 if (statsEl) statsObserver.observe(statsEl);
-
+ 
 // ══════════════════════════════════════════════
 //  RENDER DEFAULTS IMMEDIATELY
 //  Shows content before Firebase data arrives
@@ -421,27 +474,27 @@ if (statsEl) statsObserver.observe(statsEl);
   setText('hero-desc', DEFAULTS.hero.desc);
   const shinyEl = document.getElementById('hero-title-shiny');
   if (shinyEl) shinyEl.textContent = DEFAULTS.hero.title;
-
+ 
   // Center
   applyCenter(DEFAULTS.center);
-
+ 
   // Contact
   applyContact(DEFAULTS.contact);
-
+ 
   // Footer
   applyFooter(DEFAULTS.footer);
-
+ 
   // Grades & Subjects
   renderGrades(DEFAULTS.grades);
   renderSubjects(DEFAULTS.subjects);
   renderTeachers(DEFAULTS.teachers);
-
+ 
   // If stats already in viewport on load
   if (statsEl && statsEl.getBoundingClientRect().top < window.innerHeight) {
     if (!countersRan) { countersRan = true; runCounters(currentStats); }
   }
 })();
-
+ 
 // ══════════════════════════════════════════════
 //  APPLY HELPERS — cleanly update each section
 // ══════════════════════════════════════════════
@@ -454,7 +507,7 @@ function applyHero(v) {
     if (el) el.textContent = v.title;
   }
 }
-
+ 
 function applyStats(v) {
   if (!v) return;
   currentStats = {
@@ -465,7 +518,7 @@ function applyStats(v) {
   };
   if (countersRan) runCounters(currentStats);
 }
-
+ 
 function applyCenter(v) {
   if (!v) return;
   if (v.name !== undefined)   setText('center-name', v.name);
@@ -476,14 +529,14 @@ function applyCenter(v) {
   if (addrEl)  addrEl.textContent  = v.address ? '📍 ' + v.address : '';
   if (phoneEl) phoneEl.textContent = v.phone   ? '📞 ' + v.phone   : '';
 }
-
+ 
 function applyContact(v) {
   if (!v) return;
   if (v.phone   !== undefined) setText('contact-phone',   v.phone);
   if (v.email   !== undefined) setText('contact-email',   v.email);
   if (v.address !== undefined) setText('contact-address', v.address);
 }
-
+ 
 function applyFooter(v) {
   const el = document.getElementById('footer-text');
   if (!el) return;
@@ -493,14 +546,14 @@ function applyFooter(v) {
     el.innerHTML = v.text;
   }
 }
-
+ 
 // ══════════════════════════════════════════════
 //  REALTIME DATABASE LISTENERS
 //  Each path uses .on('value') — fires immediately
 //  on connect AND on every admin change
 // ══════════════════════════════════════════════
 const listeners = []; // track for cleanup
-
+ 
 function listen(path, callback) {
   const ref = rtdb.ref(path);
   const handler = snap => {
@@ -509,22 +562,22 @@ function listen(path, callback) {
   ref.on('value', handler, err => console.warn('RTDB read error at', path, err));
   listeners.push({ ref, handler });
 }
-
+ 
 // Hero
 listen('config/hero', v => { if (v) applyHero(v); });
-
+ 
 // Stats
 listen('config/stats', v => { if (v) applyStats(v); });
-
+ 
 // Center
 listen('config/center', v => { if (v) applyCenter(v); });
-
+ 
 // Contact
 listen('config/contact', v => { if (v) applyContact(v); });
-
+ 
 // Footer
 listen('config/footer', v => { if (v) applyFooter(v); });
-
+ 
 // Grades — re-render the whole grid on any change
 listen('grades', v => {
   if (!v) return;
@@ -532,7 +585,7 @@ listen('grades', v => {
   const clean = list.filter(Boolean);
   if (clean.length) renderGrades(clean);
 });
-
+ 
 // Subjects — re-render the whole grid on any change
 listen('subjects', v => {
   if (!v) return;
@@ -540,13 +593,13 @@ listen('subjects', v => {
   const clean = list.filter(Boolean);
   if (clean.length) renderSubjects(clean);
 });
-
+ 
 // Teachers — re-render on any change
 listen('teachers', v => {
   if (!v) return;
   renderTeachers(v);
 });
-
+ 
 // Cleanup listeners on page unload
 window.addEventListener('beforeunload', () => {
   listeners.forEach(({ ref, handler }) => {
