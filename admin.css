@@ -1,8 +1,4 @@
-/* =============================================
-   SAMATHWEE – Admin Dashboard
-   Dark Luxury Command Center
-   Fonts: Fraunces (display) + Sora (body)
-   ============================================= */
+
 
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,800;1,9..144,400&family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -48,9 +44,7 @@ a { color: inherit; text-decoration: none; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--t3); border-radius: 4px; }
 
-/* ══════════════════════════════════════════
-   LOGIN
-══════════════════════════════════════════ */
+
 .auth-container {
   min-height: 100vh;
   display: flex;
@@ -229,12 +223,9 @@ a { color: inherit; text-decoration: none; }
 .switch-form { margin-top: 24px; font-size: 13px; color: var(--t2); text-align: center; }
 .switch-form a { color: var(--sky); font-weight: 600; }
 
-/* ══════════════════════════════════════════
-   DASHBOARD LAYOUT
-══════════════════════════════════════════ */
+
 .dashboard { display: flex; min-height: 100vh; }
 
-/* SIDEBAR */
 .sidebar {
   width: 260px;
   background: var(--surface);
@@ -312,13 +303,11 @@ a { color: inherit; text-decoration: none; }
 }
 .logout-btn:hover { background: rgba(248,113,113,0.14); }
 
-/* MAIN CONTENT */
 .main-content {
   flex: 1; margin-left: 260px;
   padding: 40px 44px 80px; min-height: 100vh;
 }
 
-/* MOBILE HEADER */
 .mobile-header {
   display: none; align-items: center; gap: 14px;
   padding: 16px 0 24px;
@@ -332,7 +321,6 @@ a { color: inherit; text-decoration: none; }
   padding: 6px 10px; font-size: 16px; cursor: pointer;
 }
 
-/* TOP STATUS BAR */
 .top-statusbar {
   display: flex; align-items: flex-end; justify-content: space-between;
   gap: 16px; margin-bottom: 36px;
@@ -366,7 +354,6 @@ a { color: inherit; text-decoration: none; }
   50% { opacity: 0.5; transform: scale(0.8); }
 }
 
-/* SECTIONS */
 .admin-section { display: none; animation: fadeSlide 0.3s ease; }
 .admin-section.active { display: block; }
 @keyframes fadeSlide {
@@ -381,7 +368,6 @@ a { color: inherit; text-decoration: none; }
 }
 .section-header p { color: var(--t2); font-size: 13px; }
 
-/* CARD */
 .card {
   background: var(--card); border: 1px solid var(--border);
   border-radius: var(--radius-lg); padding: 32px;
@@ -389,7 +375,6 @@ a { color: inherit; text-decoration: none; }
 }
 .card:focus-within { border-color: var(--border-glow); }
 
-/* FORM ELEMENTS */
 .form-group { margin-bottom: 22px; }
 .form-group label {
   display: block; font-size: 10.5px; font-weight: 700; color: var(--t3);
@@ -417,7 +402,6 @@ a { color: inherit; text-decoration: none; }
 .form-group.small { flex: 0 0 100px; min-width: 80px; }
 .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
-/* BUTTONS */
 .btn-save {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 12px 28px;
@@ -448,7 +432,6 @@ a { color: inherit; text-decoration: none; }
 }
 .btn-remove:hover { background: rgba(248,113,113,0.15); border-color: rgba(248,113,113,0.3); }
 
-/* ROW ITEMS */
 .grade-row, .subject-row {
   display: flex; gap: 12px; align-items: flex-start;
   margin-bottom: 10px; padding: 18px;
@@ -458,7 +441,6 @@ a { color: inherit; text-decoration: none; }
 .grade-row:hover, .subject-row:hover { border-color: rgba(148,163,184,0.15); }
 .remove-btn-wrap { display: flex; align-items: center; padding-top: 28px; }
 
-/* TEACHER ROWS */
 .teacher-row {
   display: flex; gap: 20px; align-items: flex-start;
   margin-bottom: 14px; padding: 22px;
@@ -470,7 +452,6 @@ a { color: inherit; text-decoration: none; }
 .teacher-fields { flex: 1; min-width: 260px; }
 .teacher-remove { position: absolute; top: 16px; right: 16px; }
 
-/* STATS GRID */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -491,7 +472,6 @@ a { color: inherit; text-decoration: none; }
 }
 .stat-card input::placeholder { color: rgba(56,189,248,0.25); }
 
-/* EMPTY STATE */
 .empty-msg {
   color: var(--t3); text-align: center;
   padding: 32px 0; font-size: 13px;
@@ -499,7 +479,6 @@ a { color: inherit; text-decoration: none; }
   border-radius: var(--radius-md); margin-bottom: 8px;
 }
 
-/* TOAST */
 .toast {
   position: fixed; top: 24px; right: 24px; z-index: 9999;
   padding: 14px 22px; border-radius: var(--radius-md);
@@ -515,7 +494,6 @@ a { color: inherit; text-decoration: none; }
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* MOBILE */
 @media (max-width: 768px) {
   .sidebar { transform: translateX(-100%); }
   .sidebar.open { transform: translateX(0); box-shadow: 0 0 60px rgba(0,0,0,0.6); }
@@ -533,9 +511,7 @@ a { color: inherit; text-decoration: none; }
   .remove-btn-wrap { padding-top: 0; }
   .form-group.small { flex: 1; }
 }
-/* ─────────────────────────────────────────────
-   Image Upload Styles
-   ───────────────────────────────────────────── */
+
 .image-upload-row {
   display: flex;
   gap: 10px;
