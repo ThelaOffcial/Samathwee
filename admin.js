@@ -839,8 +839,9 @@ function renderSubPageSubjects(gradeKey) {
     list.innerHTML = '<p class="empty-msg">No subjects yet. Click ＋ Add Subject.</p>';
     return;
   }
+  const isOL = gradeKey === 'grade6_ol';
   list.innerHTML = subjects.map((s, i) => `
-    <div class="sp-subject-row" data-grade="${gradeKey}" data-idx="${i}">
+    <div class="sp-subject-row" data-grade="${gradeKey}" data-idx="${i}" style="${isOL ? 'flex-wrap:wrap;' : ''}">
       <div class="form-group small">
         <label>Icon</label>
         <input type="text" data-field="icon" value="${escHtml(s.icon)}" placeholder="📚" />
@@ -849,6 +850,30 @@ function renderSubPageSubjects(gradeKey) {
         <label>Subject Name</label>
         <input type="text" data-field="name" value="${escHtml(s.name)}" placeholder="Mathematics" />
       </div>
+      ${isOL ? `
+      <div class="form-group small">
+        <label>Category</label>
+        <select data-field="cat" style="height:40px;border-radius:10px;border:1.5px solid #e5e7eb;padding:0 10px;font-size:0.88rem;">
+          <option value="">-- None --</option>
+          <option value="core"       ${s.cat==='core'       ?'selected':''}>Core</option>
+          <option value="science"    ${s.cat==='science'    ?'selected':''}>Science</option>
+          <option value="humanities" ${s.cat==='humanities' ?'selected':''}>Humanities</option>
+          <option value="arts"       ${s.cat==='arts'       ?'selected':''}>Arts &amp; Tech</option>
+        </select>
+      </div>
+      <div class="form-group small">
+        <label>Grades Range</label>
+        <input type="text" data-field="grades" value="${escHtml(s.grades || 'Grade 6\u201311')}" placeholder="Grade 6\u201311" />
+      </div>
+      <div class="form-group" style="flex-basis:100%;">
+        <label>Description</label>
+        <input type="text" data-field="desc" value="${escHtml(s.desc)}" placeholder="Brief subject description shown on the grade page\u2026" />
+      </div>
+      <div class="form-group" style="flex-basis:100%;">
+        <label>Tags <span style="font-weight:400;color:#9ca3af;">(comma-separated, e.g. Grammar, Essay, Literature)</span></label>
+        <input type="text" data-field="tags" value="${escHtml(Array.isArray(s.tags) ? s.tags.join(', ') : (s.tags || ''))}" placeholder="Grammar, Essay, Literature" />
+      </div>
+      ` : `
       <div class="form-group">
         <label>Teacher Name</label>
         <input type="text" data-field="teacher" value="${escHtml(s.teacher)}" placeholder="Mr. Perera" />
@@ -857,14 +882,20 @@ function renderSubPageSubjects(gradeKey) {
         <label>Monthly Fee (Rs.)</label>
         <input type="text" data-field="fee" value="${escHtml(s.fee)}" placeholder="2500" />
       </div>
+      `}
       <div class="remove-btn-wrap">
-        <button class="btn-remove" onclick="removeSubPageSubject('${gradeKey}', ${i})">✕ Remove</button>
+        <button class="btn-remove" onclick="removeSubPageSubject('${gradeKey}', ${i})">&#x2715; Remove</button>
       </div>
     </div>`).join('');
 }
  
 function addSubPageSubject(gradeKey) {
-  subPageData[gradeKey].subjects.push({ icon: '', name: '', teacher: '', fee: '' });
+  const isOL = gradeKey === 'grade6_ol';
+  subPageData[gradeKey].subjects.push(
+    isOL
+      ? { icon: '', name: '', cat: '', grades: 'Grade 6\u201311', desc: '', tags: '' }
+      : { icon: '', name: '', teacher: '', fee: '' }
+  );
   renderSubPageSubjects(gradeKey);
 }
  
