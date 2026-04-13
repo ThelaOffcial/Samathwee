@@ -13,14 +13,13 @@
     }
     body { font-family: 'Work Sans', sans-serif; background: var(--cream); overflow-x: hidden; }
 
-    /* ── HERO ─ */
+ 
     .hero {
       position: relative; min-height: 100vh;
       background: linear-gradient(160deg, var(--navy) 0%, #0d1b45 50%, #16213e 100%);
       display: flex; flex-direction: column; overflow: hidden;
     }
-
-    /* Union Jack inspired stripes */
+ 
     .flag-deco {
       position: absolute; inset: 0; pointer-events: none; z-index: 0; opacity: 0.04;
       background:
@@ -37,7 +36,7 @@
     .hg1 { width:500px;height:500px; background:rgba(178,34,34,.2); top:-100px;right:0; }
     .hg2 { width:350px;height:350px; background:rgba(26,35,126,.4); bottom:0;left:0; }
 
-    /* NAV */
+    
     .nav {
       position: relative; z-index: 20;
       display: flex; align-items: center; justify-content: space-between;
@@ -56,7 +55,7 @@
       color: rgba(255,255,255,.7); font-size: 0.82rem; font-weight: 600;
     }
 
-    /* HERO BODY */
+    
     .hero-body {
       position: relative; z-index: 5;
       flex: 1; display: grid; grid-template-columns: 1fr 0.8fr;
@@ -99,7 +98,7 @@
     }
     .btn-gold-outline:hover { background: rgba(198,162,39,.1); border-color: var(--gold); }
 
-    /* Right side: qualification levels */
+     
     .qual-panel { animation: riseIn .7s ease 0.4s both; }
     .qp-title { color: rgba(255,255,255,.4); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 20px; }
     .qual-item {
@@ -115,7 +114,7 @@
 
     @keyframes riseIn { from{opacity:0;transform:translateY(25px)} to{opacity:1;transform:translateY(0)} }
 
-    /* ── SUBJECTS ─ */
+    
     .subj-sec { background: #fff; padding: 90px 7%; }
     .subj-inner { max-width: 1300px; margin: 0 auto; }
 
@@ -145,7 +144,7 @@
     .lc-tags { display: flex; gap: 6px; flex-wrap: wrap; }
     .lc-tag { font-size: 0.68rem; font-weight: 600; padding: 3px 9px; border-radius: 3px; background: #f8f8f8; color: #6b7280; }
 
-    /* ── TEACHERS ─ */
+     
     .teacher-sec { background: var(--cream); padding: 90px 7%; }
     .teacher-inner { max-width: 1300px; margin: 0 auto; }
     .london-tc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; }
@@ -229,7 +228,7 @@
   </div>
 </section>
 
-<!-- SUBJECTS -->
+ 
 <section class="subj-sec" id="london-subjects">
   <div class="subj-inner">
     <div class="eyebrow">Edexcel Curriculum</div>
@@ -246,7 +245,7 @@
   </div>
 </section>
 
-<!-- TEACHERS -->
+ 
 <section class="teacher-sec" id="london-teachers">
   <div class="teacher-inner">
     <div class="eyebrow">Our Specialists</div>
