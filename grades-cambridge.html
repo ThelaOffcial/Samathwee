@@ -15,14 +15,14 @@
     }
     body { font-family: 'Outfit', sans-serif; background: var(--white); overflow-x: hidden; }
 
-    /* HERO */
+ 
     .hero {
       position: relative; min-height: 100vh;
       background: linear-gradient(150deg, var(--cam) 0%, #002850 50%, #001a35 100%);
       display: flex; flex-direction: column; overflow: hidden;
     }
 
-    /* Cambridge arch pattern */
+    
     .arch-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
     .arch-bg::before {
       content: '';
@@ -43,7 +43,7 @@
     .hg1 { width:600px;height:400px; background:rgba(0,115,204,.25); top:0;right:0; }
     .hg2 { width:400px;height:400px; background:rgba(0,128,128,.15); bottom:-100px;left:0; }
 
-    /* NAV */
+     
     .nav {
       position: relative; z-index: 20;
       display: flex; align-items: center; justify-content: space-between;
@@ -62,7 +62,7 @@
       font-size: 1.2rem;
     }
 
-    /* HERO BODY */
+ 
     .hero-body {
       position: relative; z-index: 5;
       flex: 1; display: grid; grid-template-columns: 1fr 0.9fr;
@@ -106,7 +106,7 @@
     }
     .btn-cam-outline:hover { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.3); }
 
-    /* Right - CAIE pathway */
+     
     .pathway { animation: appear .7s ease 0.45s both; }
     .pathway-title { color: rgba(255,255,255,.4); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 20px; }
     .path-item {
@@ -126,7 +126,7 @@
 
     @keyframes appear { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
 
-    /* SUBJECTS */
+ 
     .subj-sec { background: var(--cream); padding: 90px 7%; }
     .subj-inner { max-width: 1300px; margin: 0 auto; }
 
@@ -154,7 +154,7 @@
     .cc-tags { display: flex; gap: 6px; flex-wrap: wrap; }
     .cc-tag { font-size: 0.68rem; font-weight: 600; padding: 3px 9px; border-radius: 4px; background: var(--light-blue); color: var(--cam2); }
 
-    /* TEACHERS */
+  
     .teacher-sec { background: #fff; padding: 90px 7%; }
     .teacher-inner { max-width: 1300px; margin: 0 auto; }
     .cam-tc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; }
@@ -246,7 +246,7 @@
   </div>
 </section>
 
-<!-- SUBJECTS -->
+ 
 <section class="subj-sec" id="cam-subjects">
   <div class="subj-inner">
     <div class="eyebrow">CAIE Curriculum</div>
@@ -264,7 +264,7 @@
   </div>
 </section>
 
-<!-- TEACHERS -->
+ 
 <section class="teacher-sec" id="cam-teachers">
   <div class="teacher-inner">
     <div class="eyebrow">Cambridge Faculty</div>
