@@ -14,14 +14,14 @@
     }
     body { font-family: 'Inter', sans-serif; background: var(--navy); color: #fff; overflow-x: hidden; }
 
-    /* ── HERO ─ */
+ 
     .hero {
       position: relative; min-height: 100vh;
       background: radial-gradient(ellipse at 80% 20%, #0d2a5a 0%, #060d1f 60%);
       display: flex; flex-direction: column; overflow: hidden;
     }
 
-    /* Starfield */
+    
     .stars { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
     .star {
       position: absolute; background: #fff; border-radius: 50%;
@@ -30,7 +30,7 @@
 
     @keyframes twinkle { 0%,100%{opacity:.3;transform:scale(1)} 50%{opacity:1;transform:scale(1.5)} }
 
-    /* Decorative line */
+     
     .deco-line {
       position: absolute; right: 0; top: 0; bottom: 0; width: 40%;
       background: linear-gradient(180deg, transparent, rgba(212,168,67,.08) 30%, rgba(212,168,67,.12) 60%, transparent);
@@ -38,7 +38,7 @@
       pointer-events: none; z-index: 0;
     }
 
-    /* NAV */
+ 
     .nav {
       position: relative; z-index: 20;
       display: flex; align-items: center; justify-content: space-between;
@@ -59,7 +59,7 @@
     }
     .nav-brand-dot { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; }
 
-    /* HERO BODY */
+     
     .hero-body {
       position: relative; z-index: 5;
       flex: 1; display: grid; grid-template-columns: 1fr 1fr;
@@ -113,7 +113,7 @@
     }
     .btn-outline-gold:hover { background: rgba(212,168,67,.1); border-color: var(--gold); }
 
-    /* Right side - stream cards */
+     
     .stream-cards { display: flex; flex-direction: column; gap: 16px; animation: fadeIn .8s ease 0.5s both; }
     .stream-card {
       border: 1px solid rgba(255,255,255,.08);
@@ -135,7 +135,7 @@
 
     @keyframes fadeIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 
-    /* ── SUBJECTS ─ */
+    
     .subj-sec { padding: 90px 7%; border-top: 1px solid rgba(255,255,255,.06); }
     .subj-inner { max-width: 1300px; margin: 0 auto; }
 
@@ -149,7 +149,7 @@
     }
     .sec-p { color: var(--muted); font-size: 1rem; line-height: 1.75; max-width: 520px; margin-bottom: 50px; }
 
-    /* Stream filter */
+    
     .stream-filter { display: flex; gap: 10px; margin-bottom: 40px; flex-wrap: wrap; }
     .sf-btn {
       padding: 8px 22px; border-radius: 4px; font-size: 0.82rem; font-weight: 600;
@@ -181,7 +181,7 @@
     .al-topics { display: flex; gap: 6px; flex-wrap: wrap; }
     .al-topic { font-size: 0.68rem; font-weight: 600; padding: 3px 10px; border-radius: 3px; background: rgba(255,255,255,.06); color: var(--muted); }
 
-    /* ── TEACHERS ─ */
+   
     .teacher-sec { padding: 90px 7%; border-top: 1px solid rgba(255,255,255,.06); }
     .teacher-inner { max-width: 1300px; margin: 0 auto; }
     .teacher-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
@@ -304,7 +304,7 @@
   </div>
 </section>
 
-<!-- SUBJECTS -->
+ 
 <section class="subj-sec" id="al-subjects">
   <div class="subj-inner">
     <div class="sec-label">✦ Full Curriculum</div>
@@ -323,7 +323,7 @@
   </div>
 </section>
 
-<!-- TEACHERS -->
+ 
 <section class="teacher-sec" id="al-teachers">
   <div class="teacher-inner">
     <div class="sec-label">✦ Our Faculty</div>
@@ -342,7 +342,7 @@
 </footer>
 
 <script>
-// Starfield
+ 
 const starsEl = document.getElementById('stars');
 for (let i = 0; i < 80; i++) {
   const s = document.createElement('div');
