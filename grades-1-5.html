@@ -14,7 +14,6 @@
     }
     body { font-family: 'Nunito', sans-serif; background: #fffdf5; overflow-x: hidden; }
  
-    /* ─── HERO ─ */
     .hero {
       position: relative; min-height: 100vh;
       background: linear-gradient(160deg, #fff9e6 0%, #fff0f5 40%, #f0f8ff 80%, #f5fff0 100%);
@@ -129,8 +128,7 @@
       to { opacity: 1; transform: scale(1) translateY(0); }
     }
  
-    /* ─── SUBJECTS ─ */
-    .subjects-sec { background: #fff; padding: 90px 6%; }
+     .subjects-sec { background: #fff; padding: 90px 6%; }
     .subjects-inner { max-width: 1300px; margin: 0 auto; }
  
     .sec-label {
@@ -164,8 +162,7 @@
       margin-top: 8px;
     }
  
-    /* ─── TEACHERS ─ */
-    .teachers-sec {
+     .teachers-sec {
       background: linear-gradient(160deg, #fff9e6 0%, #f0f8ff 100%);
       padding: 90px 6%;
     }
@@ -182,8 +179,7 @@
     .teacher-card.vis { opacity: 1; transform: translateY(0); }
     .teacher-card:hover { transform: translateY(-10px); box-shadow: 0 24px 56px rgba(0,0,0,.12); border-color: #ffd93d; }
  
-    /* Circle photo above name */
-    .teacher-avatar {
+     .teacher-avatar {
       width: 90px; height: 90px; border-radius: 50%;
       margin: 0 auto 18px;
       display: flex; align-items: center; justify-content: center;
@@ -204,8 +200,7 @@
     }
     .teacher-exp { font-size: 0.85rem; color: #6b7280; line-height: 1.6; }
  
-    /* ─── BACK CTA ─ */
-    .back-cta {
+     .back-cta {
       background: linear-gradient(135deg, #ff6b6b, #ee5a24);
       padding: 60px 6%; text-align: center;
     }
@@ -270,8 +265,7 @@
   </div>
 </section>
  
-<!-- SUBJECTS -->
-<section class="subjects-sec" id="subjects-1-5">
+ <section class="subjects-sec" id="subjects-1-5">
   <div class="subjects-inner">
     <div class="sec-label">📘 Curriculum</div>
     <h2 class="sec-title">Our Subjects</h2>
@@ -280,8 +274,7 @@
   </div>
 </section>
  
-<!-- TEACHERS -->
-<section class="teachers-sec" id="teachers-1-5">
+ <section class="teachers-sec" id="teachers-1-5">
   <div class="teachers-inner">
     <div class="sec-label">👩‍🏫 Our Educators</div>
     <h2 class="sec-title">Meet the Teachers</h2>
@@ -296,13 +289,11 @@
   <a href="index.html">← Back to All Programs</a>
 </div>
  
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
  
 <script>
-// ── Firebase Config ──
-const firebaseConfig = {
+ const firebaseConfig = {
   apiKey:            "AIzaSyDlBLrs-WquiVIivoOCuJq2g7BFhNwAtas",
   authDomain:        "samathwee.firebaseapp.com",
   projectId:         "samathwee",
@@ -315,11 +306,9 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
  
-// This page's Firebase key — change for other grade pages
-const GRADE_KEY = 'grade1_5';
+ const GRADE_KEY = 'grade1_5';
  
-// Accent colors for subjects
-const ACCENTS = ['#ff6b6b','#3b82f6','#8b5cf6','#22c55e','#eab308','#a855f7','#f97316','#16a34a','#0ea5e9','#f59e0b'];
+ const ACCENTS = ['#ff6b6b','#3b82f6','#8b5cf6','#22c55e','#eab308','#a855f7','#f97316','#16a34a','#0ea5e9','#f59e0b'];
 const BG_COLORS = ['#fff5f5','#eff6ff','#f5f3ff','#f0fdf4','#fefce8','#fdf4ff','#fff7ed','#f0fdf4','#f0f9ff','#fffbeb'];
  
 async function loadPage() {
@@ -385,8 +374,7 @@ function renderTeachers(teachers) {
     c.className = 'teacher-card';
     c.style.transitionDelay = `${i * 0.1}s`;
  
-    // Avatar: use photo if available, else initials
-    let avatarHtml;
+     let avatarHtml;
     if (t.image) {
       avatarHtml = `<div class="teacher-avatar"><img src="${t.image}" alt="${t.name}" onerror="this.parentElement.innerHTML='<span>${(t.name||'T').charAt(0)}</span>'; this.parentElement.style.background='${GRAD[i%GRAD.length]}'" /></div>`;
     } else {
