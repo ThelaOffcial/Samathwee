@@ -1,10 +1,4 @@
-// =============================================
-//  SAMATHWEE – admin.js
-//  Firebase Auth + Realtime Database ONLY
-//  NO Firestore used anywhere in this file
-// =============================================
  
-// ── PASTE YOUR FIREBASE CONFIG HERE ──────────
 const firebaseConfig = {
   apiKey:            "AIzaSyDlBLrs-WquiVIivoOCuJq2g7BFhNwAtas",
   authDomain:        "samathwee.firebaseapp.com",
@@ -18,10 +12,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db   = firebase.database(); // Realtime Database ONLY
- 
-// ══════════════════════════════════════════════
-//  CORE RTDB HELPERS
-// ══════════════════════════════════════════════
+  
  
 function rtdbWrite(path, value) {
   const clean = JSON.parse(JSON.stringify(value));
@@ -32,9 +23,7 @@ function rtdbRead(path) {
   return db.ref(path).once('value').then(snap => snap.val());
 }
  
-// ══════════════════════════════════════════════
-//  AUTH
-// ══════════════════════════════════════════════
+ 
  
 auth.onAuthStateChanged(user => {
   if (user) {
@@ -127,9 +116,7 @@ function friendlyAuthError(code) {
   return map[code] || 'Authentication failed. Try again.';
 }
  
-// ══════════════════════════════════════════════
-//  UI HELPERS
-// ══════════════════════════════════════════════
+ 
  
 function showToast(msg, type = 'success') {
   const t = document.getElementById('toast');
@@ -185,9 +172,7 @@ window.addEventListener('load', () => {
   }
 });
  
-// ══════════════════════════════════════════════
-//  LOAD ALL DATA
-// ══════════════════════════════════════════════
+ 
  
 async function loadAllData() {
   await Promise.all([
@@ -203,9 +188,7 @@ async function loadAllData() {
   ]);
 }
  
-// ══════════════════════════════════════════════
-//  GENERIC SAVE
-// ══════════════════════════════════════════════
+ 
  
 async function saveData(path, data, label) {
   setSaveStatus('saving');
@@ -220,9 +203,7 @@ async function saveData(path, data, label) {
   }
 }
  
-// ══════════════════════════════════════════════
-//  HERO
-// ══════════════════════════════════════════════
+ 
  
 async function loadHero() {
   try {
@@ -243,9 +224,7 @@ async function saveHero() {
   }, 'Hero section saved!');
 }
  
-// ══════════════════════════════════════════════
-//  STATS
-// ══════════════════════════════════════════════
+ 
  
 async function loadStats() {
   try {
@@ -268,9 +247,7 @@ async function saveStats() {
   }, 'Statistics saved!');
 }
  
-// ══════════════════════════════════════════════
-//  CENTER
-// ══════════════════════════════════════════════
+ 
  
 async function loadCenter() {
   try {
@@ -295,9 +272,7 @@ async function saveCenter() {
   }, 'Center info saved!');
 }
  
-// ══════════════════════════════════════════════
-//  CONTACT
-// ══════════════════════════════════════════════
+ 
  
 async function loadContact() {
   try {
@@ -318,9 +293,7 @@ async function saveContact() {
   }, 'Contact details saved!');
 }
  
-// ══════════════════════════════════════════════
-//  FOOTER
-// ══════════════════════════════════════════════
+ 
  
 async function loadFooter() {
   try {
@@ -335,9 +308,7 @@ async function saveFooter() {
   }, 'Footer saved!');
 }
  
-// ══════════════════════════════════════════════
-//  GRADES
-// ══════════════════════════════════════════════
+ 
  
 let gradesData = [];
  
@@ -422,9 +393,7 @@ async function saveGrades() {
   await saveData('grades', toSave, 'Grades saved!');
 }
  
-// ══════════════════════════════════════════════
-//  SUBJECTS
-// ══════════════════════════════════════════════
+ 
  
 let subjectsData = [];
  
@@ -496,9 +465,7 @@ async function saveSubjects() {
   await saveData('subjects', toSave, 'Subjects saved!');
 }
  
-// ══════════════════════════════════════════════
-//  TEACHERS (main page — with Cloudinary upload)
-// ══════════════════════════════════════════════
+ 
  
 const CLOUDINARY_CLOUD_NAME = 'drmmn0xp3';
 const CLOUDINARY_UPLOAD_PRESET = 'samathwee';
@@ -656,12 +623,7 @@ async function handleTeacherImageUpload(event, index) {
   };
   xhr.send(formData);
 }
- 
-// ══════════════════════════════════════════════
-//  SUB PAGE DATA — per-grade teachers & subjects
-// ══════════════════════════════════════════════
- 
-// Grade keys must match the Firebase paths and HTML section IDs
+  
 const GRADE_PAGES = [
   { key: 'grade1_5',     label: '🌟 Grade 1–5',      color: '#ff6b6b' },
   { key: 'grade6_ol',    label: '📘 Grade 6–O/L',    color: '#8b5cf6' },
@@ -670,7 +632,7 @@ const GRADE_PAGES = [
   { key: 'grade_london', label: '🇬🇧 London',         color: '#10b981' },
 ];
  
-// Store data per grade
+ 
 const subPageData = {};
 GRADE_PAGES.forEach(g => {
   subPageData[g.key] = { teachers: [], subjects: [] };
@@ -696,8 +658,7 @@ async function loadAllSubPageData() {
   }
 }
  
-// ── SUB PAGE TEACHERS ──────────────────────────
- 
+  
 function renderSubPageTeachers(gradeKey) {
   const list = document.getElementById(`sp-teachers-${gradeKey}`);
   if (!list) return;
@@ -770,8 +731,7 @@ function removeSubPageTeacher(gradeKey, i) {
 }
  
 async function saveSubPageTeachers(gradeKey) {
-  // Collect values from DOM
-  const rows = document.querySelectorAll(`.sp-teacher-row[data-grade="${gradeKey}"]`);
+   const rows = document.querySelectorAll(`.sp-teacher-row[data-grade="${gradeKey}"]`);
   const teachers = [];
   rows.forEach((row, i) => {
     const t = { image: subPageData[gradeKey].teachers[i]?.image || '' };
@@ -829,8 +789,7 @@ async function handleSubPageImageUpload(event, gradeKey, index) {
   xhr.send(formData);
 }
  
-// ── SUB PAGE SUBJECTS ──────────────────────────
- 
+  
 function renderSubPageSubjects(gradeKey) {
   const list = document.getElementById(`sp-subjects-${gradeKey}`);
   if (!list) return;
