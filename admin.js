@@ -1,4 +1,4 @@
- 
+
 const firebaseConfig = {
   apiKey:            "AIzaSyDlBLrs-WquiVIivoOCuJq2g7BFhNwAtas",
   authDomain:        "samathwee.firebaseapp.com",
@@ -11,8 +11,8 @@ const firebaseConfig = {
  
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const db   = firebase.database(); // Realtime Database ONLY
-  
+const db   = firebase.database(); 
+
  
 function rtdbWrite(path, value) {
   const clean = JSON.parse(JSON.stringify(value));
@@ -23,7 +23,7 @@ function rtdbRead(path) {
   return db.ref(path).once('value').then(snap => snap.val());
 }
  
- 
+
  
 auth.onAuthStateChanged(user => {
   if (user) {
@@ -116,7 +116,7 @@ function friendlyAuthError(code) {
   return map[code] || 'Authentication failed. Try again.';
 }
  
- 
+
  
 function showToast(msg, type = 'success') {
   const t = document.getElementById('toast');
@@ -172,7 +172,7 @@ window.addEventListener('load', () => {
   }
 });
  
- 
+
  
 async function loadAllData() {
   await Promise.all([
@@ -188,7 +188,7 @@ async function loadAllData() {
   ]);
 }
  
- 
+
  
 async function saveData(path, data, label) {
   setSaveStatus('saving');
@@ -203,7 +203,7 @@ async function saveData(path, data, label) {
   }
 }
  
- 
+
  
 async function loadHero() {
   try {
@@ -224,7 +224,7 @@ async function saveHero() {
   }, 'Hero section saved!');
 }
  
- 
+
  
 async function loadStats() {
   try {
@@ -247,7 +247,7 @@ async function saveStats() {
   }, 'Statistics saved!');
 }
  
- 
+
  
 async function loadCenter() {
   try {
@@ -272,7 +272,7 @@ async function saveCenter() {
   }, 'Center info saved!');
 }
  
- 
+
  
 async function loadContact() {
   try {
@@ -293,7 +293,7 @@ async function saveContact() {
   }, 'Contact details saved!');
 }
  
- 
+
  
 async function loadFooter() {
   try {
@@ -308,7 +308,7 @@ async function saveFooter() {
   }, 'Footer saved!');
 }
  
- 
+
  
 let gradesData = [];
  
@@ -393,7 +393,7 @@ async function saveGrades() {
   await saveData('grades', toSave, 'Grades saved!');
 }
  
- 
+
  
 let subjectsData = [];
  
@@ -465,7 +465,7 @@ async function saveSubjects() {
   await saveData('subjects', toSave, 'Subjects saved!');
 }
  
- 
+
  
 const CLOUDINARY_CLOUD_NAME = 'drmmn0xp3';
 const CLOUDINARY_UPLOAD_PRESET = 'samathwee';
@@ -623,7 +623,8 @@ async function handleTeacherImageUpload(event, index) {
   };
   xhr.send(formData);
 }
-  
+ 
+
 const GRADE_PAGES = [
   { key: 'grade1_5',     label: '🌟 Grade 1–5',      color: '#ff6b6b' },
   { key: 'grade6_ol',    label: '📘 Grade 6–O/L',    color: '#8b5cf6' },
@@ -631,7 +632,6 @@ const GRADE_PAGES = [
   { key: 'grade_cambridge', label: '🏛️ Cambridge',   color: '#f59e0b' },
   { key: 'grade_london', label: '🇬🇧 London',         color: '#10b981' },
 ];
- 
  
 const subPageData = {};
 GRADE_PAGES.forEach(g => {
@@ -658,7 +658,7 @@ async function loadAllSubPageData() {
   }
 }
  
-  
+ 
 function renderSubPageTeachers(gradeKey) {
   const list = document.getElementById(`sp-teachers-${gradeKey}`);
   if (!list) return;
@@ -731,7 +731,7 @@ function removeSubPageTeacher(gradeKey, i) {
 }
  
 async function saveSubPageTeachers(gradeKey) {
-   const rows = document.querySelectorAll(`.sp-teacher-row[data-grade="${gradeKey}"]`);
+  const rows = document.querySelectorAll(`.sp-teacher-row[data-grade="${gradeKey}"]`);
   const teachers = [];
   rows.forEach((row, i) => {
     const t = { image: subPageData[gradeKey].teachers[i]?.image || '' };
@@ -789,7 +789,7 @@ async function handleSubPageImageUpload(event, gradeKey, index) {
   xhr.send(formData);
 }
  
-  
+ 
 function renderSubPageSubjects(gradeKey) {
   const list = document.getElementById(`sp-subjects-${gradeKey}`);
   if (!list) return;
@@ -798,9 +798,8 @@ function renderSubPageSubjects(gradeKey) {
     list.innerHTML = '<p class="empty-msg">No subjects yet. Click ＋ Add Subject.</p>';
     return;
   }
-  const isOL = gradeKey === 'grade6_ol';
   list.innerHTML = subjects.map((s, i) => `
-    <div class="sp-subject-row" data-grade="${gradeKey}" data-idx="${i}" style="${isOL ? 'flex-wrap:wrap;' : ''}">
+    <div class="sp-subject-row" data-grade="${gradeKey}" data-idx="${i}">
       <div class="form-group small">
         <label>Icon</label>
         <input type="text" data-field="icon" value="${escHtml(s.icon)}" placeholder="📚" />
@@ -809,30 +808,6 @@ function renderSubPageSubjects(gradeKey) {
         <label>Subject Name</label>
         <input type="text" data-field="name" value="${escHtml(s.name)}" placeholder="Mathematics" />
       </div>
-      ${isOL ? `
-      <div class="form-group small">
-        <label>Category</label>
-        <select data-field="cat" style="height:40px;border-radius:10px;border:1.5px solid #e5e7eb;padding:0 10px;font-size:0.88rem;">
-          <option value="">-- None --</option>
-          <option value="core"       ${s.cat==='core'       ?'selected':''}>Core</option>
-          <option value="science"    ${s.cat==='science'    ?'selected':''}>Science</option>
-          <option value="humanities" ${s.cat==='humanities' ?'selected':''}>Humanities</option>
-          <option value="arts"       ${s.cat==='arts'       ?'selected':''}>Arts &amp; Tech</option>
-        </select>
-      </div>
-      <div class="form-group small">
-        <label>Grades Range</label>
-        <input type="text" data-field="grades" value="${escHtml(s.grades || 'Grade 6\u201311')}" placeholder="Grade 6\u201311" />
-      </div>
-      <div class="form-group" style="flex-basis:100%;">
-        <label>Description</label>
-        <input type="text" data-field="desc" value="${escHtml(s.desc)}" placeholder="Brief subject description shown on the grade page\u2026" />
-      </div>
-      <div class="form-group" style="flex-basis:100%;">
-        <label>Tags <span style="font-weight:400;color:#9ca3af;">(comma-separated, e.g. Grammar, Essay, Literature)</span></label>
-        <input type="text" data-field="tags" value="${escHtml(Array.isArray(s.tags) ? s.tags.join(', ') : (s.tags || ''))}" placeholder="Grammar, Essay, Literature" />
-      </div>
-      ` : `
       <div class="form-group">
         <label>Teacher Name</label>
         <input type="text" data-field="teacher" value="${escHtml(s.teacher)}" placeholder="Mr. Perera" />
@@ -841,20 +816,14 @@ function renderSubPageSubjects(gradeKey) {
         <label>Monthly Fee (Rs.)</label>
         <input type="text" data-field="fee" value="${escHtml(s.fee)}" placeholder="2500" />
       </div>
-      `}
       <div class="remove-btn-wrap">
-        <button class="btn-remove" onclick="removeSubPageSubject('${gradeKey}', ${i})">&#x2715; Remove</button>
+        <button class="btn-remove" onclick="removeSubPageSubject('${gradeKey}', ${i})">✕ Remove</button>
       </div>
     </div>`).join('');
 }
  
 function addSubPageSubject(gradeKey) {
-  const isOL = gradeKey === 'grade6_ol';
-  subPageData[gradeKey].subjects.push(
-    isOL
-      ? { icon: '', name: '', cat: '', grades: 'Grade 6\u201311', desc: '', tags: '' }
-      : { icon: '', name: '', teacher: '', fee: '' }
-  );
+  subPageData[gradeKey].subjects.push({ icon: '', name: '', teacher: '', fee: '' });
   renderSubPageSubjects(gradeKey);
 }
  

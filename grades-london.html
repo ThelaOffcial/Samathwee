@@ -13,13 +13,14 @@
     }
     body { font-family: 'Work Sans', sans-serif; background: var(--cream); overflow-x: hidden; }
 
- 
+
     .hero {
       position: relative; min-height: 100vh;
       background: linear-gradient(160deg, var(--navy) 0%, #0d1b45 50%, #16213e 100%);
       display: flex; flex-direction: column; overflow: hidden;
     }
- 
+
+    
     .flag-deco {
       position: absolute; inset: 0; pointer-events: none; z-index: 0; opacity: 0.04;
       background:
@@ -98,7 +99,7 @@
     }
     .btn-gold-outline:hover { background: rgba(198,162,39,.1); border-color: var(--gold); }
 
-     
+    
     .qual-panel { animation: riseIn .7s ease 0.4s both; }
     .qp-title { color: rgba(255,255,255,.4); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 20px; }
     .qual-item {
@@ -144,7 +145,7 @@
     .lc-tags { display: flex; gap: 6px; flex-wrap: wrap; }
     .lc-tag { font-size: 0.68rem; font-weight: 600; padding: 3px 9px; border-radius: 3px; background: #f8f8f8; color: #6b7280; }
 
-     
+   
     .teacher-sec { background: var(--cream); padding: 90px 7%; }
     .teacher-inner { max-width: 1300px; margin: 0 auto; }
     .london-tc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; }
@@ -228,7 +229,7 @@
   </div>
 </section>
 
- 
+
 <section class="subj-sec" id="london-subjects">
   <div class="subj-inner">
     <div class="eyebrow">Edexcel Curriculum</div>
@@ -245,7 +246,7 @@
   </div>
 </section>
 
- 
+
 <section class="teacher-sec" id="london-teachers">
   <div class="teacher-inner">
     <div class="eyebrow">Our Specialists</div>
@@ -260,91 +261,103 @@
   <p>© 2025 Samathwee Higher Education Center · Panadura & Moratuwa, Sri Lanka</p>
 </footer>
 
+ 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+ 
 <script>
-const subjects = [
-  { icon:'🔤', name:'English Language', code:'4EA1', level:'igcse', desc:'Pearson Edexcel English Language IGCSE focusing on reading, writing and communication skills.', tags:['Reading','Writing','Communication'], ibg:'#dbeafe', ic:'#3b82f6' },
-  { icon:'📚', name:'English Literature', code:'4ET1', level:'igcse', desc:'Study of prose, poetry and drama for the Edexcel English Literature examination.', tags:['Prose','Poetry','Drama'], ibg:'#ede9fe', ic:'#7c3aed' },
-  { icon:'🔢', name:'Mathematics', code:'4MA1', level:'igcse', desc:'Edexcel IGCSE Mathematics covering number, algebra, shape and statistics comprehensively.', tags:['Number','Algebra','Geometry','Statistics'], ibg:'#ede9fe', ic:'#8b5cf6' },
-  { icon:'⚛️', name:'Physics', code:'4PH1 / WPH', level:'both', desc:'Edexcel IGCSE and International A-Level Physics with practical assessment preparation.', tags:['Mechanics','Waves','Electricity','Modern'], ibg:'#dbeafe', ic:'#2563eb' },
-  { icon:'🧪', name:'Chemistry', code:'4CH1 / WCH', level:'both', desc:'Edexcel Chemistry from IGCSE through International A-Level with full syllabus coverage.', tags:['Organic','Inorganic','Physical'], ibg:'#dcfce7', ic:'#16a34a' },
-  { icon:'🔬', name:'Biology', code:'4BI1 / WBI', level:'both', desc:'Edexcel Biology IGCSE and A-Level with genetics, ecology and practical investigation skills.', tags:['Genetics','Ecology','Physiology'], ibg:'#dcfce7', ic:'#15803d' },
-  { icon:'📈', name:'Economics', code:'4EC1 / WEC', level:'both', desc:'Micro and macroeconomics from IGCSE foundation through International A-Level.', tags:['Micro','Macro','Market Analysis'], ibg:'#fef3c7', ic:'#d97706' },
-  { icon:'🏢', name:'Business Studies', code:'4BS1 / WBS', level:'both', desc:'Business organisation, management, finance and marketing for Edexcel examinations.', tags:['Management','Finance','Marketing'], ibg:'#e0f2fe', ic:'#0284c7' },
-  { icon:'💻', name:'ICT / Computer Science', code:'4IT1', level:'igcse', desc:'Edexcel ICT IGCSE covering systems, programming, data and digital communication.', tags:['Programming','Systems','Data'], ibg:'#f5f3ff', ic:'#7c3aed' },
-  { icon:'🧠', name:'Psychology', code:'WPS', level:'al', desc:'Pearson Edexcel International A-Level Psychology — research methods, cognition, social topics.', tags:['Cognition','Social','Research'], ibg:'#fce7f3', ic:'#ec4899' },
-  { icon:'👥', name:'Sociology', code:'WSO', level:'al', desc:'International A-Level Sociology: culture, social stratification, identity and global society.', tags:['Culture','Stratification','Identity'], ibg:'#e0f2fe', ic:'#0891b2' },
-  { icon:'∞', name:'Further Mathematics', code:'WFM', level:'al', desc:'Edexcel International A-Level Further Maths for high-achieving mathematics students.', tags:['Pure Maths','Mechanics','Statistics'], ibg:'#f5f3ff', ic:'#6d28d9' },
-];
-
-const teachers = [
-  { initials:'JH', name:'Mr. James Handunnetti', role:'English Specialist', board:'Edexcel IGCSE/A-Level', exp:'Trained Pearson examiner. 11 years UK curriculum English. Expert in exam technique coaching.', qual:'MA English Literature, University of Colombo', bg:'#3b82f6' },
-  { initials:'MP', name:'Ms. Michelle Peiris', role:'Sciences Teacher', board:'IGCSE Physics & Chemistry', exp:'UK-trained educator with 9 years Edexcel science delivery. Strong focus on practicals.', qual:'B.Sc Chemistry, University of Kelaniya', bg:'#16a34a' },
-  { initials:'RA', name:'Mr. Ravi Abeysekara', role:'Mathematics Specialist', board:'IGCSE & A-Level Maths', exp:'12 years teaching Edexcel maths. 98% pass rate in IGCSE Maths examinations.', qual:'B.Sc Applied Mathematics, University of Colombo', bg:'#7c3aed' },
-  { initials:'CW', name:'Ms. Chamari Wickrama', role:'Economics & Business', board:'Edexcel A-Level', exp:'Former HSBC analyst. 8 years teaching International A-Level Economics and Business.', qual:'MBA Finance, University of Sri Jayewardenepura', bg:'#d97706' },
-];
-
-const levelLabels = { igcse: 'IGCSE', al: 'A-Level', both: 'IGCSE + A-Level' };
-const levelColors = { igcse: { bg: '#b2222218', c: '#b22222' }, al: { bg: '#1a237e18', c: '#9fa8da' }, both: { bg: '#c6a22718', c: '#c6a227' } };
-
-function renderLondon(filter) {
+const firebaseConfig = {
+  apiKey:            "AIzaSyDlBLrs-WquiVIivoOCuJq2g7BFhNwAtas",
+  authDomain:        "samathwee.firebaseapp.com",
+  projectId:         "samathwee",
+  storageBucket:     "samathwee.firebasestorage.app",
+  messagingSenderId: "1094489861098",
+  appId:             "1:1094489861098:web:e61feb13a5f69a8b78e093",
+  databaseURL:       "https://samathwee-default-rtdb.firebaseio.com"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const GRADE_KEY = 'grade_london';
+ 
+const ACCENTS = ['#3b82f6','#7c3aed','#8b5cf6','#2563eb','#16a34a','#15803d','#d97706','#0284c7','#7c3aed','#ec4899','#0891b2','#6d28d9'];
+const GRAD = ['linear-gradient(135deg,#3b82f6,#60a5fa)','linear-gradient(135deg,#16a34a,#4ade80)','linear-gradient(135deg,#7c3aed,#a78bfa)','linear-gradient(135deg,#d97706,#fbbf24)','linear-gradient(135deg,#0891b2,#38bdf8)','linear-gradient(135deg,#ec4899,#f9a8d4)'];
+ 
+async function loadPage() {
+  try {
+    const snap = await db.ref('subpages/' + GRADE_KEY).once('value');
+    const data = snap.val() || {};
+    const subjects = Array.isArray(data.subjects) ? data.subjects.filter(Boolean) : (data.subjects ? Object.values(data.subjects).filter(Boolean) : []);
+    const teachers = Array.isArray(data.teachers) ? data.teachers.filter(Boolean) : (data.teachers ? Object.values(data.teachers).filter(Boolean) : []);
+    if (subjects.length) renderSubjects(subjects);
+    if (teachers.length) renderTeachers(teachers);
+  } catch(e) { console.error(e); }
+}
+ 
+function renderSubjects(subjects) {
   const grid = document.getElementById('londonGrid');
+  if (!grid) return;
   grid.innerHTML = '';
-  const list = filter === 'all' ? subjects : subjects.filter(s => s.level === filter || s.level === 'both');
-  list.forEach((s, i) => {
-    const lc = levelColors[s.level] || levelColors.both;
+  const levelFilter = document.getElementById('levelFilter');
+  if (levelFilter) levelFilter.style.display = 'none';
+  subjects.forEach((s, i) => {
+    const ic = s.ic || ACCENTS[i % ACCENTS.length];
+    const ibg = s.ibg || ic + '22';
     const c = document.createElement('div');
     c.className = 'london-card';
-    c.style.transitionDelay = `${i * 0.06}s`;
+    c.style.transitionDelay = i * 0.06 + 's';
     c.innerHTML = `
       <div class="lc-head">
-        <div class="lc-icon" style="background:${s.ibg}">${s.icon}</div>
+        <div class="lc-icon" style="background:${ibg}">${s.icon || '📖'}</div>
         <div>
-          <div class="lc-name">${s.name}</div>
-          <div style="display:flex;gap:6px;margin-top:4px;align-items:center">
-            <span class="lc-level" style="background:${lc.bg};color:${lc.c}">${levelLabels[s.level]}</span>
-            <span class="lc-code">${s.code}</span>
-          </div>
+          <div class="lc-name">${s.name || ''}</div>
+          ${s.teacher ? '<div style="display:flex;gap:6px;margin-top:4px"><span class="lc-level" style="background:' + ic + '22;color:' + ic + '">👨‍🏫 ' + s.teacher + '</span></div>' : ''}
         </div>
       </div>
-      <div class="lc-desc">${s.desc}</div>
-      <div class="lc-tags">${s.tags.map(t => `<span class="lc-tag">${t}</span>`).join('')}</div>
+      ${s.fee ? '<div class="lc-desc">💰 Rs. ' + s.fee + ' / month</div>' : ''}
     `;
     grid.appendChild(c);
     requestAnimationFrame(() => c.classList.add('vis'));
   });
+  observeCards('.london-card');
 }
-renderLondon('all');
-
-document.getElementById('levelFilter').addEventListener('click', e => {
-  const btn = e.target.closest('.lf');
-  if (!btn) return;
-  document.querySelectorAll('.lf').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderLondon(btn.dataset.level);
-});
-
-const tg = document.getElementById('londonTeachers');
-teachers.forEach((t, i) => {
-  const c = document.createElement('div');
-  c.className = 'ltc';
-  c.style.transitionDelay = `${i * 0.1}s`;
-  c.innerHTML = `
-    <div class="ltc-top">
-      <div class="ltc-av" style="background:${t.bg}">${t.initials}</div>
-      <div>
-        <div class="ltc-name">${t.name}</div>
-        <div class="ltc-role">${t.role}</div>
+ 
+function renderTeachers(teachers) {
+  const tg = document.getElementById('londonTeachers');
+  if (!tg) return;
+  tg.innerHTML = '';
+  teachers.forEach((t, i) => {
+    const bg = GRAD[i % GRAD.length];
+    const solidBg = ACCENTS[i % ACCENTS.length];
+    const initials = (t.name || 'T').split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+    const c = document.createElement('div');
+    c.className = 'ltc';
+    c.style.transitionDelay = i * 0.1 + 's';
+    const avatarContent = t.image
+      ? '<img src="' + t.image + '" alt="' + (t.name||'') + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.parentElement.textContent=\'' + initials + '\'" />'
+      : initials;
+    c.innerHTML = `
+      <div class="ltc-top">
+        <div class="ltc-av" style="background:${bg};overflow:hidden">${avatarContent}</div>
+        <div>
+          <div class="ltc-name">${t.name || ''}</div>
+          ${t.qualification ? '<div class="ltc-role">' + t.qualification + '</div>' : ''}
+        </div>
       </div>
-    </div>
-    <div class="ltc-board" style="background:${t.bg}22;color:${t.bg}">${t.board}</div>
-    <div class="ltc-exp">${t.exp}</div>
-    <div class="ltc-qual">🎓 ${t.qual}</div>
-  `;
-  tg.appendChild(c);
-});
-
-const obs = new IntersectionObserver(e => e.forEach(x => x.isIntersecting && x.target.classList.add('vis')), { threshold: 0.1 });
-document.querySelectorAll('.london-card,.ltc').forEach(el => obs.observe(el));
+      ${t.subject ? '<div class="ltc-board" style="background:' + solidBg + '22;color:' + solidBg + '">' + t.subject + '</div>' : ''}
+      ${t.experience ? '<div class="ltc-exp">🕐 ' + t.experience + '</div>' : ''}
+      ${t.bio ? '<div class="ltc-qual">' + t.bio + '</div>' : ''}
+    `;
+    tg.appendChild(c);
+  });
+  observeCards('.ltc');
+}
+ 
+function observeCards(sel) {
+  const obs = new IntersectionObserver(e => e.forEach(x => x.isIntersecting && x.target.classList.add('vis')), { threshold: 0.1 });
+  document.querySelectorAll(sel).forEach(el => obs.observe(el));
+}
+ 
+loadPage();
 </script>
 </body>
 </html>

@@ -14,13 +14,14 @@
     }
     body { font-family: 'DM Sans', sans-serif; background: #0f0820; overflow-x: hidden; }
 
-     .hero {
+    
+    .hero {
       position: relative; min-height: 100vh;
       background: linear-gradient(135deg, #0f0820 0%, #1e1240 50%, #2d1a60 100%);
       display: flex; flex-direction: column; overflow: hidden;
     }
 
-     .hero::before {
+    .hero::before {
       content: '';
       position: absolute; inset: 0;
       background-image:
@@ -39,7 +40,7 @@
 
     @keyframes glowPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
 
-     .nav {
+    .nav {
       position: relative; z-index: 20;
       display: flex; align-items: center; justify-content: space-between;
       padding: 24px 6%;
@@ -59,7 +60,7 @@
       padding: 10px 24px; border-radius: 50px;
     }
 
-     .hero-body {
+    .hero-body {
       position: relative; z-index: 5;
       flex: 1; display: flex; align-items: center;
       padding: 40px 6% 80px; gap: 80px;
@@ -115,7 +116,7 @@
     }
     .btn-ghost:hover { background: rgba(255,255,255,.14); transform: translateY(-4px); }
 
-     .hero-panel {
+    .hero-panel {
       flex: 0 0 360px;
       background: rgba(255,255,255,.05);
       border: 1px solid rgba(255,255,255,.1);
@@ -135,7 +136,7 @@
 
     @keyframes slideUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
 
-     .subj-sec { background: #fff; padding: 90px 6%; }
+    .subj-sec { background: #fff; padding: 90px 6%; }
     .subj-inner { max-width: 1300px; margin: 0 auto; }
 
     .sec-eyebrow {
@@ -150,7 +151,7 @@
     }
     .sec-p { color: var(--muted); font-size: 1rem; line-height: 1.75; max-width: 520px; margin-bottom: 50px; }
 
-     .tabs { display: flex; gap: 10px; margin-bottom: 40px; flex-wrap: wrap; }
+    .tabs { display: flex; gap: 10px; margin-bottom: 40px; flex-wrap: wrap; }
     .tab {
       padding: 8px 22px; border-radius: 50px;
       font-weight: 700; font-size: 0.82rem; cursor: pointer;
@@ -184,7 +185,8 @@
     .sc-tags { display: flex; gap: 6px; flex-wrap: wrap; }
     .sc-tag { font-size: 0.7rem; font-weight: 700; padding: 3px 10px; border-radius: 50px; }
 
-     .teacher-sec { background: #f8f4ff; padding: 90px 6%; }
+     
+    .teacher-sec { background: #f8f4ff; padding: 90px 6%; }
     .teacher-inner { max-width: 1300px; margin: 0 auto; }
     .teacher-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
 
@@ -280,7 +282,8 @@
   </div>
 </section>
 
- <section class="subj-sec" id="subj-ol">
+ 
+<section class="subj-sec" id="subj-ol">
   <div class="subj-inner">
     <div class="sec-eyebrow">Complete Curriculum</div>
     <h2 class="sec-h2">O/Level Subjects</h2>
@@ -298,7 +301,8 @@
   </div>
 </section>
 
- <section class="teacher-sec" id="teach-ol">
+
+<section class="teacher-sec" id="teach-ol">
   <div class="teacher-inner">
     <div class="sec-eyebrow">Expert Educators</div>
     <h2 class="sec-h2">Our O/L Teachers</h2>
@@ -312,214 +316,103 @@
   <p>© 2025 Samathwee Higher Education Center · Panadura & Moratuwa</p>
 </footer>
 
- <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+ 
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+ 
 <script>
+const firebaseConfig = {
+  apiKey:            "AIzaSyDlBLrs-WquiVIivoOCuJq2g7BFhNwAtas",
+  authDomain:        "samathwee.firebaseapp.com",
+  projectId:         "samathwee",
+  storageBucket:     "samathwee.firebasestorage.app",
+  messagingSenderId: "1094489861098",
+  appId:             "1:1094489861098:web:e61feb13a5f69a8b78e093",
+  databaseURL:       "https://samathwee-default-rtdb.firebaseio.com"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const GRADE_KEY = 'grade6_ol';
  
-const defaultSubjects = [
-  { icon:'📖', name:'Sinhala',           grades:'Grade 6–11', desc:'Master Sinhala language skills for the O/L examination with essays, comprehension and grammar.', tags:['Grammar','Essay','Literature'], cat:'core',       bg:'#fff5f5', ic:'#fee2e2', accent:'#ef4444' },
-  { icon:'🔤', name:'English',           grades:'Grade 6–11', desc:'Build English proficiency across reading, writing, listening and speaking for the O/L exam.', tags:['Grammar','Composition','Reading'], cat:'core',       bg:'#eff6ff', ic:'#dbeafe', accent:'#3b82f6' },
-  { icon:'🔢', name:'Mathematics',       grades:'Grade 6–11', desc:'Comprehensive maths covering algebra, geometry, statistics and all O/L examination topics.', tags:['Algebra','Geometry','Statistics'], cat:'core',        bg:'#f5f3ff', ic:'#ede9fe', accent:'#8b5cf6' },
-  { icon:'🧪', name:'Science',           grades:'Grade 6–9',  desc:'Explore Physics, Chemistry and Biology fundamentals in an integrated science program.', tags:['Physics','Chemistry','Biology'], cat:'science',          bg:'#eff6ff', ic:'#dbeafe', accent:'#2563eb' },
-  { icon:'🏛️', name:'History',          grades:'Grade 6–11', desc:'Study Sri Lankan and world history from ancient civilizations to modern times.', tags:['Sri Lanka','World History','Analysis'], cat:'humanities',       bg:'#fefce8', ic:'#fef9c3', accent:'#d97706' },
-  { icon:'🌍', name:'Geography',         grades:'Grade 6–11', desc:'Learn physical and human geography with maps, fieldwork and environmental studies.', tags:['Maps','Climate','Population'], cat:'humanities',             bg:'#f0fdf4', ic:'#dcfce7', accent:'#16a34a' },
-  { icon:'⚖️', name:'Civic Education',  grades:'Grade 6–11', desc:'Understand rights, responsibilities, government and democratic values in society.', tags:['Rights','Government','Democracy'], cat:'humanities',         bg:'#eef2ff', ic:'#e0e7ff', accent:'#4f46e5' },
-  { icon:'🙏', name:'Buddhism / Religion', grades:'Grade 6–11', desc:'In-depth study of Buddhism, Hinduism, Islam or Christianity according to student religion.', tags:['Philosophy','Values','History'], cat:'humanities', bg:'#fefce8', ic:'#fef9c3', accent:'#eab308' },
-  { icon:'🏥', name:'Health Education', grades:'Grade 6–11', desc:'Comprehensive health, nutrition and physical development education for young adults.', tags:['Health','Nutrition','Growth'], cat:'arts',                 bg:'#fff1f2', ic:'#fee2e2', accent:'#e11d48' },
-  { icon:'💻', name:'ICT',              grades:'Grade 6–11', desc:'Digital literacy, programming basics and computer applications for the modern world.', tags:['Programming','Office Tools','Internet'], cat:'science',    bg:'#f5f3ff', ic:'#ede9fe', accent:'#7c3aed' },
-  { icon:'💼', name:'Commerce',         grades:'Grade 6–11', desc:'Business principles, commerce, banking and economics for O/L Commerce students.', tags:['Business','Banking','Trade'], cat:'humanities',               bg:'#fffbeb', ic:'#fef3c7', accent:'#b45309' },
-  { icon:'🏡', name:'Home Economics',   grades:'Grade 6–11', desc:'Practical home management, cooking, textiles and consumer education skills.', tags:['Cooking','Textiles','Budget'], cat:'arts',                       bg:'#fdf4ff', ic:'#fae8ff', accent:'#a21caf' },
-  { icon:'📐', name:'Technical Drawing',grades:'Grade 6–11', desc:'Engineering drawing fundamentals, geometrical constructions and technical design.', tags:['Drafting','Geometry','Design'], cat:'arts',                 bg:'#f0f9ff', ic:'#e0f2fe', accent:'#0284c7' },
-  { icon:'🌾', name:'Agriculture',      grades:'Grade 6–11', desc:'Modern farming techniques, soil science and food technology for Sri Lankan students.', tags:['Farming','Soil','Food Tech'], cat:'science',             bg:'#f0fdf4', ic:'#dcfce7', accent:'#15803d' },
-  { icon:'🎨', name:'Art',              grades:'Grade 6–11', desc:'Creative visual arts, drawing, painting and art history for the national curriculum.', tags:['Drawing','Painting','Art History'], cat:'arts',          bg:'#fdf4ff', ic:'#fae8ff', accent:'#9333ea' },
-  { icon:'🎭', name:'Drama & Theatre',  grades:'Grade 6–11', desc:'Performing arts, script writing, stage performance and theatrical production skills.', tags:['Performance','Script','Theatre'], cat:'arts',            bg:'#fdf4ff', ic:'#fae8ff', accent:'#7e22ce' },
-  { icon:'📝', name:'Tamil',            grades:'Grade 6–11', desc:'Tamil language mastery for students pursuing Tamil medium or second language O/L.', tags:['Reading','Writing','Grammar'], cat:'core',                  bg:'#fefce8', ic:'#fef9c3', accent:'#ca8a04' },
-];
-
-const defaultTeachers = [
-  { initials:'LP', name:'Mr. Lanka Perera',       role:'Mathematics Specialist',    subj:'Mathematics',      exp:'12 years OL teaching experience. Over 300 A-grade students in the last 5 years.',        qual:'B.Sc Mathematics, University of Colombo', banner:'linear-gradient(135deg,#5a2d91,#8b5cf6)', tbg:'#5a2d91' },
-  { initials:'NK', name:'Ms. Nilmini Kumari',     role:'Science Teacher',            subj:'Science / Physics', exp:'10 years in secondary science education. Known for visual learning methods.',             qual:'B.Sc Physics, University of Kelaniya',    banner:'linear-gradient(135deg,#2563eb,#60a5fa)', tbg:'#2563eb' },
-  { initials:'RS', name:'Mr. Ruwan Silva',        role:'English Language Teacher',   subj:'English',           exp:'8 years OL English tutor. Strong focus on composition and paper-work strategy.',         qual:'BA English, OUSL',                        banner:'linear-gradient(135deg,#0d9488,#34d399)', tbg:'#0d9488' },
-  { initials:'DW', name:'Ms. Dilhani Wijesekara', role:'History & Civics',           subj:'History / Civics',  exp:'9 years teaching history. Engaging storytelling approach to national curriculum.',       qual:'BA History, University of Peradeniya',    banner:'linear-gradient(135deg,#d97706,#fbbf24)', tbg:'#d97706' },
-  { initials:'SW', name:'Mr. Sampath Weerasinghe',role:'Sinhala Teacher',            subj:'Sinhala',           exp:'15 years Sinhala subject specialist. Exceptional track record with literature students.', qual:'BA Sinhala, University of Colombo',        banner:'linear-gradient(135deg,#e11d48,#fb7185)', tbg:'#e11d48' },
-  { initials:'PM', name:'Ms. Priyanka Mendis',    role:'ICT & Commerce Teacher',     subj:'ICT / Commerce',    exp:'7 years teaching ICT and commerce subjects with practical industry experience.',          qual:'BSc IT, NSBM',                            banner:'linear-gradient(135deg,#7c3aed,#a78bfa)', tbg:'#7c3aed' },
-];
-
+const ACCENTS = ['#ef4444','#3b82f6','#8b5cf6','#2563eb','#d97706','#16a34a','#4f46e5','#eab308','#e11d48','#7c3aed','#b45309','#a21caf','#0284c7','#15803d','#9333ea','#7e22ce','#ca8a04'];
+const GRAD = ['linear-gradient(135deg,#5a2d91,#8b5cf6)','linear-gradient(135deg,#2563eb,#60a5fa)','linear-gradient(135deg,#0d9488,#34d399)','linear-gradient(135deg,#d97706,#fbbf24)','linear-gradient(135deg,#e11d48,#fb7185)','linear-gradient(135deg,#7c3aed,#a78bfa)'];
  
-const TC_PALETTE = [
-  { bg:'linear-gradient(135deg,#5a2d91,#8b5cf6)', tc:'#5a2d91' },
-  { bg:'linear-gradient(135deg,#2563eb,#60a5fa)', tc:'#2563eb' },
-  { bg:'linear-gradient(135deg,#0d9488,#34d399)', tc:'#0d9488' },
-  { bg:'linear-gradient(135deg,#d97706,#fbbf24)', tc:'#d97706' },
-  { bg:'linear-gradient(135deg,#e11d48,#fb7185)', tc:'#e11d48' },
-  { bg:'linear-gradient(135deg,#7c3aed,#a78bfa)', tc:'#7c3aed' },
-];
-
- 
-function getInitials(name) {
-  return (name || '?').trim().split(/\s+/).map(w => w[0] || '').join('').toUpperCase().slice(0, 2) || '?';
+async function loadPage() {
+  try {
+    const snap = await db.ref('subpages/' + GRADE_KEY).once('value');
+    const data = snap.val() || {};
+    const subjects = Array.isArray(data.subjects) ? data.subjects.filter(Boolean) : (data.subjects ? Object.values(data.subjects).filter(Boolean) : []);
+    const teachers = Array.isArray(data.teachers) ? data.teachers.filter(Boolean) : (data.teachers ? Object.values(data.teachers).filter(Boolean) : []);
+    if (subjects.length) renderSubjects(subjects);
+    if (teachers.length) renderTeachers(teachers);
+  } catch(e) { console.error(e); }
 }
-
-function parseTags(raw) {
-  if (!raw) return [];
-  if (Array.isArray(raw)) return raw;
-  return String(raw).split(',').map(t => t.trim()).filter(Boolean);
-}
-
  
-const grid = document.getElementById('olGrid');
-let currentSubjects = [];
-
-function renderSubjects(filter) {
+function renderSubjects(subjects) {
+  const grid = document.getElementById('olGrid');
+  if (!grid) return;
   grid.innerHTML = '';
-  const hasCat = currentSubjects.some(s => s.cat);
-  const list = (filter === 'all' || !hasCat)
-    ? currentSubjects
-    : currentSubjects.filter(s => s.cat === filter);
 
-  list.forEach((s, i) => {
-    const tags   = parseTags(s.tags);
-    const bg     = s.bg     || '#f5f3ff';
-    const ic     = s.ic     || '#ede9fe';
-    const accent = s.accent || '#8b5cf6';
-
+  const tabBar = document.getElementById('tabBar');
+  if (tabBar) tabBar.style.display = 'none';
+  subjects.forEach((s, i) => {
+    const accent = s.accent || ACCENTS[i % ACCENTS.length];
     const c = document.createElement('div');
     c.className = 'subj-card';
-    c.style.background = bg;
-    c.style.transitionDelay = `${i * 0.06}s`;
+    c.style.transitionDelay = i * 0.06 + 's';
     c.innerHTML = `
       <div class="sc-head">
-        <div class="sc-icon" style="background:${ic}">${s.icon || '📚'}</div>
+        <div class="sc-icon" style="background:${accent}22">${s.icon || '📖'}</div>
         <div>
           <div class="sc-name">${s.name || ''}</div>
-          <div class="sc-grades">${s.grades || 'Grade 6–11'}</div>
+          ${s.teacher ? '<div class="sc-grades">👨‍🏫 ' + s.teacher + '</div>' : ''}
         </div>
       </div>
-      ${s.desc
-        ? `<div class="sc-desc">${s.desc}</div>`
-        : (s.fee ? `<div class="sc-desc" style="color:${accent};font-weight:700;">Rs. ${s.fee} / month</div>` : '')
-      }
-      <div class="sc-tags">${tags.map(t => `<span class="sc-tag" style="background:${accent}18;color:${accent}">${t}</span>`).join('')}</div>
+      ${s.fee ? '<div class="sc-desc">💰 Rs. ' + s.fee + ' / month</div>' : ''}
     `;
     grid.appendChild(c);
     requestAnimationFrame(() => c.classList.add('vis'));
   });
+  observeCards('.subj-card');
 }
-
  
 function renderTeachers(teachers) {
   const tg = document.getElementById('olTeachers');
+  if (!tg) return;
   tg.innerHTML = '';
   teachers.forEach((t, i) => {
-    const pal    = TC_PALETTE[i % TC_PALETTE.length];
-    const banner = t.banner || pal.bg;
-    const tbg    = t.tbg    || pal.tc;
-    const initials = t.initials || getInitials(t.name);
-    const avatarInner = t.image
-      ? `<img src="${t.image}" alt="${t.name || ''}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />`
-      : initials;
-
+    const grad = GRAD[i % GRAD.length];
+    const initials = (t.name || 'T').split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
     const c = document.createElement('div');
     c.className = 'tc';
-    c.style.transitionDelay = `${i * 0.1}s`;
+    c.style.transitionDelay = i * 0.1 + 's';
+    const avatarContent = t.image
+      ? '<img src="' + t.image + '" alt="' + (t.name||'') + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.parentElement.textContent=\'' + initials + '\'" />'
+      : initials;
     c.innerHTML = `
-      <div class="tc-banner" style="background:${banner}">
-        <div class="tc-avatar" style="background:${tbg}">${avatarInner}</div>
+      <div class="tc-banner" style="background:${grad}">
+        <div class="tc-avatar" style="background:rgba(0,0,0,0.25);overflow:hidden">${avatarContent}</div>
       </div>
       <div class="tc-body">
         <div class="tc-name">${t.name || ''}</div>
-        <div class="tc-role">${t.role || t.subject || ''}</div>
-        <div class="tc-subj" style="background:${tbg}">${t.subj || t.subject || ''}</div>
-        <div class="tc-exp">${t.exp || t.experience || ''}</div>
-        ${(t.qual || t.qualification)
-          ? `<div class="tc-qual">🎓 ${t.qual || t.qualification}</div>`
-          : ''}
-        ${t.bio ? `<div class="tc-exp" style="margin-top:8px;font-style:italic;">${t.bio}</div>` : ''}
+        ${t.qualification ? '<div class="tc-role">' + t.qualification + '</div>' : ''}
+        ${t.subject ? '<div class="tc-subj" style="background:' + (ACCENTS[i%ACCENTS.length]) + '">' + t.subject + '</div>' : ''}
+        ${t.experience ? '<div class="tc-exp">🕐 ' + t.experience + '</div>' : ''}
+        ${t.bio ? '<div class="tc-qual">' + t.bio + '</div>' : ''}
       </div>
     `;
     tg.appendChild(c);
   });
+  observeCards('.tc');
 }
-
  
-async function initPage() {
-  const firebaseConfig = {
-    apiKey:            "AIzaSyDlBLrs-WquiVIivoOCuJq2g7BFhNwAtas",
-    authDomain:        "samathwee.firebaseapp.com",
-    databaseURL:       "https://samathwee-default-rtdb.firebaseio.com",
-    projectId:         "samathwee",
-    storageBucket:     "samathwee.firebasestorage.app",
-    messagingSenderId: "1094489861098",
-    appId:             "1:1094489861098:web:e61feb13a5f69a8b78e093"
-  };
-
-  let teachersToRender = defaultTeachers;
-  let subjectsToRender = defaultSubjects;
-
-  try {
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    const db   = firebase.database();
-    const snap = await db.ref('subpages/grade6_ol').once('value');
-    const data = snap.val();
-
-    if (data) {
-      const fbTeachers = data.teachers
-        ? (Array.isArray(data.teachers) ? data.teachers : Object.values(data.teachers)).filter(Boolean)
-        : [];
-      const fbSubjects = data.subjects
-        ? (Array.isArray(data.subjects) ? data.subjects : Object.values(data.subjects)).filter(Boolean)
-        : [];
-
-      if (fbTeachers.length) teachersToRender = fbTeachers;
-      if (fbSubjects.length) subjectsToRender = fbSubjects;
-    }
-  } catch (e) {
-    console.warn('Firebase load failed — using static fallback data:', e);
-  }
-
- 
-  renderTeachers(teachersToRender);
-
-  
-  currentSubjects = subjectsToRender;
-  renderSubjects('all');
-
-  
-  const hasCat = currentSubjects.some(s => s.cat);
-  document.getElementById('tabBar').style.display = hasCat ? 'flex' : 'none';
-
- 
-  document.getElementById('tabBar').addEventListener('click', e => {
-    const tab = e.target.closest('.tab');
-    if (!tab) return;
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    renderSubjects(tab.dataset.filter);
-  });
-
-  
-  const obs = new IntersectionObserver(
-    e => e.forEach(x => x.isIntersecting && x.target.classList.add('vis')),
-    { threshold: 0.1 }
-  );
-  document.querySelectorAll('.subj-card, .tc').forEach(el => obs.observe(el));
-
- 
-  const barObs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.querySelectorAll('.ps-bar').forEach(b => b.style.width = b.dataset.width + '%');
-      }
-    });
-  }, { threshold: 0.5 });
-  const heroPanel = document.querySelector('.hero-panel');
-  if (heroPanel) barObs.observe(heroPanel);
-  setTimeout(() => {
-    document.querySelectorAll('.ps-bar').forEach(b => b.style.width = b.dataset.width + '%');
-  }, 800);
+function observeCards(sel) {
+  const obs = new IntersectionObserver(e => e.forEach(x => x.isIntersecting && x.target.classList.add('vis')), { threshold: 0.1 });
+  document.querySelectorAll(sel).forEach(el => obs.observe(el));
 }
-
-initPage();
+ 
+loadPage();
 </script>
 </body>
 </html>

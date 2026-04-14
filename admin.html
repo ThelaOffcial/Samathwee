@@ -6,7 +6,7 @@
   <title>Samathwee — Admin</title>
   <link rel="stylesheet" href="admin.css" />
   <style>
-  
+    
     .grade-tabs {
       display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px;
     }
@@ -64,7 +64,8 @@
     .btn-upload-small:hover { background: #f3f4f6; border-color: #9ca3af; }
     .sp-teacher-fields { flex: 1; }
  
-     .sp-subject-row {
+   
+    .sp-subject-row {
       display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;
       background: #f9fafb; border-radius: 14px;
       padding: 16px; margin-bottom: 12px;
@@ -75,7 +76,7 @@
 </head>
 <body>
  
- 
+
 <div id="loginScreen" class="auth-container">
   <div class="auth-box">
  
@@ -94,7 +95,8 @@
     </div>
  
     <div class="auth-form-wrapper">
-       <div id="loginForm" class="auth-form-content">
+      
+      <div id="loginForm" class="auth-form-content">
         <div class="auth-eyebrow">Secure Access</div>
         <h1 class="auth-title">Welcome back</h1>
         <p class="auth-sub">Sign in to your admin dashboard</p>
@@ -117,7 +119,8 @@
         <p class="switch-form">New admin? <a href="javascript:void(0)" onclick="toggleAuth('signup')">Create account</a></p>
       </div>
  
-       <div id="signupForm" class="auth-form-content" style="display:none;">
+      
+      <div id="signupForm" class="auth-form-content" style="display:none;">
         <div class="auth-eyebrow">Registration</div>
         <h1 class="auth-title">Create account</h1>
         <p class="auth-sub">Authorized administrators only</p>
@@ -136,7 +139,8 @@
     </div>
   </div>
 </div>
-  
+ 
+
 <div id="dashboard" class="dashboard" style="display:none;">
  
   <aside class="sidebar" id="sidebar">
@@ -189,7 +193,8 @@
  
     <div id="toast" class="toast" style="display:none;"></div>
  
-     <section id="sec-hero" class="admin-section active">
+    
+    <section id="sec-hero" class="admin-section active">
       <div class="section-header">
         <h2>🏠 Hero Section</h2>
         <p>Edit the main banner text displayed on the homepage.</p>
@@ -211,7 +216,8 @@
       </div>
     </section>
  
-     <section id="sec-stats" class="admin-section">
+    
+    <section id="sec-stats" class="admin-section">
       <div class="section-header">
         <h2>📊 Statistics</h2>
         <p>Update the counters shown below the hero section.</p>
@@ -227,7 +233,8 @@
       </div>
     </section>
  
-     <section id="sec-grades" class="admin-section">
+    
+    <section id="sec-grades" class="admin-section">
       <div class="section-header">
         <h2>📚 Grade Cards</h2>
         <p>Manage the grade level cards on the homepage.</p>
@@ -241,7 +248,8 @@
       </div>
     </section>
  
-     <section id="sec-subjects" class="admin-section">
+    
+    <section id="sec-subjects" class="admin-section">
       <div class="section-header">
         <h2>🔬 Subjects</h2>
         <p>Add, edit, or remove subjects from the subject list.</p>
@@ -255,7 +263,8 @@
       </div>
     </section>
  
-     <section id="sec-teachers" class="admin-section">
+    
+    <section id="sec-teachers" class="admin-section">
       <div class="section-header">
         <h2>👨‍🏫 Teachers</h2>
         <p>Add, edit, or remove teacher profiles shown on the main page.</p>
@@ -269,14 +278,15 @@
       </div>
     </section>
  
-     
+    
     <section id="sec-subpages" class="admin-section">
       <div class="section-header">
         <h2>📄 Grade Sub Pages</h2>
         <p>Edit teachers and subjects for each grade's dedicated page. Changes will appear on the grade sub-pages.</p>
       </div>
  
-       <div class="grade-tabs">
+      
+      <div class="grade-tabs">
         <button class="grade-tab active" data-grade="grade1_5"      onclick="switchGradeTab('grade1_5', this)">🌟 Grade 1–5</button>
         <button class="grade-tab"        data-grade="grade6_ol"     onclick="switchGradeTab('grade6_ol', this)">📘 Grade 6–O/L</button>
         <button class="grade-tab"        data-grade="grade_al"      onclick="switchGradeTab('grade_al', this)">🔬 A / Levels</button>
@@ -284,7 +294,8 @@
         <button class="grade-tab"        data-grade="grade_london"  onclick="switchGradeTab('grade_london', this)">🇬🇧 London</button>
       </div>
  
-       <div class="grade-panel active" id="panel-grade1_5">
+      
+      <div class="grade-panel active" id="panel-grade1_5">
         <div class="card">
           <div class="panel-sub-title">👨‍🏫 Teachers — Grade 1–5</div>
           <div id="sp-teachers-grade1_5"></div>
@@ -302,7 +313,8 @@
         </div>
       </div>
  
-       <div class="grade-panel" id="panel-grade6_ol">
+      
+      <div class="grade-panel" id="panel-grade6_ol">
         <div class="card">
           <div class="panel-sub-title">👨‍🏫 Teachers — Grade 6–O/L</div>
           <div id="sp-teachers-grade6_ol"></div>
@@ -320,7 +332,8 @@
         </div>
       </div>
  
-       <div class="grade-panel" id="panel-grade_al">
+      
+      <div class="grade-panel" id="panel-grade_al">
         <div class="card">
           <div class="panel-sub-title">👨‍🏫 Teachers — A / Levels</div>
           <div id="sp-teachers-grade_al"></div>
@@ -338,7 +351,8 @@
         </div>
       </div>
  
-       <div class="grade-panel" id="panel-grade_cambridge">
+      
+      <div class="grade-panel" id="panel-grade_cambridge">
         <div class="card">
           <div class="panel-sub-title">👨‍🏫 Teachers — Cambridge</div>
           <div id="sp-teachers-grade_cambridge"></div>
@@ -356,7 +370,8 @@
         </div>
       </div>
  
-       <div class="grade-panel" id="panel-grade_london">
+      
+      <div class="grade-panel" id="panel-grade_london">
         <div class="card">
           <div class="panel-sub-title">👨‍🏫 Teachers — London</div>
           <div id="sp-teachers-grade_london"></div>
@@ -376,7 +391,8 @@
  
     </section>
  
-     <section id="sec-center" class="admin-section">
+    
+    <section id="sec-center" class="admin-section">
       <div class="section-header">
         <h2>📍 Center Info</h2>
         <p>Edit the Panadura center information shown on the homepage.</p>
@@ -393,7 +409,8 @@
       </div>
     </section>
  
-     <section id="sec-contact" class="admin-section">
+    
+    <section id="sec-contact" class="admin-section">
       <div class="section-header">
         <h2>📞 Contact Details</h2>
         <p>Update the contact information shown in the contact section.</p>
@@ -406,7 +423,8 @@
       </div>
     </section>
  
-     <section id="sec-footer" class="admin-section">
+  
+    <section id="sec-footer" class="admin-section">
       <div class="section-header">
         <h2>🔗 Footer</h2>
         <p>Update the footer text shown at the bottom of the site.</p>
@@ -420,12 +438,14 @@
   </main>
 </div>
  
- <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="admin.js"></script>
 <script>
-   function switchGradeTab(gradeKey, btnEl) {
+  
+  function switchGradeTab(gradeKey, btnEl) {
     document.querySelectorAll('.grade-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.grade-tab').forEach(b => b.classList.remove('active'));
     const panel = document.getElementById(`panel-${gradeKey}`);

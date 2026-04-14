@@ -15,7 +15,7 @@
     }
     body { font-family: 'Outfit', sans-serif; background: var(--white); overflow-x: hidden; }
 
- 
+  
     .hero {
       position: relative; min-height: 100vh;
       background: linear-gradient(150deg, var(--cam) 0%, #002850 50%, #001a35 100%);
@@ -43,7 +43,7 @@
     .hg1 { width:600px;height:400px; background:rgba(0,115,204,.25); top:0;right:0; }
     .hg2 { width:400px;height:400px; background:rgba(0,128,128,.15); bottom:-100px;left:0; }
 
-     
+ 
     .nav {
       position: relative; z-index: 20;
       display: flex; align-items: center; justify-content: space-between;
@@ -62,7 +62,6 @@
       font-size: 1.2rem;
     }
 
- 
     .hero-body {
       position: relative; z-index: 5;
       flex: 1; display: grid; grid-template-columns: 1fr 0.9fr;
@@ -106,7 +105,7 @@
     }
     .btn-cam-outline:hover { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.3); }
 
-     
+    
     .pathway { animation: appear .7s ease 0.45s both; }
     .pathway-title { color: rgba(255,255,255,.4); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 20px; }
     .path-item {
@@ -126,7 +125,7 @@
 
     @keyframes appear { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
 
- 
+    
     .subj-sec { background: var(--cream); padding: 90px 7%; }
     .subj-inner { max-width: 1300px; margin: 0 auto; }
 
@@ -154,7 +153,7 @@
     .cc-tags { display: flex; gap: 6px; flex-wrap: wrap; }
     .cc-tag { font-size: 0.68rem; font-weight: 600; padding: 3px 9px; border-radius: 4px; background: var(--light-blue); color: var(--cam2); }
 
-  
+   
     .teacher-sec { background: #fff; padding: 90px 7%; }
     .teacher-inner { max-width: 1300px; margin: 0 auto; }
     .cam-tc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; }
@@ -246,7 +245,7 @@
   </div>
 </section>
 
- 
+
 <section class="subj-sec" id="cam-subjects">
   <div class="subj-inner">
     <div class="eyebrow">CAIE Curriculum</div>
@@ -264,7 +263,7 @@
   </div>
 </section>
 
- 
+
 <section class="teacher-sec" id="cam-teachers">
   <div class="teacher-inner">
     <div class="eyebrow">Cambridge Faculty</div>
@@ -279,89 +278,101 @@
   <p>© 2025 Samathwee Higher Education Center · Panadura & Moratuwa, Sri Lanka</p>
 </footer>
 
+ 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+ 
 <script>
-const subjects = [
-  { icon:'🔤', name:'English Language', code:'0500 / 0627', q:'igcse', desc:'Cambridge IGCSE English Language with focus on reading comprehension, directed writing and continuous writing.', tags:['Reading','Writing','Communication'], bg:'#e8f4fd', ic:'#0073cc' },
-  { icon:'📚', name:'English Literature', code:'0475', q:'igcse', desc:'Prose, poetry and drama analysis for Cambridge IGCSE Literature in English.', tags:['Prose','Poetry','Drama','Analysis'], bg:'#ede9fe', ic:'#7c3aed' },
-  { icon:'🔢', name:'Mathematics', code:'0580 / 0607', q:'igcse', desc:'Cambridge IGCSE Mathematics (Core and Extended) covering all four content areas.', tags:['Number','Algebra','Geometry','Statistics'], bg:'#e8f4fd', ic:'#005da8' },
-  { icon:'⚛️', name:'Physics', code:'0625 / 9702', q:'both', desc:'Cambridge IGCSE and A-Level Physics with rigorous experimental investigation skills.', tags:['Mechanics','Waves','Fields','Modern'], bg:'#dbeafe', ic:'#2563eb' },
-  { icon:'🧪', name:'Chemistry', code:'0620 / 9701', q:'both', desc:'Cambridge Chemistry IGCSE through A-Level with detailed practical skills development.', tags:['Organic','Inorganic','Physical','Practical'], bg:'#dcfce7', ic:'#16a34a' },
-  { icon:'🔬', name:'Biology', code:'0610 / 9700', q:'both', desc:'Cambridge Biology from IGCSE to A-Level — genetics, ecology, physiology and evolution.', tags:['Genetics','Physiology','Ecology'], bg:'#f0fdf4', ic:'#15803d' },
-  { icon:'📈', name:'Economics', code:'0455 / 9708', q:'both', desc:'Cambridge Economics at IGCSE and A-Level — market structures, national and global economics.', tags:['Micro','Macro','Trade','Development'], bg:'#fef9c3', ic:'#d97706' },
-  { icon:'🏢', name:'Business Studies', code:'0450 / 9609', q:'both', desc:'Cambridge Business from IGCSE through A-Level with management, marketing and finance.', tags:['Management','Marketing','Finance'], bg:'#e0f2fe', ic:'#0284c7' },
-  { icon:'🌍', name:'Geography', code:'0460 / 9696', q:'both', desc:'Cambridge Geography — physical and human geography with fieldwork and data analysis.', tags:['Physical','Human','Environment','Fieldwork'], bg:'#dcfce7', ic:'#059669' },
-  { icon:'🏛️', name:'History', code:'0470 / 9489', q:'both', desc:'Cambridge History — depth and breadth studies with source analysis and essay skills.', tags:['Modern History','Source Analysis','Essay'], bg:'#fef3c7', ic:'#b45309' },
-  { icon:'💻', name:'Computer Science', code:'0478 / 9618', q:'both', desc:'Cambridge Computer Science — algorithms, programming, networking and data representation.', tags:['Algorithms','Programming','Networking'], bg:'#f5f3ff', ic:'#6d28d9' },
-  { icon:'📊', name:'Mathematics (A-Level)', code:'9709', q:'al', desc:'Cambridge International A-Level Mathematics — Pure, Mechanics and Statistics components.', tags:['Pure','Mechanics','Statistics'], bg:'#e8f4fd', ic:'#003d71' },
-];
-
-const qLabels = { igcse:'IGCSE', ol:'O-Level', al:'A-Level', both:'IGCSE & A-Level' };
-const qColors = { igcse:'#008070', ol:'#005da8', al:'#c47d00', both:'#008070' };
-
-function renderCam(filter) {
+const firebaseConfig = {
+  apiKey:            "AIzaSyDlBLrs-WquiVIivoOCuJq2g7BFhNwAtas",
+  authDomain:        "samathwee.firebaseapp.com",
+  projectId:         "samathwee",
+  storageBucket:     "samathwee.firebasestorage.app",
+  messagingSenderId: "1094489861098",
+  appId:             "1:1094489861098:web:e61feb13a5f69a8b78e093",
+  databaseURL:       "https://samathwee-default-rtdb.firebaseio.com"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const GRADE_KEY = 'grade_cambridge';
+ 
+const ACCENTS = ['#0073cc','#7c3aed','#005da8','#2563eb','#16a34a','#15803d','#d97706','#0284c7','#059669','#b45309','#6d28d9','#003d71'];
+const GRAD = ['linear-gradient(135deg,#008070,#00a8a8)','linear-gradient(135deg,#005da8,#0073cc)','linear-gradient(135deg,#003d71,#0073cc)','linear-gradient(135deg,#c47d00,#e6a020)','linear-gradient(135deg,#7c3aed,#a78bfa)','linear-gradient(135deg,#16a34a,#4ade80)'];
+ 
+async function loadPage() {
+  try {
+    const snap = await db.ref('subpages/' + GRADE_KEY).once('value');
+    const data = snap.val() || {};
+    const subjects = Array.isArray(data.subjects) ? data.subjects.filter(Boolean) : (data.subjects ? Object.values(data.subjects).filter(Boolean) : []);
+    const teachers = Array.isArray(data.teachers) ? data.teachers.filter(Boolean) : (data.teachers ? Object.values(data.teachers).filter(Boolean) : []);
+    if (subjects.length) renderSubjects(subjects);
+    if (teachers.length) renderTeachers(teachers);
+  } catch(e) { console.error(e); }
+}
+ 
+function renderSubjects(subjects) {
   const grid = document.getElementById('camGrid');
+  if (!grid) return;
   grid.innerHTML = '';
-  const list = filter === 'all' ? subjects : subjects.filter(s => s.q === filter || s.q === 'both');
-  list.forEach((s, i) => {
+  const qualFilter = document.getElementById('qualFilter');
+  if (qualFilter) qualFilter.style.display = 'none';
+  subjects.forEach((s, i) => {
+    const ic = s.ic || ACCENTS[i % ACCENTS.length];
     const c = document.createElement('div');
     c.className = 'cam-card';
-    c.style.transitionDelay = `${i * 0.06}s`;
-    const ql = s.q === 'both' ? 'IGCSE & A-Level' : qLabels[s.q];
-    const qc = qColors[s.q];
+    c.style.transitionDelay = i * 0.06 + 's';
     c.innerHTML = `
       <div class="cc-top">
-        <div class="cc-icon" style="background:${s.bg}">${s.icon}</div>
+        <div class="cc-icon" style="background:${ic}22">${s.icon || '📖'}</div>
         <div>
-          <div class="cc-name">${s.name}</div>
-          <span class="cc-code" style="background:${qc}18;color:${qc}">${ql} · ${s.code}</span>
+          <div class="cc-name">${s.name || ''}</div>
+          ${s.teacher ? '<span class="cc-code" style="background:' + ic + '22;color:' + ic + '">👨‍🏫 ' + s.teacher + '</span>' : ''}
         </div>
       </div>
-      <div class="cc-desc">${s.desc}</div>
-      <div class="cc-tags">${s.tags.map(t => `<span class="cc-tag">${t}</span>`).join('')}</div>
+      ${s.fee ? '<div class="cc-desc">💰 Rs. ' + s.fee + ' / month</div>' : ''}
     `;
     grid.appendChild(c);
     requestAnimationFrame(() => c.classList.add('vis'));
   });
+  observeCards('.cam-card');
 }
-renderCam('all');
-
-document.getElementById('qualFilter').addEventListener('click', e => {
-  const btn = e.target.closest('.qf');
-  if (!btn) return;
-  document.querySelectorAll('.qf').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderCam(btn.dataset.q);
-});
-
-const teachers = [
-  { initials:'AJ', name:'Mr. Asanka Jayawardena', role:'Cambridge Sciences Lead', board:'Cambridge IGCSE & A-Level Sciences', exp:'Trained CAIE examiner. 13 years Cambridge Science delivery. Students accepted to UCL, King\'s College and NUS.', qual:'M.Sc Chemistry, University of Colombo · CAIE Certified', bg:'linear-gradient(135deg,#008070,#00a8a8)' },
-  { initials:'TF', name:'Ms. Tharushi Fernando', role:'Cambridge English Specialist', board:'IGCSE English Language & Literature', exp:'10 years CAIE English specialist. Outstanding results in comprehension and writing components.', qual:'BA English, USJP · Cambridge CELTA', bg:'linear-gradient(135deg,#005da8,#0073cc)' },
-  { initials:'BW', name:'Mr. Buddhika Weerasekara', role:'Cambridge Mathematics', board:'IGCSE & A-Level Mathematics', exp:'12 years teaching Cambridge maths streams. Published practice paper sets for IGCSE students.', qual:'B.Sc Mathematics, University of Kelaniya', bg:'linear-gradient(135deg,#003d71,#0073cc)' },
-  { initials:'PN', name:'Ms. Preethi Nanayakkara', role:'Economics & Business', board:'Cambridge IGCSE & A-Level', exp:'Former investment banker. 9 years Cambridge Economics. Strong emphasis on structured essay writing.', qual:'MBA, Postgraduate Institute of Management, Sri Lanka', bg:'linear-gradient(135deg,#c47d00,#e6a020)' },
-];
-
-const tg = document.getElementById('camTeachers');
-teachers.forEach((t, i) => {
-  const c = document.createElement('div');
-  c.className = 'ctc';
-  c.style.transitionDelay = `${i * 0.1}s`;
-  c.innerHTML = `
-    <div class="ctc-top">
-      <div class="ctc-av" style="background:${t.bg}">${t.initials}</div>
-      <div>
-        <div class="ctc-name">${t.name}</div>
-        <div class="ctc-role">${t.role}</div>
+ 
+function renderTeachers(teachers) {
+  const tg = document.getElementById('camTeachers');
+  if (!tg) return;
+  tg.innerHTML = '';
+  teachers.forEach((t, i) => {
+    const bg = GRAD[i % GRAD.length];
+    const initials = (t.name || 'T').split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+    const c = document.createElement('div');
+    c.className = 'ctc';
+    c.style.transitionDelay = i * 0.1 + 's';
+    const avatarContent = t.image
+      ? '<img src="' + t.image + '" alt="' + (t.name||'') + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.parentElement.textContent=\'' + initials + '\'" />'
+      : initials;
+    c.innerHTML = `
+      <div class="ctc-top">
+        <div class="ctc-av" style="background:${bg};overflow:hidden">${avatarContent}</div>
+        <div>
+          <div class="ctc-name">${t.name || ''}</div>
+          ${t.qualification ? '<div class="ctc-role">' + t.qualification + '</div>' : ''}
+        </div>
       </div>
-    </div>
-    <div class="ctc-board">${t.board}</div>
-    <div class="ctc-exp">${t.exp}</div>
-    <div class="ctc-qual">🎓 ${t.qual}</div>
-  `;
-  tg.appendChild(c);
-});
-
-const obs = new IntersectionObserver(e => e.forEach(x => x.isIntersecting && x.target.classList.add('vis')), { threshold: 0.1 });
-document.querySelectorAll('.cam-card,.ctc').forEach(el => obs.observe(el));
+      ${t.subject ? '<div class="ctc-board">' + t.subject + '</div>' : ''}
+      ${t.experience ? '<div class="ctc-exp">🕐 ' + t.experience + '</div>' : ''}
+      ${t.bio ? '<div class="ctc-qual">' + t.bio + '</div>' : ''}
+    `;
+    tg.appendChild(c);
+  });
+  observeCards('.ctc');
+}
+ 
+function observeCards(sel) {
+  const obs = new IntersectionObserver(e => e.forEach(x => x.isIntersecting && x.target.classList.add('vis')), { threshold: 0.1 });
+  document.querySelectorAll(sel).forEach(el => obs.observe(el));
+}
+ 
+loadPage();
 </script>
 </body>
 </html>

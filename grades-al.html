@@ -14,7 +14,6 @@
     }
     body { font-family: 'Inter', sans-serif; background: var(--navy); color: #fff; overflow-x: hidden; }
 
- 
     .hero {
       position: relative; min-height: 100vh;
       background: radial-gradient(ellipse at 80% 20%, #0d2a5a 0%, #060d1f 60%);
@@ -30,7 +29,7 @@
 
     @keyframes twinkle { 0%,100%{opacity:.3;transform:scale(1)} 50%{opacity:1;transform:scale(1.5)} }
 
-     
+    
     .deco-line {
       position: absolute; right: 0; top: 0; bottom: 0; width: 40%;
       background: linear-gradient(180deg, transparent, rgba(212,168,67,.08) 30%, rgba(212,168,67,.12) 60%, transparent);
@@ -38,7 +37,7 @@
       pointer-events: none; z-index: 0;
     }
 
- 
+
     .nav {
       position: relative; z-index: 20;
       display: flex; align-items: center; justify-content: space-between;
@@ -59,7 +58,7 @@
     }
     .nav-brand-dot { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; }
 
-     
+   
     .hero-body {
       position: relative; z-index: 5;
       flex: 1; display: grid; grid-template-columns: 1fr 1fr;
@@ -113,7 +112,7 @@
     }
     .btn-outline-gold:hover { background: rgba(212,168,67,.1); border-color: var(--gold); }
 
-     
+
     .stream-cards { display: flex; flex-direction: column; gap: 16px; animation: fadeIn .8s ease 0.5s both; }
     .stream-card {
       border: 1px solid rgba(255,255,255,.08);
@@ -304,7 +303,7 @@
   </div>
 </section>
 
- 
+
 <section class="subj-sec" id="al-subjects">
   <div class="subj-inner">
     <div class="sec-label">✦ Full Curriculum</div>
@@ -323,7 +322,7 @@
   </div>
 </section>
 
- 
+
 <section class="teacher-sec" id="al-teachers">
   <div class="teacher-inner">
     <div class="sec-label">✦ Our Faculty</div>
@@ -341,98 +340,114 @@
   </div>
 </footer>
 
-<script>
  
-const starsEl = document.getElementById('stars');
-for (let i = 0; i < 80; i++) {
-  const s = document.createElement('div');
-  s.className = 'star';
-  const size = Math.random() * 2 + 0.5;
-  s.style.cssText = `width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${Math.random()*3}s;animation-duration:${2+Math.random()*3}s`;
-  starsEl.appendChild(s);
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+ 
+<script>
+const firebaseConfig = {
+  apiKey:            "AIzaSyDlBLrs-WquiVIivoOCuJq2g7BFhNwAtas",
+  authDomain:        "samathwee.firebaseapp.com",
+  projectId:         "samathwee",
+  storageBucket:     "samathwee.firebasestorage.app",
+  messagingSenderId: "1094489861098",
+  appId:             "1:1094489861098:web:e61feb13a5f69a8b78e093",
+  databaseURL:       "https://samathwee-default-rtdb.firebaseio.com"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const GRADE_KEY = 'grade_al';
+ 
+const ACCENTS = ['#0ea5e9','#22c55e','#16a34a','#6366f1','#8b5cf6','#f59e0b','#0284c7','#d97706','#7c3aed','#059669','#b45309','#0891b2','#e11d48','#2563eb'];
+const GRAD = ['linear-gradient(135deg,#0ea5e9,#38bdf8)','linear-gradient(135deg,#22c55e,#4ade80)','linear-gradient(135deg,#8b5cf6,#a78bfa)','linear-gradient(135deg,#f59e0b,#fbbf24)','linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#0284c7,#38bdf8)'];
+ 
+async function loadPage() {
+  try {
+    const snap = await db.ref('subpages/' + GRADE_KEY).once('value');
+    const data = snap.val() || {};
+    const subjects = Array.isArray(data.subjects) ? data.subjects.filter(Boolean) : (data.subjects ? Object.values(data.subjects).filter(Boolean) : []);
+    const teachers = Array.isArray(data.teachers) ? data.teachers.filter(Boolean) : (data.teachers ? Object.values(data.teachers).filter(Boolean) : []);
+    if (subjects.length) renderSubjects(subjects);
+    if (teachers.length) renderTeachers(teachers);
+  } catch(e) { console.error(e); }
 }
-
-const subjects = [
-  { icon:'⚛️', name:'Physics', desc:'Mechanics, electromagnetism, wave phenomena and modern physics for A/L Science.', topics:['Mechanics','Waves','Electromagnetism','Modern Physics'], stream:'science', color:'#0ea5e9', badge:'Science' },
-  { icon:'🧪', name:'Chemistry', desc:'Organic, inorganic and physical chemistry with full practical component guidance.', topics:['Organic','Inorganic','Physical Chem','Practical'], stream:'science', color:'#22c55e', badge:'Science' },
-  { icon:'🔬', name:'Biology', desc:'Cell biology, genetics, evolution and ecology for the national A/L Biology syllabus.', topics:['Cell Biology','Genetics','Ecology','Evolution'], stream:'science', color:'#16a34a', badge:'Science' },
-  { icon:'📊', name:'Combined Maths', desc:'Pure mathematics and applied mathematics — calculus, mechanics and statistics.', topics:['Calculus','Mechanics','Algebra','Statistics'], stream:'science', color:'#6366f1', badge:'Science' },
-  { icon:'💻', name:'ICT', desc:'Advanced programming, networks, databases and software engineering principles.', topics:['Programming','Networking','Databases','Systems'], stream:'science', color:'#8b5cf6', badge:'Science/Arts' },
-  { icon:'📈', name:'Economics', desc:'Micro and macroeconomics, economic policy, Sri Lanka and global economic analysis.', topics:['Micro','Macro','Policy','Analysis'], stream:'commerce', color:'#f59e0b', badge:'Commerce' },
-  { icon:'🏢', name:'Business Studies', desc:'Business organization, management, marketing and entrepreneurship principles.', topics:['Management','Marketing','HR','Strategy'], stream:'commerce', color:'#0284c7', badge:'Commerce' },
-  { icon:'🧾', name:'Accounting', desc:'Financial and management accounting, including A/L past paper examination strategy.', topics:['Financial','Management','Auditing','Reporting'], stream:'commerce', color:'#d97706', badge:'Commerce' },
-  { icon:'🗳️', name:'Political Science', desc:'Political philosophy, governance, international relations and Sri Lankan politics.', topics:['Governance','IR','Philosophy','Sri Lanka'], stream:'arts', color:'#7c3aed', badge:'Arts' },
-  { icon:'🌍', name:'Geography (A/L)', desc:'Advanced physical and human geography with regional analysis and environmental studies.', topics:['Physical','Human','Regional','Environment'], stream:'arts', color:'#059669', badge:'Arts' },
-  { icon:'🏛️', name:'History (A/L)', desc:'Sri Lankan history and world history from ancient to modern periods, full depth.', topics:['Ancient','Medieval','Modern','Analysis'], stream:'arts', color:'#b45309', badge:'Arts' },
-  { icon:'🧠', name:'Logic & Scientific Method', desc:'Philosophical logic, scientific reasoning and critical analysis for A/L students.', topics:['Deduction','Induction','Argument','Analysis'], stream:'arts', color:'#0891b2', badge:'Arts/Common' },
-  { icon:'📖', name:'Sinhala (A/L)', desc:'Advanced Sinhala literature, language analysis and critical essay techniques.', topics:['Literature','Essay','Grammar','Analysis'], stream:'common', color:'#e11d48', badge:'Common' },
-  { icon:'🔤', name:'English (A/L)', desc:'Advanced English language and literature for the A/L General English component.', topics:['Language','Literature','Comprehension','Essay'], stream:'common', color:'#2563eb', badge:'Common' },
-];
-
-const teachers = [
-  { initials:'VP', name:'Dr. Vimukthi Perera', role:'Physics & Maths Specialist', stream:'Science', exp:'Former university lecturer. 15 years A/L Physics. 95% A-grade pass rate in 2024.', qual:'PhD Physics, University of Colombo', bg:'linear-gradient(135deg,#0ea5e9,#38bdf8)', sbg:'#0ea5e9' },
-  { initials:'SK', name:'Ms. Sanduni Karunaratne', role:'Chemistry Teacher', stream:'Science', exp:'12 years A/L Chemistry specialist. Author of revision notes used across Sri Lanka.', qual:'M.Sc Chemistry, University of Kelaniya', bg:'linear-gradient(135deg,#22c55e,#4ade80)', sbg:'#22c55e' },
-  { initials:'AR', name:'Mr. Asitha Rajapaksa', role:'Biology & Combined Maths', stream:'Science', exp:'10 years dual-subject specialist. Exceptional track record in paper II examinations.', qual:'B.Sc Biology & Applied Maths, USJP', bg:'linear-gradient(135deg,#8b5cf6,#a78bfa)', sbg:'#8b5cf6' },
-  { initials:'NF', name:'Mr. Nishantha Fernando', role:'Economics & Business', stream:'Commerce', exp:'Chartered accountant turned educator. 14 years teaching A/L commerce subjects.', qual:'MBA, University of Colombo · CA (SL)', bg:'linear-gradient(135deg,#f59e0b,#fbbf24)', sbg:'#f59e0b' },
-  { initials:'LW', name:'Ms. Lakmini Wickramasinghe', role:'History & Political Science', stream:'Arts', exp:'8 years A/L arts teacher. Published researcher in South Asian political history.', qual:'MA History, University of Peradeniya', bg:'linear-gradient(135deg,#7c3aed,#a855f7)', sbg:'#7c3aed' },
-  { initials:'TM', name:'Mr. Thilina Mendis', role:'ICT & Logic', stream:'Science/Arts', exp:'Industry experience at Dialog Axiata. 7 years teaching A/L ICT with outstanding results.', qual:'B.Eng IT, University of Moratuwa', bg:'linear-gradient(135deg,#0284c7,#38bdf8)', sbg:'#0284c7' },
-];
-
-const colors = { science:'#0ea5e9', commerce:'#22c55e', arts:'#a855f7', common:'#d4a843' };
-
-function renderSubjects(filter) {
+ 
+function renderSubjects(subjects) {
   const grid = document.getElementById('alGrid');
+  if (!grid) return;
   grid.innerHTML = '';
-  const list = filter === 'all' ? subjects : subjects.filter(s => s.stream === filter);
-  list.forEach((s, i) => {
+  const streamFilter = document.getElementById('streamFilter');
+  if (streamFilter) streamFilter.style.display = 'none';
+  subjects.forEach((s, i) => {
+    const color = s.color || ACCENTS[i % ACCENTS.length];
     const c = document.createElement('div');
     c.className = 'al-card';
-    c.style.transitionDelay = `${i * 0.06}s`;
+    c.style.transitionDelay = i * 0.06 + 's';
     c.innerHTML = `
       <div class="al-top">
-        <div class="al-icon">${s.icon}</div>
-        <div class="al-stream-badge" style="background:${s.color}22;color:${s.color}">${s.badge}</div>
+        <div class="al-icon">${s.icon || '📖'}</div>
+        ${s.teacher ? '<div class="al-stream-badge" style="background:' + color + '22;color:' + color + '">👨‍🏫 ' + s.teacher + '</div>' : ''}
       </div>
-      <div class="al-name">${s.name}</div>
-      <div class="al-desc">${s.desc}</div>
-      <div class="al-topics">${s.topics.map(t => `<span class="al-topic">${t}</span>`).join('')}</div>
+      <div class="al-name">${s.name || ''}</div>
+      ${s.fee ? '<div class="al-desc">💰 Rs. ' + s.fee + ' / month</div>' : ''}
     `;
     grid.appendChild(c);
     requestAnimationFrame(() => c.classList.add('vis'));
   });
+  observeCards('.al-card');
 }
-renderSubjects('all');
-
-document.getElementById('streamFilter').addEventListener('click', e => {
-  const btn = e.target.closest('.sf-btn');
-  if (!btn) return;
-  document.querySelectorAll('.sf-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderSubjects(btn.dataset.stream);
-});
-
-const tg = document.getElementById('alTeachers');
-teachers.forEach((t, i) => {
-  const c = document.createElement('div');
-  c.className = 'al-tc';
-  c.style.transitionDelay = `${i * 0.1}s`;
-  c.innerHTML = `
-    <div class="al-tc-top">
-      <div class="al-tc-av" style="background:${t.bg}">${t.initials}</div>
-      <div>
-        <div class="al-tc-name">${t.name}</div>
-        <div class="al-tc-role">${t.role}</div>
+ 
+function renderTeachers(teachers) {
+  const tg = document.getElementById('alTeachers');
+  if (!tg) return;
+  tg.innerHTML = '';
+  teachers.forEach((t, i) => {
+    const bg = GRAD[i % GRAD.length];
+    const sbg = ACCENTS[i % ACCENTS.length];
+    const initials = (t.name || 'T').split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+    const c = document.createElement('div');
+    c.className = 'al-tc';
+    c.style.transitionDelay = i * 0.1 + 's';
+    const avatarContent = t.image
+      ? '<img src="' + t.image + '" alt="' + (t.name||'') + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.parentElement.textContent=\'' + initials + '\'" />'
+      : initials;
+    c.innerHTML = `
+      <div class="al-tc-top">
+        <div class="al-tc-av" style="background:${bg};overflow:hidden">${avatarContent}</div>
+        <div>
+          <div class="al-tc-name">${t.name || ''}</div>
+          ${t.qualification ? '<div class="al-tc-role">' + t.qualification + '</div>' : ''}
+        </div>
       </div>
-    </div>
-    <div class="al-tc-stream" style="background:${t.sbg}22;color:${t.sbg}">${t.stream}</div>
-    <div class="al-tc-exp">${t.exp}</div>
-    <div class="al-tc-qual">🎓 ${t.qual}</div>
-  `;
-  tg.appendChild(c);
-});
+      ${t.subject ? '<div class="al-tc-stream" style="background:' + sbg + '22;color:' + sbg + '">' + t.subject + '</div>' : ''}
+      ${t.experience ? '<div class="al-tc-exp">🕐 ' + t.experience + '</div>' : ''}
+      ${t.bio ? '<div class="al-tc-qual">' + t.bio + '</div>' : ''}
+    `;
+    tg.appendChild(c);
+  });
+  observeCards('.al-tc');
+}
+ 
+function observeCards(sel) {
+  const obs = new IntersectionObserver(e => e.forEach(x => x.isIntersecting && x.target.classList.add('vis')), { threshold: 0.1 });
+  document.querySelectorAll(sel).forEach(el => obs.observe(el));
+}
+ 
+loadPage();
+</script>
+ 
 
-const obs = new IntersectionObserver(e => e.forEach(x => x.isIntersecting && x.target.classList.add('vis')), { threshold: 0.1 });
-document.querySelectorAll('.al-card,.al-tc').forEach(el => obs.observe(el));
+<script>
+const starsEl = document.getElementById('stars');
+if (starsEl) {
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2 + 0.5;
+    s.style.cssText = 'width:'+size+'px;height:'+size+'px;top:'+Math.random()*100+'%;left:'+Math.random()*100+'%;animation-delay:'+Math.random()*3+'s;animation-duration:'+(2+Math.random()*3)+'s';
+    starsEl.appendChild(s);
+  }
+}
 </script>
 </body>
 </html>
