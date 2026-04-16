@@ -10,23 +10,25 @@
 </head>
 <body>
  
- 
+<!-- LOADING SCREEN -->
 <div class="loading-screen" id="loadingScreen">
   <div class="loader-ring"></div>
   <div class="loading-text">Samathwee Higher Education</div>
   <div class="loading-sub">crafting brilliance · next generation learning</div>
 </div>
  
- 
+<!-- HERO -->
 <section class="hero-container">
-  <canvas id="bg-canvas"></canvas>
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
+  <video id="hero-video" src="download.mp4" autoplay muted loop playsinline preload="auto"></video>
+</xai:function_call >
+
+<xai:function_call name="edit_file">
+<parameter name="path">c:/Users/Dell/OneDrive/Desktop/business/samithu web/samathvee/index.html
+
  
   <nav class="nav-bar">
     <div class="logo-container">
-       
+      <!-- Logo updated from admin images -->
       <img id="site-logo" src="images.jpg" alt="Samathwee Logo" onerror="this.style.display='none'" />
       <h1>Samathwee Higher<br>Education Center</h1>
     </div>
@@ -76,7 +78,7 @@
   </div>
 </section>
  
- 
+<!-- GRADES -->
 <section class="grade-section" id="grades">
   <div class="grade-inner">
     <div class="section-tag">Our Programs</div>
@@ -85,7 +87,8 @@
     <div class="grade-grid" id="gradesGrid"></div>
   </div>
 </section>
-  
+ 
+<!-- SUBJECTS -->
 <section class="subjects-section" id="subjects">
   <div class="subjects-inner">
     <div class="section-tag">Subject Index</div>
@@ -99,7 +102,7 @@
   </div>
 </section>
  
- 
+<!-- TEACHERS (NEW) -->
 <section class="teachers-section" id="teachers">
   <div class="teachers-inner">
     <div class="section-tag" style="background:linear-gradient(135deg,#1a3c5e,#2c5f8e)">Our Faculty</div>
@@ -110,14 +113,14 @@
       <input type="text" id="teacherSearch" placeholder="Search teachers by name or subject…" autocomplete="off" />
     </div>
     <div class="teachers-grid" id="teachersGrid">
-     
+      <!-- Populated from Firebase Realtime DB -->
     </div>
     <div class="no-teachers-msg" id="noTeachersMsg">🔍 No teachers found. Try a different keyword.</div>
     <div class="no-results" id="noTeachers" style="display:none;">No teacher profiles yet.</div>
   </div>
 </section>
  
- 
+<!-- CENTERS -->
 <section class="centers-section" id="centers">
   <div class="centers-inner">
     <div class="section-tag" style="background:linear-gradient(135deg,var(--orange),var(--orange-dark))">Our Location</div>
@@ -138,7 +141,7 @@
   </div>
 </section>
  
- 
+<!-- CONTACT -->
 <section class="contact-section" id="contact">
   <div class="contact-inner">
     <div class="section-tag" style="background:linear-gradient(135deg,var(--purple),var(--purple-light))">Get In Touch</div>
@@ -160,12 +163,12 @@
   </div>
 </section>
  
- 
+<!-- FOOTER -->
 <footer>
   <p id="footer-text">© 2026 <span>Samathwee Higher Education Center</span>. All rights reserved. Panadura, Sri Lanka.</p>
 </footer>
  
- 
+<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
