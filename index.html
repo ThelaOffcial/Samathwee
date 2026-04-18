@@ -19,7 +19,13 @@
 
 <!-- HERO -->
 <section class="hero-container">
-  <video id="hero-video" src="download.mp4" autoplay muted loop playsinline preload="auto"></video>
+
+  <!-- VIDEO WRAPPER: percentage-based so it scales on zoom -->
+  <div class="hero-video-wrap">
+    <video id="hero-video" src="download.mp4" autoplay muted loop playsinline preload="auto"></video>
+  </div>
+
+  <!-- OVERLAY: covers left/text side on desktop, full on mobile -->
   <div class="hero-overlay"></div>
 
   <nav class="nav-bar">
