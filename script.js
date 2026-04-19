@@ -357,7 +357,8 @@ function buildTeacherGrid(list) {
   if (noMsg) noMsg.style.display = 'none';
  
   grid.innerHTML = sorted.map((t, idx) => `
-    <div class="teacher-card" style="transition-delay:${idx * 0.08}s">
+    <a href="${t.name ? 'teacher.html?name=' + encodeURIComponent(t.name) : '#'}"
+       class="teacher-card" style="text-decoration:none;color:inherit;cursor:pointer;display:block;transition-delay:${idx * 0.08}s">
       <div class="teacher-avatar">
         ${t.image
           ? `<img src="${t.image}" alt="${t.name || ''}" />`
@@ -369,7 +370,7 @@ function buildTeacherGrid(list) {
       ${t.qualification ? `<div class="teacher-qual">🎓 ${t.qualification}</div>` : ''}
       ${t.experience    ? `<div class="teacher-exp">⏱ ${t.experience}</div>`      : ''}
       ${t.bio           ? `<div class="teacher-bio">${t.bio}</div>`               : ''}
-    </div>
+    </a>
   `).join('');
  
   // Scroll reveal for each card
@@ -606,3 +607,29 @@ window.addEventListener('beforeunload', () => {
     try { ref.off('value', handler); } catch {}
   });
 });
+(function () {
+  /* ── Block right-click on the entire showcase ── */
+  document.getElementById('showcaseStage')
+    ?.addEventListener('contextmenu', e => e.preventDefault());
+ 
+  /* ── Block right-click on the video itself ── */
+  const v = document.getElementById('stealthVideo');
+  if (!v) return;
+ 
+  v.addEventListener('contextmenu', e => e.preventDefault());
+ 
+  /* ── Kill Picture-in-Picture via keyboard or API ── */
+  document.addEventListener('enterpictureinpicture', e => {
+    if (e.target === v) document.exitPictureInPicture?.();
+  });
+ 
+  /* ── Prevent drag (which exposes the video source) ── */
+  v.addEventListener('dragstart', e => e.preventDefault());
+ 
+  /* ── Intercept DevTools network sniffing hint:
+        rename the element so it doesn't say "video" in inspect ──
+     (purely cosmetic in inspector, doesn't break anything) ── */
+  v.setAttribute('data-type', 'visual');
+  v.setAttribute('aria-hidden', 'true');
+  v.setAttribute('role', 'presentation');
+})();

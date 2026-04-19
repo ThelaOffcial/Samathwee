@@ -805,3 +805,225 @@ a { color: inherit; text-decoration: none; }
   -webkit-text-fill-color: var(--t1) !important;
   caret-color: var(--t1) !important;
 }
+/* ══════════════════════════════════════════════
+   TIMETABLE ADDON — dark admin theme
+══════════════════════════════════════════════ */
+
+/* ── Add slot form ── */
+.tt-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+@media (max-width: 768px) { .tt-form-grid { grid-template-columns: 1fr; } }
+
+.tt-form-grid select,
+.tt-form-grid input[type="time"],
+.tt-form-grid input[type="text"] {
+  width: 100%; padding: 11px 14px;
+  border: 1px solid rgba(148,163,184,0.12);
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.04);
+  color: var(--t1); font-family: var(--ff-body);
+  font-size: 13.5px; outline: none;
+  transition: all 0.2s;
+  -webkit-appearance: none; appearance: none;
+}
+.tt-form-grid select option { background: #111827; color: var(--t1); }
+.tt-form-grid select:focus,
+.tt-form-grid input:focus {
+  border-color: rgba(56,189,248,0.35);
+  background: rgba(56,189,248,0.04);
+  box-shadow: 0 0 0 3px rgba(56,189,248,0.07);
+}
+
+/* ── View switcher buttons ── */
+.tt-view-btns {
+  display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap;
+}
+.tt-view-btn {
+  padding: 9px 22px; border-radius: 999px;
+  border: 1px solid rgba(148,163,184,0.15);
+  background: rgba(255,255,255,0.03);
+  color: var(--t2); font-weight: 600;
+  font-size: 12.5px; font-family: var(--ff-body);
+  cursor: pointer; transition: all 0.2s;
+}
+.tt-view-btn:hover { border-color: rgba(148,163,184,0.3); color: var(--t1); }
+.tt-view-btn.active {
+  background: var(--sky-dim); color: var(--sky);
+  border-color: rgba(56,189,248,0.3);
+}
+
+/* ── View panels ── */
+.tt-view-panel { display: none; animation: fadeSlide 0.3s ease; }
+.tt-view-panel.active { display: block; }
+
+/* ── Slots list (raw entries) ── */
+.tt-teacher-group {
+  margin-bottom: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.tt-group-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px;
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid var(--border);
+  font-weight: 700; font-size: 13.5px; color: var(--t1);
+}
+.tt-group-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, rgba(56,189,248,0.25), rgba(56,189,248,0.08));
+  border: 1px solid rgba(56,189,248,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 13px; color: var(--sky);
+  flex-shrink: 0;
+}
+.tt-slot-count {
+  margin-left: auto;
+  font-size: 11px; font-weight: 600; color: var(--t3);
+  font-family: var(--ff-mono);
+}
+.tt-slots-list { padding: 8px 14px 12px; }
+.tt-slot-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 6px;
+  border-bottom: 1px solid rgba(148,163,184,0.05);
+  flex-wrap: wrap;
+}
+.tt-slot-row:last-child { border-bottom: none; }
+.tt-day-badge {
+  padding: 4px 12px; border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 11px; font-weight: 800;
+  font-family: var(--ff-mono); letter-spacing: 0.06em;
+  flex-shrink: 0;
+}
+.tt-time-range {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 12px; color: var(--t2); font-family: var(--ff-mono);
+  flex-shrink: 0;
+}
+.tt-time-icon { font-size: 11px; }
+.tt-grade-pill {
+  padding: 3px 10px; border-radius: 999px;
+  font-size: 11px; font-weight: 600;
+  flex-shrink: 0;
+}
+.tt-subject-name {
+  flex: 1; font-size: 13px; color: var(--t1); font-weight: 600;
+  min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.tt-slot-remove {
+  flex-shrink: 0; margin-left: auto;
+  padding: 5px 10px; font-size: 12px;
+}
+
+/* ── Section label (teacher/grade headers in grids) ── */
+.tt-section-label {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 14px; font-weight: 700; color: var(--t1);
+  margin: 24px 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.tt-section-avatar {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: rgba(56,189,248,0.1);
+  border: 1px solid rgba(56,189,248,0.25);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 13px; color: var(--sky);
+  flex-shrink: 0;
+}
+
+/* ── Timetable grid table ── */
+.tt-table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+.tt-table {
+  width: 100%; border-collapse: collapse;
+  min-width: 560px;
+}
+.tt-th, .tt-time-th {
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid var(--border);
+  font-size: 10.5px; font-weight: 700; color: var(--t3);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  white-space: nowrap; text-align: left;
+}
+.tt-time-th { width: 100px; }
+.tt-th-full { font-weight: 400; font-size: 9px; }
+.tt-td, .tt-time-td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(148,163,184,0.05);
+  border-right: 1px solid rgba(148,163,184,0.05);
+  vertical-align: top;
+}
+.tt-td:last-child, .tt-time-td:last-child { border-right: none; }
+.tt-table tr:last-child .tt-td,
+.tt-table tr:last-child .tt-time-td { border-bottom: none; }
+
+.tt-time-td {
+  width: 100px; white-space: nowrap;
+  vertical-align: middle;
+}
+.tt-start {
+  display: block; font-size: 13px; font-weight: 700;
+  color: var(--t1); font-family: var(--ff-mono);
+}
+.tt-arrow {
+  display: block; color: var(--t3);
+  font-size: 10px; line-height: 1.4; text-align: center;
+}
+.tt-end {
+  display: block; font-size: 11px;
+  color: var(--t3); font-family: var(--ff-mono);
+}
+
+.tt-cell-content {
+  border-left: 3px solid var(--sky);
+  padding: 6px 10px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: rgba(255,255,255,0.02);
+}
+.tt-cell-empty {
+  color: var(--t3); font-size: 12px; text-align: center; padding: 6px 0;
+}
+.tt-cell-teacher {
+  font-size: 12px; font-weight: 600; color: var(--t2); margin-bottom: 4px;
+}
+.tt-cell-grade {
+  font-size: 11px; font-weight: 700; margin-bottom: 3px;
+}
+.tt-cell-subject {
+  font-size: 12px; color: var(--t1); font-weight: 600;
+}
+
+/* ── Filter row ── */
+.tt-filter-row {
+  display: flex; gap: 14px; align-items: flex-end;
+  margin-bottom: 20px; flex-wrap: wrap;
+}
+.tt-filter-row .form-group { margin-bottom: 0; flex: 1; min-width: 180px; }
+.tt-filter-row select {
+  width: 100%; padding: 11px 14px;
+  border: 1px solid rgba(148,163,184,0.12);
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.04);
+  color: var(--t1); font-family: var(--ff-body);
+  font-size: 13.5px; outline: none;
+  -webkit-appearance: none; appearance: none;
+  transition: all 0.2s;
+}
+.tt-filter-row select option { background: #111827; color: var(--t1); }
+.tt-filter-row select:focus {
+  border-color: rgba(56,189,248,0.35);
+  background: rgba(56,189,248,0.04);
+}

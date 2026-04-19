@@ -19,15 +19,12 @@
 
 <!-- HERO -->
 <section class="hero-container">
+  <canvas id="bg-canvas"></canvas>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
 
-  <!-- VIDEO WRAPPER: percentage-based so it scales on zoom -->
-  <div class="hero-video-wrap">
-    <video id="hero-video" src="download.mp4" autoplay muted loop playsinline preload="auto"></video>
-  </div>
-
-  <!-- OVERLAY: covers left/text side on desktop, full on mobile -->
-  <div class="hero-overlay"></div>
-
+  <!-- NAV -->
   <nav class="nav-bar">
     <div class="logo-container">
       <img id="site-logo" src="images.jpg" alt="Samathwee Logo" onerror="this.style.display='none'" />
@@ -45,20 +42,50 @@
     </ul>
   </nav>
 
-  <div class="hero-content">
-    <div class="description-box">
-      <div class="hero-badge" id="hero-tagline">🎓 Excellence in Education Since 2010</div>
-      <h2 id="hero-title-wrap">Empowering the<br>
-        <span class="shiny-text" id="hero-title-shiny">Next Generation</span><br>of Sri Lanka
-      </h2>
-      <p id="hero-desc">Samathwee Higher Education Center provides world-class tutoring and academic guidance from Grade 1 through A/Levels. Our expert faculty ensures every student reaches their peak potential.</p>
-      <div class="hero-btns">
-        <a href="#grades" class="btn-primary">Explore Programs →</a>
-        <a href="#centers" class="btn-secondary">Our Centers</a>
+  <!-- HERO MAIN ROW: left text + right video -->
+  <div class="hero-main">
+
+    <!-- LEFT — Text content -->
+    <div class="hero-content">
+      <div class="description-box">
+        <div class="hero-badge" id="hero-tagline">🎓 Excellence in Education Since 2010</div>
+        <h2 id="hero-title-wrap">Empowering the<br>
+          <span class="shiny-text" id="hero-title-shiny">Next Generation</span><br>of Sri Lanka
+        </h2>
+        <p id="hero-desc">Samathwee Higher Education Center provides world-class tutoring and academic guidance from Grade 1 through A/Levels. Our expert faculty ensures every student reaches their peak potential.</p>
+        <div class="hero-btns">
+          <a href="#grades" class="btn-primary">Explore Programs →</a>
+          <a href="#centers" class="btn-secondary">Our Centers</a>
+        </div>
       </div>
     </div>
-  </div>
 
+    <!-- RIGHT — Stealth video (looks like an animated graphic) -->
+    <div class="hero-video-side" id="showcaseStage">
+
+      <video
+        id="stealthVideo"
+        src="download.mp4"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        disablepictureinpicture
+        disableremoteplayback
+        x-webkit-airplay="deny"
+      ></video>
+
+      <!-- 4-corner fade vignette -->
+      <div class="hvs-fade"></div>
+
+      <!-- Transparent interaction shield on top -->
+      <div class="hvs-shield" id="showcaseShield"></div>
+
+    </div>
+  </div><!-- /.hero-main -->
+
+  <!-- STATS BAR -->
   <div class="hero-stats">
     <div class="stat-item">
       <span class="stat-num" id="stat-students" data-target="1200">0</span><span class="stat-num">+</span>
@@ -172,5 +199,30 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="script.js"></script>
+
+<!-- STEALTH VIDEO PROTECTION -->
+<script>
+(function () {
+  const stage = document.getElementById('showcaseStage');
+  const v     = document.getElementById('stealthVideo');
+  if (!v) return;
+
+  // Block right-click on stage + video
+  [stage, v].forEach(el => el?.addEventListener('contextmenu', e => e.preventDefault()));
+
+  // Kill Picture-in-Picture
+  document.addEventListener('enterpictureinpicture', e => {
+    if (e.target === v) document.exitPictureInPicture?.();
+  });
+
+  // Block drag (exposes src URL)
+  v.addEventListener('dragstart', e => e.preventDefault());
+
+  // Semantic disguise — hides identity in DevTools
+  v.setAttribute('data-type', 'visual');
+  v.setAttribute('aria-hidden', 'true');
+  v.setAttribute('role', 'presentation');
+})();
+</script>
 </body>
 </html>

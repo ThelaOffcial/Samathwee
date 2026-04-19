@@ -370,8 +370,10 @@ function renderTeachers(teachers) {
     'linear-gradient(135deg,#ec4899,#db2777)',
   ];
   teachers.forEach((t, i) => {
-    const c = document.createElement('div');
+    const c = document.createElement('a');
+    c.href = t.name ? `teacher.html?name=${encodeURIComponent(t.name)}` : '#';
     c.className = 'teacher-card';
+    c.style.textDecoration = 'none'; c.style.color = 'inherit'; c.style.display = 'block';
     c.style.transitionDelay = `${i * 0.1}s`;
  
     let avatarHtml;

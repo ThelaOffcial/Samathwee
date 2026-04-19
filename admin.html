@@ -162,6 +162,8 @@
       <button class="nav-item" onclick="showSection('teachers', this)"><span class="nav-icon">👨‍🏫</span> Teachers</button>
       <div class="nav-section-label">Sub Pages</div>
       <button class="nav-item" onclick="showSection('subpages', this)"><span class="nav-icon">📄</span> Grade Sub Pages</button>
+      <div class="nav-section-label">Scheduling</div>
+      <button class="nav-item" onclick="showSection('timetable', this)"><span class="nav-icon">📅</span> Timetable</button>
       <div class="nav-section-label">Settings</div>
       <button class="nav-item" onclick="showSection('center', this)"><span class="nav-icon">📍</span> Center Info</button>
       <button class="nav-item" onclick="showSection('contact', this)"><span class="nav-icon">📞</span> Contact</button>
@@ -391,8 +393,158 @@
  
     </section>
  
-    
-    <section id="sec-center" class="admin-section">
+    <!-- TIMETABLE -->
+    <section id="sec-timetable" class="admin-section">
+      <div class="section-header">
+        <h2>📅 Timetable</h2>
+        <p>Build and manage the weekly class schedule. Add time slots per teacher, then view by teacher or by grade.</p>
+      </div>
+
+      <!-- ADD SLOT FORM -->
+      <div class="card" style="margin-bottom:24px;">
+        <div class="panel-sub-title">➕ Add Time Slot</div>
+        <div class="tt-form-grid">
+          <div class="form-group">
+            <label>Teacher</label>
+            <select id="slotTeacher">
+              <option value="">— Select Teacher —</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Day</label>
+            <select id="slotDay">
+              <option value="">— Select Day —</option>
+              <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+              <option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Grade</label>
+            <select id="slotGrade">
+              <option value="">— Select Grade —</option>
+              <optgroup label="Primary (Grade 1–5)">
+                <option value="grade1">🌟 Grade 1</option>
+                <option value="grade2">🌟 Grade 2</option>
+                <option value="grade3">🌟 Grade 3</option>
+                <option value="grade4">🌟 Grade 4</option>
+                <option value="grade5">🌟 Grade 5</option>
+              </optgroup>
+              <optgroup label="Secondary (Grade 6–O/L)">
+                <option value="grade6">📘 Grade 6</option>
+                <option value="grade7">📘 Grade 7</option>
+                <option value="grade8">📘 Grade 8</option>
+                <option value="grade9">📘 Grade 9</option>
+                <option value="grade10">📘 Grade 10</option>
+                <option value="grade11_ol">📘 Grade 11 (O/L)</option>
+              </optgroup>
+              <optgroup label="A / Levels">
+                <option value="al_science">🔬 A/L — Science</option>
+                <option value="al_commerce">📊 A/L — Commerce</option>
+                <option value="al_arts">🎨 A/L — Arts</option>
+              </optgroup>
+              <optgroup label="Cambridge CAIE">
+                <option value="cambridge_primary">🏛️ Cambridge Primary</option>
+                <option value="cambridge_igcse">🏛️ Cambridge IGCSE</option>
+                <option value="cambridge_al">🏛️ Cambridge A-Level</option>
+              </optgroup>
+              <optgroup label="London Edexcel">
+                <option value="london_igcse">🇬🇧 London IGCSE</option>
+                <option value="london_al">🇬🇧 London A-Level</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Start Time</label>
+            <input type="time" id="slotStart" />
+          </div>
+          <div class="form-group">
+            <label>End Time</label>
+            <input type="time" id="slotEnd" />
+          </div>
+          <div class="form-group">
+            <label>Subject</label>
+            <input type="text" id="slotSubject" placeholder="e.g. Mathematics" />
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+          <button class="btn-add" onclick="addSlot()">＋ Add Slot</button>
+          <button class="btn-save" onclick="saveTimetable()">💾 Save Timetable</button>
+        </div>
+      </div>
+
+      <!-- VIEW SWITCHER -->
+      <div class="tt-view-btns">
+        <button class="tt-view-btn active" onclick="switchTTView('slots', this)">📋 All Slots</button>
+        <button class="tt-view-btn" onclick="switchTTView('teacher', this)">👨‍🏫 By Teacher</button>
+        <button class="tt-view-btn" onclick="switchTTView('grade', this)">📚 By Grade</button>
+      </div>
+
+      <!-- PANEL: All Slots -->
+      <div class="tt-view-panel active" id="tt-panel-slots">
+        <div class="card">
+          <div id="slotsList"><p class="empty-msg">No time slots yet. Use the form above to add slots.</p></div>
+        </div>
+      </div>
+
+      <!-- PANEL: By Teacher -->
+      <div class="tt-view-panel" id="tt-panel-teacher">
+        <div class="card">
+          <div class="tt-filter-row">
+            <div class="form-group">
+              <label>Filter by Teacher</label>
+              <select id="ttFilterTeacher" onchange="generateTeacherTimetable()">
+                <option value="">— All Teachers —</option>
+              </select>
+            </div>
+            <button class="btn-save" style="align-self:flex-end;" onclick="printTimetable('tt-teacher-grid')">🖨️ Print</button>
+          </div>
+          <div id="tt-teacher-grid"><p class="empty-msg">No timetable data. Add slots and switch to this view.</p></div>
+        </div>
+      </div>
+
+      <!-- PANEL: By Grade -->
+      <div class="tt-view-panel" id="tt-panel-grade">
+        <div class="card">
+          <div class="tt-filter-row">
+            <div class="form-group">
+              <label>Filter by Grade</label>
+              <select id="ttFilterGrade" onchange="generateGradeTimetable()">
+                <option value="">— All Grades —</option>
+                <optgroup label="Primary">
+                  <option value="grade1">🌟 Grade 1</option><option value="grade2">🌟 Grade 2</option>
+                  <option value="grade3">🌟 Grade 3</option><option value="grade4">🌟 Grade 4</option>
+                  <option value="grade5">🌟 Grade 5</option>
+                </optgroup>
+                <optgroup label="Secondary">
+                  <option value="grade6">📘 Grade 6</option><option value="grade7">📘 Grade 7</option>
+                  <option value="grade8">📘 Grade 8</option><option value="grade9">📘 Grade 9</option>
+                  <option value="grade10">📘 Grade 10</option><option value="grade11_ol">📘 Grade 11 (O/L)</option>
+                </optgroup>
+                <optgroup label="A/Level">
+                  <option value="al_science">🔬 A/L Science</option>
+                  <option value="al_commerce">📊 A/L Commerce</option>
+                  <option value="al_arts">🎨 A/L Arts</option>
+                </optgroup>
+                <optgroup label="Cambridge">
+                  <option value="cambridge_primary">🏛️ Cambridge Primary</option>
+                  <option value="cambridge_igcse">🏛️ Cambridge IGCSE</option>
+                  <option value="cambridge_al">🏛️ Cambridge A-Level</option>
+                </optgroup>
+                <optgroup label="London">
+                  <option value="london_igcse">🇬🇧 London IGCSE</option>
+                  <option value="london_al">🇬🇧 London A-Level</option>
+                </optgroup>
+              </select>
+            </div>
+            <button class="btn-save" style="align-self:flex-end;" onclick="printTimetable('tt-grade-grid')">🖨️ Print</button>
+          </div>
+          <div id="tt-grade-grid"><p class="empty-msg">No timetable data. Add slots and switch to this view.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CENTER -->
+
       <div class="section-header">
         <h2>📍 Center Info</h2>
         <p>Edit the Panadura center information shown on the homepage.</p>
@@ -443,6 +595,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="admin.js"></script>
+<script src="timetable-addon.js"></script>
 <script>
   
   function switchGradeTab(gradeKey, btnEl) {

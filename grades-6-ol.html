@@ -384,8 +384,10 @@ function renderTeachers(teachers) {
   teachers.forEach((t, i) => {
     const grad = GRAD[i % GRAD.length];
     const initials = (t.name || 'T').split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
-    const c = document.createElement('div');
+    const c = document.createElement('a');
+    c.href = t.name ? `teacher.html?name=${encodeURIComponent(t.name)}` : '#';
     c.className = 'tc';
+    c.style.textDecoration = 'none'; c.style.color = 'inherit'; c.style.display = 'block';
     c.style.transitionDelay = i * 0.1 + 's';
     const avatarContent = t.image
       ? '<img src="' + t.image + '" alt="' + (t.name||'') + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.parentElement.textContent=\'' + initials + '\'" />'

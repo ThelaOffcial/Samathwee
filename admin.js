@@ -1,4 +1,3 @@
-
 const firebaseConfig = {
   apiKey:            "AIzaSyDlBLrs-WquiVIivoOCuJq2g7BFhNwAtas",
   authDomain:        "samathwee.firebaseapp.com",
@@ -186,6 +185,8 @@ async function loadAllData() {
     loadTeachers(),
     loadAllSubPageData()
   ]);
+  // Timetable loads after teachers so the dropdown is populated
+  if (typeof loadTimetable === 'function') loadTimetable();
 }
  
 
@@ -536,6 +537,8 @@ function renderTeacherRows() {
       </div>
       <button class="btn-remove teacher-remove" onclick="removeTeacher(${i})">✕</button>
     </div>`).join('');
+  // Keep timetable teacher dropdown in sync
+  if (typeof populateSlotTeacherDropdown === 'function') populateSlotTeacherDropdown();
 }
  
 function addTeacher() {
