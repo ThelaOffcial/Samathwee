@@ -76,7 +76,7 @@
 </head>
 <body>
  
-
+ 
 <div id="loginScreen" class="auth-container">
   <div class="auth-box">
  
@@ -140,7 +140,7 @@
   </div>
 </div>
  
-
+ 
 <div id="dashboard" class="dashboard" style="display:none;">
  
   <aside class="sidebar" id="sidebar">
@@ -165,8 +165,7 @@
       <div class="nav-section-label">Scheduling</div>
       <button class="nav-item" onclick="showSection('timetable', this)"><span class="nav-icon">📅</span> Timetable</button>
       <div class="nav-section-label">Settings</div>
-      <button class="nav-item" onclick="showSection('center', this)"><span class="nav-icon">📍</span> Center Info</button>
-      <button class="nav-item" onclick="showSection('contact', this)"><span class="nav-icon">📞</span> Contact</button>
+      <button class="nav-item" onclick="showSection('contact', this)"><span class="nav-icon">📞</span> Contact &amp; Center</button>
       <button class="nav-item" onclick="showSection('footer', this)"><span class="nav-icon">🔗</span> Footer</button>
     </nav>
  
@@ -399,7 +398,7 @@
         <h2>📅 Timetable</h2>
         <p>Build and manage the weekly class schedule. Add time slots per teacher, then view by teacher or by grade.</p>
       </div>
-
+ 
       <!-- ADD SLOT FORM -->
       <div class="card" style="margin-bottom:24px;">
         <div class="panel-sub-title">➕ Add Time Slot</div>
@@ -471,21 +470,21 @@
           <button class="btn-save" onclick="saveTimetable()">💾 Save Timetable</button>
         </div>
       </div>
-
+ 
       <!-- VIEW SWITCHER -->
       <div class="tt-view-btns">
         <button class="tt-view-btn active" onclick="switchTTView('slots', this)">📋 All Slots</button>
         <button class="tt-view-btn" onclick="switchTTView('teacher', this)">👨‍🏫 By Teacher</button>
         <button class="tt-view-btn" onclick="switchTTView('grade', this)">📚 By Grade</button>
       </div>
-
+ 
       <!-- PANEL: All Slots -->
       <div class="tt-view-panel active" id="tt-panel-slots">
         <div class="card">
           <div id="slotsList"><p class="empty-msg">No time slots yet. Use the form above to add slots.</p></div>
         </div>
       </div>
-
+ 
       <!-- PANEL: By Teacher -->
       <div class="tt-view-panel" id="tt-panel-teacher">
         <div class="card">
@@ -501,7 +500,7 @@
           <div id="tt-teacher-grid"><p class="empty-msg">No timetable data. Add slots and switch to this view.</p></div>
         </div>
       </div>
-
+ 
       <!-- PANEL: By Grade -->
       <div class="tt-view-panel" id="tt-panel-grade">
         <div class="card">
@@ -542,14 +541,17 @@
         </div>
       </div>
     </section>
-
-    <!-- CENTER -->
-
+ 
+    <!-- CONTACT (includes Center Info) -->
+    <section id="sec-contact" class="admin-section">
       <div class="section-header">
-        <h2>📍 Center Info</h2>
-        <p>Edit the Panadura center information shown on the homepage.</p>
+        <h2>📞 Contact &amp; Center Info</h2>
+        <p>Update the contact details and center information shown on the site.</p>
       </div>
-      <div class="card">
+ 
+      <!-- Center Info sub-card -->
+      <div class="card" style="margin-bottom:24px;">
+        <div class="panel-sub-title">📍 Center Info</div>
         <div class="form-row-2">
           <div class="form-group"><label>Center Name</label><input type="text" id="centerName" placeholder="Samathwee Panadura" /></div>
           <div class="form-group"><label>Phone</label><input type="text" id="centerPhone" placeholder="+94 77 000 0000" /></div>
@@ -559,15 +561,10 @@
         <div class="form-group"><label>Google Maps URL</label><input type="url" id="centerMapUrl" placeholder="https://maps.app.goo.gl/..." /></div>
         <button class="btn-save" onclick="saveCenter()">💾 Save Center</button>
       </div>
-    </section>
  
-    
-    <section id="sec-contact" class="admin-section">
-      <div class="section-header">
-        <h2>📞 Contact Details</h2>
-        <p>Update the contact information shown in the contact section.</p>
-      </div>
+      <!-- Contact Details sub-card -->
       <div class="card">
+        <div class="panel-sub-title">📞 Contact Details</div>
         <div class="form-group"><label>Phone Number</label><input type="text" id="contactPhone" placeholder="+94 77 000 0000" /></div>
         <div class="form-group"><label>Email Address</label><input type="email" id="contactEmail" placeholder="info@samathwee.lk" /></div>
         <div class="form-group"><label>Address</label><input type="text" id="contactAddress" placeholder="Panadura, Sri Lanka" /></div>
@@ -590,7 +587,7 @@
   </main>
 </div>
  
-
+ 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
