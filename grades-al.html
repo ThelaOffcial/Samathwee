@@ -246,12 +246,10 @@
       color: var(--navy);
       position: relative;
 
-      /* gold glowing ring */
-      border: 2.5px solid var(--gold);
-      box-shadow:
-        0 0 0 3px rgba(212,168,67,.15),
-        0 0 14px 4px rgba(212,168,67,.4);
-      animation: avatarGlow 2.8s ease-in-out infinite;
+      /* gold glowing ring — subtle */
+      border: 2px solid rgba(212,168,67,.6);
+      box-shadow: 0 0 7px 1px rgba(212,168,67,.2);
+      animation: avatarGlow 3s ease-in-out infinite;
     }
 
     /* image fills perfectly — no inner border-radius needed */
@@ -265,16 +263,12 @@
 
     @keyframes avatarGlow {
       0%, 100% {
-        box-shadow:
-          0 0 0 3px rgba(212,168,67,.15),
-          0 0 14px 4px rgba(212,168,67,.35);
-        border-color: var(--gold);
+        box-shadow: 0 0 6px 1px rgba(212,168,67,.18);
+        border-color: rgba(212,168,67,.55);
       }
       50% {
-        box-shadow:
-          0 0 0 5px rgba(212,168,67,.25),
-          0 0 26px 8px rgba(212,168,67,.6);
-        border-color: var(--gold2);
+        box-shadow: 0 0 12px 3px rgba(212,168,67,.35);
+        border-color: rgba(212,168,67,.85);
       }
     }
 
