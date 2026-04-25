@@ -7,23 +7,20 @@ const firebaseConfig = {
   appId:             "1:1094489861098:web:e61feb13a5f69a8b78e093",
   databaseURL:       "https://samathwee-default-rtdb.firebaseio.com"
 };
- 
+
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const db   = firebase.database(); 
+const db   = firebase.database();
 
- 
 function rtdbWrite(path, value) {
   const clean = JSON.parse(JSON.stringify(value));
   return db.ref(path).set(clean);
 }
- 
 function rtdbRead(path) {
   return db.ref(path).once('value').then(snap => snap.val());
 }
- 
 
- 
+// ── AUTH ──
 auth.onAuthStateChanged(user => {
   if (user) {
     document.getElementById('loginScreen').style.display = 'none';
@@ -34,98 +31,69 @@ auth.onAuthStateChanged(user => {
     document.getElementById('dashboard').style.display   = 'none';
   }
 });
- 
+
 function toggleAuth(type) {
   document.getElementById('loginForm').style.display  = type === 'login'  ? 'block' : 'none';
   document.getElementById('signupForm').style.display = type === 'signup' ? 'block' : 'none';
 }
- 
+
 async function doLogin() {
   const email    = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
   const remember = document.getElementById('rememberMe').checked;
   const errEl    = document.getElementById('loginError');
   const btn      = document.getElementById('loginBtn');
- 
-  if (!email || !password) {
-    errEl.textContent   = '❌ Please enter email and password.';
-    errEl.style.display = 'block';
-    return;
-  }
- 
+  if (!email || !password) { errEl.textContent = '❌ Please enter email and password.'; errEl.style.display = 'block'; return; }
   errEl.style.display = 'none';
-  btn.disabled = true;
-  btn.textContent = 'Signing in…';
- 
+  btn.disabled = true; btn.textContent = 'Signing in…';
   try {
     await auth.signInWithEmailAndPassword(email, password);
     if (remember) {
-      localStorage.setItem('adminEmail', email);
-      localStorage.setItem('adminPass',  password);
-      localStorage.setItem('rememberMe', 'true');
+      localStorage.setItem('adminEmail', email); localStorage.setItem('adminPass', password); localStorage.setItem('rememberMe', 'true');
     } else {
-      localStorage.removeItem('adminEmail');
-      localStorage.removeItem('adminPass');
-      localStorage.removeItem('rememberMe');
+      localStorage.removeItem('adminEmail'); localStorage.removeItem('adminPass'); localStorage.removeItem('rememberMe');
     }
-  } catch (err) {
-    errEl.textContent   = '❌ ' + friendlyAuthError(err.code);
-    errEl.style.display = 'block';
-  } finally {
-    btn.disabled    = false;
-    btn.textContent = 'Sign In →';
-  }
+  } catch (err) { errEl.textContent = '❌ ' + friendlyAuthError(err.code); errEl.style.display = 'block'; }
+  finally { btn.disabled = false; btn.textContent = 'Sign In →'; }
 }
- 
+
 async function doSignup() {
-  const email    = document.getElementById('signupEmail').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
   const password = document.getElementById('signupPassword').value;
-  const errEl    = document.getElementById('signupError');
+  const errEl = document.getElementById('signupError');
   errEl.style.display = 'none';
- 
-  if (!email || !password) {
-    errEl.textContent   = '❌ Please fill in all fields.';
-    errEl.style.display = 'block';
-    return;
-  }
- 
+  if (!email || !password) { errEl.textContent = '❌ Please fill in all fields.'; errEl.style.display = 'block'; return; }
   try {
     await auth.createUserWithEmailAndPassword(email, password);
     showToast('✅ Admin account created!');
     toggleAuth('login');
-  } catch (err) {
-    errEl.textContent   = '❌ ' + friendlyAuthError(err.code);
-    errEl.style.display = 'block';
-  }
+  } catch (err) { errEl.textContent = '❌ ' + friendlyAuthError(err.code); errEl.style.display = 'block'; }
 }
- 
+
 function doLogout() { auth.signOut(); }
- 
+
 function friendlyAuthError(code) {
   const map = {
-    'auth/user-not-found':       'No account found with that email.',
-    'auth/wrong-password':       'Incorrect password.',
-    'auth/invalid-email':        'Invalid email address.',
+    'auth/user-not-found': 'No account found with that email.',
+    'auth/wrong-password': 'Incorrect password.',
+    'auth/invalid-email': 'Invalid email address.',
     'auth/email-already-in-use': 'That email is already registered.',
-    'auth/weak-password':        'Password must be at least 6 characters.',
-    'auth/too-many-requests':    'Too many attempts. Try again later.',
+    'auth/weak-password': 'Password must be at least 6 characters.',
+    'auth/too-many-requests': 'Too many attempts. Try again later.',
     'auth/network-request-failed': 'Network error. Check your connection.',
-    'auth/invalid-credential':   'Invalid email or password.',
+    'auth/invalid-credential': 'Invalid email or password.',
   };
   return map[code] || 'Authentication failed. Try again.';
 }
- 
 
- 
+// ── UI HELPERS ──
 function showToast(msg, type = 'success') {
   const t = document.getElementById('toast');
-  t.textContent   = msg;
-  t.className     = `toast ${type}`;
-  t.style.display = 'block';
+  t.textContent = msg; t.className = `toast ${type}`; t.style.display = 'block';
   clearTimeout(t._timer);
   t._timer = setTimeout(() => { t.style.display = 'none'; }, 3500);
 }
- 
+
 let _saveTimer;
 function setSaveStatus(state, text) {
   const box = document.getElementById('saveStatus');
@@ -138,7 +106,7 @@ function setSaveStatus(state, text) {
   clearTimeout(_saveTimer);
   if (state === 'saved') _saveTimer = setTimeout(() => setSaveStatus('', 'Ready'), 3000);
 }
- 
+
 function showSection(key, btnEl) {
   document.querySelectorAll('.admin-section').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -147,19 +115,14 @@ function showSection(key, btnEl) {
   if (btnEl) btnEl.classList.add('active');
   document.getElementById('sidebar')?.classList.remove('open');
 }
- 
-function toggleSidebar() {
-  document.getElementById('sidebar')?.classList.toggle('open');
-}
- 
+
+function toggleSidebar() { document.getElementById('sidebar')?.classList.toggle('open'); }
+
 function escHtml(str) {
   return String(str || '')
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+    .replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
- 
+
 window.addEventListener('load', () => {
   if (localStorage.getItem('rememberMe') === 'true') {
     const emailEl = document.getElementById('loginEmail');
@@ -170,27 +133,15 @@ window.addEventListener('load', () => {
     if (cbEl)    cbEl.checked  = true;
   }
 });
- 
 
- 
 async function loadAllData() {
   await Promise.all([
-    loadHero(),
-    loadStats(),
-    loadCenter(),
-    loadContact(),
-    loadFooter(),
-    loadGrades(),
-    loadSubjects(),
-    loadTeachers(),
-    loadAllSubPageData()
+    loadHero(), loadStats(), loadCenter(), loadContact(), loadFooter(),
+    loadGrades(), loadSubjects(), loadTeachers(), loadAllSubPageData()
   ]);
-  // Timetable loads after teachers so the dropdown is populated
   if (typeof loadTimetable === 'function') loadTimetable();
 }
- 
 
- 
 async function saveData(path, data, label) {
   setSaveStatus('saving');
   try {
@@ -203,9 +154,8 @@ async function saveData(path, data, label) {
     showToast('❌ ' + (err.message || 'Save failed'), 'error');
   }
 }
- 
 
- 
+// ── HERO ──
 async function loadHero() {
   try {
     const data = await rtdbRead('config/hero');
@@ -216,7 +166,6 @@ async function loadHero() {
     }
   } catch (e) { console.warn('loadHero:', e); }
 }
- 
 async function saveHero() {
   await saveData('config/hero', {
     tagline: document.getElementById('heroTagline').value.trim(),
@@ -224,9 +173,8 @@ async function saveHero() {
     desc:    document.getElementById('heroDesc').value.trim()
   }, 'Hero section saved!');
 }
- 
 
- 
+// ── STATS ──
 async function loadStats() {
   try {
     const data = await rtdbRead('config/stats');
@@ -238,7 +186,6 @@ async function loadStats() {
     }
   } catch (e) { console.warn('loadStats:', e); }
 }
- 
 async function saveStats() {
   await saveData('config/stats', {
     students: parseInt(document.getElementById('statStudents').value) || 0,
@@ -247,9 +194,8 @@ async function saveStats() {
     centers:  parseInt(document.getElementById('statCenters').value)  || 1
   }, 'Statistics saved!');
 }
- 
 
- 
+// ── CENTER ──
 async function loadCenter() {
   try {
     const data = await rtdbRead('config/center');
@@ -262,7 +208,6 @@ async function loadCenter() {
     }
   } catch (e) { console.warn('loadCenter:', e); }
 }
- 
 async function saveCenter() {
   await saveData('config/center', {
     name:    document.getElementById('centerName').value.trim(),
@@ -272,68 +217,74 @@ async function saveCenter() {
     mapUrl:  document.getElementById('centerMapUrl').value.trim()
   }, 'Center info saved!');
 }
- 
 
- 
+// ── CONTACT (enhanced) ──
 async function loadContact() {
   try {
     const data = await rtdbRead('config/contact');
     if (data) {
-      document.getElementById('contactPhone').value   = data.phone   || '';
-      document.getElementById('contactEmail').value   = data.email   || '';
-      document.getElementById('contactAddress').value = data.address || '';
+      document.getElementById('contactPhone').value       = data.phone       || '';
+      document.getElementById('contactWhatsapp').value   = data.whatsapp    || '';
+      document.getElementById('contactWhatsappUrl').value = data.whatsappUrl || '';
+      document.getElementById('contactEmail').value      = data.email       || '';
+      document.getElementById('contactAddress').value    = data.address     || '';
+      document.getElementById('contactFacebook').value   = data.facebook    || '';
+      document.getElementById('contactFacebookUrl').value = data.facebookUrl || '';
     }
   } catch (e) { console.warn('loadContact:', e); }
 }
- 
 async function saveContact() {
   await saveData('config/contact', {
-    phone:   document.getElementById('contactPhone').value.trim(),
-    email:   document.getElementById('contactEmail').value.trim(),
-    address: document.getElementById('contactAddress').value.trim()
+    phone:       document.getElementById('contactPhone').value.trim(),
+    whatsapp:    document.getElementById('contactWhatsapp').value.trim(),
+    whatsappUrl: document.getElementById('contactWhatsappUrl').value.trim(),
+    email:       document.getElementById('contactEmail').value.trim(),
+    address:     document.getElementById('contactAddress').value.trim(),
+    facebook:    document.getElementById('contactFacebook').value.trim(),
+    facebookUrl: document.getElementById('contactFacebookUrl').value.trim()
   }, 'Contact details saved!');
 }
- 
 
- 
+// ── FOOTER (enhanced) ──
 async function loadFooter() {
   try {
     const data = await rtdbRead('config/footer');
-    if (data) document.getElementById('footerText').value = data.text || '';
+    if (data) {
+      if (typeof data === 'string') {
+        document.getElementById('footerText').value = data;
+      } else {
+        document.getElementById('footerText').value       = data.text       || '';
+        document.getElementById('footerDev').value        = data.dev        || '';
+        document.getElementById('footerFacebookUrl').value = data.facebookUrl || '';
+        document.getElementById('footerWhatsappUrl').value = data.whatsappUrl || '';
+      }
+    }
   } catch (e) { console.warn('loadFooter:', e); }
 }
- 
 async function saveFooter() {
   await saveData('config/footer', {
-    text: document.getElementById('footerText').value.trim()
+    text:        document.getElementById('footerText').value.trim(),
+    dev:         document.getElementById('footerDev').value.trim(),
+    facebookUrl: document.getElementById('footerFacebookUrl').value.trim(),
+    whatsappUrl: document.getElementById('footerWhatsappUrl').value.trim()
   }, 'Footer saved!');
 }
- 
 
- 
+// ── GRADES ──
 let gradesData = [];
- 
 async function loadGrades() {
   try {
     const data = await rtdbRead('grades');
     if (data) {
-      gradesData = Array.isArray(data)
-        ? data.filter(Boolean)
-        : Object.values(data).filter(Boolean);
-    } else {
-      gradesData = [];
-    }
+      gradesData = Array.isArray(data) ? data.filter(Boolean) : Object.values(data).filter(Boolean);
+    } else { gradesData = []; }
   } catch (e) { gradesData = []; }
   renderGradeRows();
 }
- 
 function renderGradeRows() {
   const list = document.getElementById('gradesList');
   if (!list) return;
-  if (!gradesData.length) {
-    list.innerHTML = '<p class="empty-msg">No grade cards yet. Click ＋ Add Grade Card.</p>';
-    return;
-  }
+  if (!gradesData.length) { list.innerHTML = '<p class="empty-msg">No grade cards yet. Click ＋ Add Grade Card.</p>'; return; }
   list.innerHTML = gradesData.map((g, i) => `
     <div class="grade-row" data-idx="${i}">
       <div class="form-group small"><label>Emoji</label>
@@ -359,66 +310,42 @@ function renderGradeRows() {
       </div>
     </div>`).join('');
 }
- 
 function addGradeRow() {
   gradesData.push({ emoji: '', name: '', sub: '', count: '', url: '', order: gradesData.length + 1 });
   renderGradeRows();
 }
- 
-function removeGradeRow(i) {
-  gradesData.splice(i, 1);
-  renderGradeRows();
-}
- 
+function removeGradeRow(i) { gradesData.splice(i, 1); renderGradeRows(); }
 async function saveGrades() {
   document.querySelectorAll('.grade-row').forEach(row => {
     const idx = parseInt(row.dataset.idx);
     if (isNaN(idx) || !gradesData[idx]) return;
     row.querySelectorAll('[data-field]').forEach(inp => {
       const field = inp.dataset.field;
-      gradesData[idx][field] = field === 'order'
-        ? (parseInt(inp.value) || idx + 1)
-        : inp.value.trim();
+      gradesData[idx][field] = field === 'order' ? (parseInt(inp.value) || idx + 1) : inp.value.trim();
     });
   });
- 
   const toSave = gradesData.map((g, i) => ({
-    emoji: g.emoji  || '',
-    name:  g.name   || '',
-    sub:   g.sub    || '',
-    count: g.count  || '',
-    url:   g.url    || '',
-    order: g.order  || i + 1
+    emoji: g.emoji || '', name: g.name || '', sub: g.sub || '',
+    count: g.count || '', url: g.url || '', order: g.order || i + 1
   }));
- 
   await saveData('grades', toSave, 'Grades saved!');
 }
- 
 
- 
+// ── SUBJECTS ──
 let subjectsData = [];
- 
 async function loadSubjects() {
   try {
     const data = await rtdbRead('subjects');
     if (data) {
-      subjectsData = Array.isArray(data)
-        ? data.filter(Boolean)
-        : Object.values(data).filter(Boolean);
-    } else {
-      subjectsData = [];
-    }
+      subjectsData = Array.isArray(data) ? data.filter(Boolean) : Object.values(data).filter(Boolean);
+    } else { subjectsData = []; }
   } catch (e) { subjectsData = []; }
   renderSubjectRows();
 }
- 
 function renderSubjectRows() {
   const list = document.getElementById('subjectsList');
   if (!list) return;
-  if (!subjectsData.length) {
-    list.innerHTML = '<p class="empty-msg">No subjects yet. Click ＋ Add Subject.</p>';
-    return;
-  }
+  if (!subjectsData.length) { list.innerHTML = '<p class="empty-msg">No subjects yet. Click ＋ Add Subject.</p>'; return; }
   list.innerHTML = subjectsData.map((s, i) => `
     <div class="subject-row" data-idx="${i}">
       <div class="form-group small"><label>Icon</label>
@@ -435,68 +362,44 @@ function renderSubjectRows() {
       </div>
     </div>`).join('');
 }
- 
-function addSubjectRow() {
-  subjectsData.push({ icon: '', name: '', tag: '' });
-  renderSubjectRows();
-}
- 
-function removeSubjectRow(i) {
-  subjectsData.splice(i, 1);
-  renderSubjectRows();
-}
- 
+function addSubjectRow() { subjectsData.push({ icon: '', name: '', tag: '' }); renderSubjectRows(); }
+function removeSubjectRow(i) { subjectsData.splice(i, 1); renderSubjectRows(); }
 async function saveSubjects() {
   document.querySelectorAll('.subject-row').forEach(row => {
     const idx = parseInt(row.dataset.idx);
     if (isNaN(idx) || !subjectsData[idx]) return;
-    row.querySelectorAll('[data-field]').forEach(inp => {
-      subjectsData[idx][inp.dataset.field] = inp.value.trim();
-    });
+    row.querySelectorAll('[data-field]').forEach(inp => { subjectsData[idx][inp.dataset.field] = inp.value.trim(); });
   });
- 
-  const toSave = subjectsData
-    .filter(s => s.name && s.name.trim())
-    .map(s => ({
-      icon: s.icon || '',
-      name: s.name || '',
-      tag:  s.tag  || ''
-    }));
- 
+  const toSave = subjectsData.filter(s => s.name && s.name.trim())
+    .map(s => ({ icon: s.icon || '', name: s.name || '', tag: s.tag || '' }));
   await saveData('subjects', toSave, 'Subjects saved!');
 }
- 
 
- 
-const CLOUDINARY_CLOUD_NAME = 'drmmn0xp3';
+// ══════════════════════════════════════════════
+//  TEACHERS — with INDIVIDUAL SAVE per teacher
+// ══════════════════════════════════════════════
+const CLOUDINARY_CLOUD_NAME    = 'drmmn0xp3';
 const CLOUDINARY_UPLOAD_PRESET = 'samathwee';
-const CLOUDINARY_FOLDER = 'samathwee';
- 
+const CLOUDINARY_FOLDER        = 'samathwee';
+
 let teachersData = [];
- 
+
 async function loadTeachers() {
   try {
     const data = await rtdbRead('teachers');
     if (data) {
-      teachersData = Array.isArray(data)
-        ? data.filter(Boolean)
-        : Object.values(data).filter(Boolean);
-    } else {
-      teachersData = [];
-    }
+      teachersData = Array.isArray(data) ? data.filter(Boolean) : Object.values(data).filter(Boolean);
+    } else { teachersData = []; }
   } catch (e) { teachersData = []; }
   renderTeacherRows();
 }
- 
+
 function renderTeacherRows() {
   const list = document.getElementById('teachersList');
   if (!list) return;
-  if (!teachersData.length) {
-    list.innerHTML = '<p class="empty-msg">No teachers yet. Click ＋ Add Teacher.</p>';
-    return;
-  }
+  if (!teachersData.length) { list.innerHTML = '<p class="empty-msg">No teachers yet. Click ＋ Add Teacher.</p>'; return; }
   list.innerHTML = teachersData.map((t, i) => `
-    <div class="teacher-row" data-idx="${i}">
+    <div class="teacher-row" data-idx="${i}" id="teacher-row-${i}">
       <div class="teacher-fields">
         <div class="form-row-2">
           <div class="form-group">
@@ -534,289 +437,267 @@ function renderTeacherRows() {
           </div>
           <div class="upload-progress" id="progress-${i}" style="display:none;"></div>
         </div>
+        <!-- Individual save button -->
+        <div style="display:flex;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid rgba(148,163,184,0.1);">
+          <button class="btn-save" style="font-size:12.5px;padding:9px 20px;" onclick="saveIndividualTeacher(${i})">💾 Save This Teacher</button>
+        </div>
       </div>
       <button class="btn-remove teacher-remove" onclick="removeTeacher(${i})">✕</button>
     </div>`).join('');
-  // Keep timetable teacher dropdown in sync
   if (typeof populateSlotTeacherDropdown === 'function') populateSlotTeacherDropdown();
 }
- 
+
 function addTeacher() {
-  teachersData.push({ 
-    name: '', subject: '', qualification: '', experience: '', bio: '', 
-    image: '',
-    order: teachersData.length + 1 
+  teachersData.push({ name: '', subject: '', qualification: '', experience: '', bio: '', image: '', order: teachersData.length + 1 });
+  renderTeacherRows();
+  // Scroll to the newly added teacher
+  setTimeout(() => {
+    const list = document.getElementById('teachersList');
+    if (list) list.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 100);
+}
+
+function removeTeacher(i) { teachersData.splice(i, 1); renderTeacherRows(); }
+
+// Save ONE teacher by index
+async function saveIndividualTeacher(i) {
+  const row = document.getElementById(`teacher-row-${i}`);
+  if (!row || !teachersData[i]) return;
+
+  // Collect current values from inputs
+  row.querySelectorAll('[data-field]').forEach(inp => {
+    teachersData[i][inp.dataset.field] = inp.value.trim();
   });
-  renderTeacherRows();
+
+  const btn = row.querySelector('.btn-save');
+  const origText = btn ? btn.textContent : '';
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+
+  setSaveStatus('saving');
+  try {
+    // Save entire teachers array to keep order consistent
+    const toSave = teachersData.map((t, idx) => ({
+      name: t.name || '', subject: t.subject || '', qualification: t.qualification || '',
+      experience: t.experience || '', bio: t.bio || '', image: t.image || '', order: idx + 1
+    }));
+    await rtdbWrite('teachers', toSave);
+    setSaveStatus('saved');
+    showToast(`✅ ${teachersData[i].name || 'Teacher'} saved!`);
+    if (btn) { btn.textContent = '✓ Saved!'; setTimeout(() => { btn.disabled = false; btn.textContent = origText; }, 2000); }
+  } catch (err) {
+    setSaveStatus('error');
+    showToast('❌ ' + (err.message || 'Save failed'), 'error');
+    if (btn) { btn.disabled = false; btn.textContent = origText; }
+  }
 }
- 
-function removeTeacher(i) {
-  teachersData.splice(i, 1);
-  renderTeacherRows();
-}
- 
+
+// Save ALL teachers at once
 async function saveTeachers() {
   document.querySelectorAll('.teacher-row').forEach(row => {
     const idx = parseInt(row.dataset.idx);
     if (isNaN(idx) || !teachersData[idx]) return;
-    row.querySelectorAll('[data-field]').forEach(inp => {
-      teachersData[idx][inp.dataset.field] = inp.value.trim();
-    });
+    row.querySelectorAll('[data-field]').forEach(inp => { teachersData[idx][inp.dataset.field] = inp.value.trim(); });
   });
- 
   const toSave = teachersData.map((t, i) => ({
-    name:          t.name          || '',
-    subject:       t.subject       || '',
-    qualification: t.qualification || '',
-    experience:    t.experience    || '',
-    bio:           t.bio           || '',
-    image:         t.image         || '',
-    order:         i + 1
+    name: t.name || '', subject: t.subject || '', qualification: t.qualification || '',
+    experience: t.experience || '', bio: t.bio || '', image: t.image || '', order: i + 1
   }));
- 
-  await saveData('teachers', toSave, 'Teachers saved!');
+  await saveData('teachers', toSave, 'All teachers saved!');
 }
- 
+
 async function handleTeacherImageUpload(event, index) {
   const file = event.target.files[0];
   if (!file) return;
-  if (!file.type.startsWith('image/')) {
-    showToast('❌ Please select an image file', 'error');
-    return;
-  }
+  if (!file.type.startsWith('image/')) { showToast('❌ Please select an image file', 'error'); return; }
   const progressDiv = document.getElementById(`progress-${index}`);
-  const previewDiv = document.getElementById(`preview-${index}`);
-  const urlInput = document.getElementById(`img-url-${index}`);
-  progressDiv.style.display = 'block';
-  progressDiv.textContent = 'Uploading... 0%';
-  progressDiv.className = 'upload-progress';
+  const previewDiv  = document.getElementById(`preview-${index}`);
+  const urlInput    = document.getElementById(`img-url-${index}`);
+  progressDiv.style.display = 'block'; progressDiv.textContent = 'Uploading... 0%';
   const formData = new FormData();
-  formData.append('file', file);
-  formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-  formData.append('folder', CLOUDINARY_FOLDER);
+  formData.append('file', file); formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET); formData.append('folder', CLOUDINARY_FOLDER);
   const xhr = new XMLHttpRequest();
   xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, true);
   xhr.upload.addEventListener('progress', (e) => {
-    if (e.lengthComputable) {
-      const percent = Math.round((e.loaded / e.total) * 100);
-      progressDiv.textContent = `Uploading... ${percent}%`;
-    }
-  });
-  xhr.onload = function() {
-    progressDiv.style.display = 'none';
-    if (xhr.status === 200) {
-      const response = JSON.parse(xhr.responseText);
-      const secureUrl = response.secure_url;
-      urlInput.value = secureUrl;
-      previewDiv.innerHTML = `<img src="${secureUrl}" alt="Preview" />`;
-      showToast('✅ Image uploaded successfully!', 'success');
-    } else {
-      let errorMsg = 'Upload failed';
-      try { const err = JSON.parse(xhr.responseText); errorMsg = err.error?.message || errorMsg; } catch (e) {}
-      progressDiv.textContent = `❌ ${errorMsg}`;
-      progressDiv.style.display = 'block';
-      showToast('❌ Upload failed: ' + errorMsg, 'error');
-    }
-    event.target.value = '';
-  };
-  xhr.onerror = function() {
-    progressDiv.style.display = 'none';
-    showToast('❌ Network error during upload', 'error');
-    event.target.value = '';
-  };
-  xhr.send(formData);
-}
- 
-
-const GRADE_PAGES = [
-  { key: 'grade1_5',     label: '🌟 Grade 1–5',      color: '#ff6b6b' },
-  { key: 'grade6_ol',    label: '📘 Grade 6–O/L',    color: '#8b5cf6' },
-  { key: 'grade_al',     label: '🔬 A / Levels',      color: '#0ea5e9' },
-  { key: 'grade_cambridge', label: '🏛️ Cambridge',   color: '#f59e0b' },
-  { key: 'grade_london', label: '🇬🇧 London',         color: '#10b981' },
-];
- 
-const subPageData = {};
-GRADE_PAGES.forEach(g => {
-  subPageData[g.key] = { teachers: [], subjects: [] };
-});
- 
-async function loadAllSubPageData() {
-  for (const grade of GRADE_PAGES) {
-    try {
-      const data = await rtdbRead(`subpages/${grade.key}`);
-      if (data) {
-        subPageData[grade.key].teachers = Array.isArray(data.teachers)
-          ? data.teachers.filter(Boolean)
-          : (data.teachers ? Object.values(data.teachers).filter(Boolean) : []);
-        subPageData[grade.key].subjects = Array.isArray(data.subjects)
-          ? data.subjects.filter(Boolean)
-          : (data.subjects ? Object.values(data.subjects).filter(Boolean) : []);
-      }
-    } catch (e) {
-      console.warn(`loadSubPage ${grade.key}:`, e);
-    }
-    renderSubPageTeachers(grade.key);
-    renderSubPageSubjects(grade.key);
-  }
-}
- 
- 
-function renderSubPageTeachers(gradeKey) {
-  const list = document.getElementById(`sp-teachers-${gradeKey}`);
-  if (!list) return;
-  const teachers = subPageData[gradeKey].teachers;
-  if (!teachers.length) {
-    list.innerHTML = '<p class="empty-msg">No teachers yet. Click ＋ Add Teacher.</p>';
-    return;
-  }
-  list.innerHTML = teachers.map((t, i) => `
-    <div class="sp-teacher-row" data-grade="${gradeKey}" data-idx="${i}">
-      <div class="sp-teacher-photo-wrap">
-        <div class="sp-avatar-circle" id="sp-avatar-${gradeKey}-${i}">
-          ${t.image
-            ? `<img src="${escHtml(t.image)}" alt="${escHtml(t.name)}" />`
-            : `<span>${escHtml(t.name ? t.name.charAt(0).toUpperCase() : '?')}</span>`
-          }
-        </div>
-        <div class="sp-upload-wrap">
-          <input type="file" accept="image/*" style="display:none;"
-            id="sp-file-${gradeKey}-${i}"
-            onchange="handleSubPageImageUpload(event,'${gradeKey}',${i})" />
-          <button type="button" class="btn-upload-small"
-            onclick="document.getElementById('sp-file-${gradeKey}-${i}').click()">
-            📷 Photo
-          </button>
-          <div class="upload-progress" id="sp-progress-${gradeKey}-${i}" style="display:none;"></div>
-        </div>
-      </div>
-      <div class="sp-teacher-fields">
-        <div class="form-row-2">
-          <div class="form-group">
-            <label>Full Name</label>
-            <input type="text" data-field="name" value="${escHtml(t.name)}" placeholder="Mr. Perera" />
-          </div>
-          <div class="form-group">
-            <label>Subject(s)</label>
-            <input type="text" data-field="subject" value="${escHtml(t.subject)}" placeholder="Mathematics" />
-          </div>
-        </div>
-        <div class="form-row-2">
-          <div class="form-group">
-            <label>Qualification</label>
-            <input type="text" data-field="qualification" value="${escHtml(t.qualification)}" placeholder="BSc (Hons)" />
-          </div>
-          <div class="form-group">
-            <label>Experience</label>
-            <input type="text" data-field="experience" value="${escHtml(t.experience)}" placeholder="10+ Years" />
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Bio (optional)</label>
-          <input type="text" data-field="bio" value="${escHtml(t.bio)}" placeholder="Short description…" />
-        </div>
-        <input type="hidden" data-field="image" value="${escHtml(t.image)}" id="sp-img-${gradeKey}-${i}" />
-      </div>
-      <button class="btn-remove teacher-remove" onclick="removeSubPageTeacher('${gradeKey}', ${i})">✕</button>
-    </div>`).join('');
-}
- 
-function addSubPageTeacher(gradeKey) {
-  subPageData[gradeKey].teachers.push({
-    name: '', subject: '', qualification: '', experience: '', bio: '', image: ''
-  });
-  renderSubPageTeachers(gradeKey);
-}
- 
-function removeSubPageTeacher(gradeKey, i) {
-  subPageData[gradeKey].teachers.splice(i, 1);
-  renderSubPageTeachers(gradeKey);
-}
- 
-async function saveSubPageTeachers(gradeKey) {
-  const rows = document.querySelectorAll(`.sp-teacher-row[data-grade="${gradeKey}"]`);
-  const teachers = [];
-  rows.forEach((row, i) => {
-    const t = { image: subPageData[gradeKey].teachers[i]?.image || '' };
-    row.querySelectorAll('[data-field]').forEach(inp => {
-      t[inp.dataset.field] = inp.value.trim();
-    });
-    teachers.push(t);
-  });
-  subPageData[gradeKey].teachers = teachers;
-  await saveData(`subpages/${gradeKey}/teachers`, teachers.filter(t => t.name), 'Teachers saved!');
-}
- 
-async function handleSubPageImageUpload(event, gradeKey, index) {
-  const file = event.target.files[0];
-  if (!file) return;
-  if (!file.type.startsWith('image/')) {
-    showToast('❌ Please select an image file', 'error');
-    return;
-  }
-  const progressDiv = document.getElementById(`sp-progress-${gradeKey}-${index}`);
-  const avatarDiv   = document.getElementById(`sp-avatar-${gradeKey}-${index}`);
-  const imgInput    = document.getElementById(`sp-img-${gradeKey}-${index}`);
- 
-  progressDiv.style.display = 'block';
-  progressDiv.textContent = 'Uploading…';
- 
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-  formData.append('folder', CLOUDINARY_FOLDER + '/subpages');
- 
-  const xhr = new XMLHttpRequest();
-  xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, true);
-  xhr.upload.addEventListener('progress', (e) => {
-    if (e.lengthComputable) {
-      progressDiv.textContent = `${Math.round((e.loaded / e.total) * 100)}%`;
-    }
+    if (e.lengthComputable) progressDiv.textContent = `Uploading... ${Math.round((e.loaded / e.total) * 100)}%`;
   });
   xhr.onload = function() {
     progressDiv.style.display = 'none';
     if (xhr.status === 200) {
       const url = JSON.parse(xhr.responseText).secure_url;
-      if (imgInput) imgInput.value = url;
-      if (subPageData[gradeKey].teachers[index]) {
-        subPageData[gradeKey].teachers[index].image = url;
+      urlInput.value = url;
+      if (teachersData[index]) teachersData[index].image = url;
+      previewDiv.innerHTML = `<img src="${url}" alt="Preview" />`;
+      showToast('✅ Image uploaded successfully!', 'success');
+    } else {
+      let errorMsg = 'Upload failed';
+      try { const err = JSON.parse(xhr.responseText); errorMsg = err.error?.message || errorMsg; } catch {}
+      progressDiv.textContent = `❌ ${errorMsg}`; progressDiv.style.display = 'block';
+      showToast('❌ Upload failed: ' + errorMsg, 'error');
+    }
+    event.target.value = '';
+  };
+  xhr.onerror = function() { progressDiv.style.display = 'none'; showToast('❌ Network error during upload', 'error'); event.target.value = ''; };
+  xhr.send(formData);
+}
+
+// ── SUB PAGES ──
+const GRADE_PAGES = [
+  { key: 'grade1_5',     label: '🌟 Grade 1–5',   color: '#ff6b6b' },
+  { key: 'grade6_ol',    label: '📘 Grade 6–O/L', color: '#8b5cf6' },
+  { key: 'grade_al',     label: '🔬 A / Levels',   color: '#0ea5e9' },
+  { key: 'grade_cambridge', label: '🏛️ Cambridge', color: '#f59e0b' },
+  { key: 'grade_london', label: '🇬🇧 London',      color: '#10b981' },
+];
+
+const subPageData = {};
+GRADE_PAGES.forEach(g => { subPageData[g.key] = { teachers: [], subjects: [] }; });
+
+async function loadAllSubPageData() {
+  for (const grade of GRADE_PAGES) {
+    try {
+      const data = await rtdbRead(`subpages/${grade.key}`);
+      if (data) {
+        subPageData[grade.key].teachers = Array.isArray(data.teachers) ? data.teachers.filter(Boolean) : (data.teachers ? Object.values(data.teachers).filter(Boolean) : []);
+        subPageData[grade.key].subjects = Array.isArray(data.subjects) ? data.subjects.filter(Boolean) : (data.subjects ? Object.values(data.subjects).filter(Boolean) : []);
       }
+    } catch (e) { console.warn(`loadSubPage ${grade.key}:`, e); }
+    renderSubPageTeachers(grade.key);
+    renderSubPageSubjects(grade.key);
+  }
+}
+
+function renderSubPageTeachers(gradeKey) {
+  const list = document.getElementById(`sp-teachers-${gradeKey}`);
+  if (!list) return;
+  const teachers = subPageData[gradeKey].teachers;
+  if (!teachers.length) { list.innerHTML = '<p class="empty-msg">No teachers yet. Click ＋ Add Teacher.</p>'; return; }
+  list.innerHTML = teachers.map((t, i) => `
+    <div class="sp-teacher-row" data-grade="${gradeKey}" data-idx="${i}" id="sp-teacher-${gradeKey}-${i}">
+      <div class="sp-teacher-photo-wrap">
+        <div class="sp-avatar-circle" id="sp-avatar-${gradeKey}-${i}">
+          ${t.image ? `<img src="${escHtml(t.image)}" alt="${escHtml(t.name)}" />` : `<span>${escHtml(t.name ? t.name.charAt(0).toUpperCase() : '?')}</span>`}
+        </div>
+        <div class="sp-upload-wrap">
+          <input type="file" accept="image/*" style="display:none;" id="sp-file-${gradeKey}-${i}" onchange="handleSubPageImageUpload(event,'${gradeKey}',${i})" />
+          <button type="button" class="btn-upload-small" onclick="document.getElementById('sp-file-${gradeKey}-${i}').click()">📷 Photo</button>
+          <div class="upload-progress" id="sp-progress-${gradeKey}-${i}" style="display:none;"></div>
+        </div>
+      </div>
+      <div class="sp-teacher-fields">
+        <div class="form-row-2">
+          <div class="form-group"><label>Full Name</label>
+            <input type="text" data-field="name" value="${escHtml(t.name)}" placeholder="Mr. Perera" />
+          </div>
+          <div class="form-group"><label>Subject(s)</label>
+            <input type="text" data-field="subject" value="${escHtml(t.subject)}" placeholder="Mathematics" />
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group"><label>Qualification</label>
+            <input type="text" data-field="qualification" value="${escHtml(t.qualification)}" placeholder="BSc (Hons)" />
+          </div>
+          <div class="form-group"><label>Experience</label>
+            <input type="text" data-field="experience" value="${escHtml(t.experience)}" placeholder="10+ Years" />
+          </div>
+        </div>
+        <div class="form-group"><label>Bio (optional)</label>
+          <input type="text" data-field="bio" value="${escHtml(t.bio)}" placeholder="Short description…" />
+        </div>
+        <input type="hidden" data-field="image" value="${escHtml(t.image)}" id="sp-img-${gradeKey}-${i}" />
+        <!-- Individual save button -->
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(148,163,184,0.1);">
+          <button class="btn-save" style="font-size:12px;padding:8px 18px;" onclick="saveIndividualSubPageTeacher('${gradeKey}', ${i})">💾 Save This Teacher</button>
+        </div>
+      </div>
+      <button class="btn-remove teacher-remove" onclick="removeSubPageTeacher('${gradeKey}', ${i})">✕</button>
+    </div>`).join('');
+}
+
+function addSubPageTeacher(gradeKey) {
+  subPageData[gradeKey].teachers.push({ name: '', subject: '', qualification: '', experience: '', bio: '', image: '' });
+  renderSubPageTeachers(gradeKey);
+}
+function removeSubPageTeacher(gradeKey, i) { subPageData[gradeKey].teachers.splice(i, 1); renderSubPageTeachers(gradeKey); }
+
+async function saveIndividualSubPageTeacher(gradeKey, i) {
+  const row = document.getElementById(`sp-teacher-${gradeKey}-${i}`);
+  if (!row) return;
+  const t = { image: subPageData[gradeKey].teachers[i]?.image || '' };
+  row.querySelectorAll('[data-field]').forEach(inp => { t[inp.dataset.field] = inp.value.trim(); });
+  subPageData[gradeKey].teachers[i] = t;
+
+  const btn = row.querySelector('.btn-save');
+  const origText = btn ? btn.textContent : '';
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+  setSaveStatus('saving');
+  try {
+    await rtdbWrite(`subpages/${gradeKey}/teachers`, subPageData[gradeKey].teachers.filter(x => x.name));
+    setSaveStatus('saved');
+    showToast(`✅ ${t.name || 'Teacher'} saved!`);
+    if (btn) { btn.textContent = '✓ Saved!'; setTimeout(() => { btn.disabled = false; btn.textContent = origText; }, 2000); }
+  } catch (err) {
+    setSaveStatus('error'); showToast('❌ ' + (err.message || 'Save failed'), 'error');
+    if (btn) { btn.disabled = false; btn.textContent = origText; }
+  }
+}
+
+async function saveSubPageTeachers(gradeKey) {
+  const rows = document.querySelectorAll(`.sp-teacher-row[data-grade="${gradeKey}"]`);
+  const teachers = [];
+  rows.forEach((row, i) => {
+    const t = { image: subPageData[gradeKey].teachers[i]?.image || '' };
+    row.querySelectorAll('[data-field]').forEach(inp => { t[inp.dataset.field] = inp.value.trim(); });
+    teachers.push(t);
+  });
+  subPageData[gradeKey].teachers = teachers;
+  await saveData(`subpages/${gradeKey}/teachers`, teachers.filter(t => t.name), 'Teachers saved!');
+}
+
+async function handleSubPageImageUpload(event, gradeKey, index) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { showToast('❌ Please select an image file', 'error'); return; }
+  const progressDiv = document.getElementById(`sp-progress-${gradeKey}-${index}`);
+  const avatarDiv   = document.getElementById(`sp-avatar-${gradeKey}-${index}`);
+  const imgInput    = document.getElementById(`sp-img-${gradeKey}-${index}`);
+  progressDiv.style.display = 'block'; progressDiv.textContent = 'Uploading…';
+  const formData = new FormData();
+  formData.append('file', file); formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET); formData.append('folder', CLOUDINARY_FOLDER + '/subpages');
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, true);
+  xhr.upload.addEventListener('progress', (e) => { if (e.lengthComputable) progressDiv.textContent = `${Math.round((e.loaded / e.total) * 100)}%`; });
+  xhr.onload = function() {
+    progressDiv.style.display = 'none';
+    if (xhr.status === 200) {
+      const url = JSON.parse(xhr.responseText).secure_url;
+      if (imgInput) imgInput.value = url;
+      if (subPageData[gradeKey].teachers[index]) subPageData[gradeKey].teachers[index].image = url;
       if (avatarDiv) avatarDiv.innerHTML = `<img src="${url}" alt="Teacher" />`;
       showToast('✅ Photo uploaded!');
-    } else {
-      showToast('❌ Upload failed', 'error');
-    }
+    } else { showToast('❌ Upload failed', 'error'); }
     event.target.value = '';
   };
   xhr.onerror = () => { progressDiv.style.display = 'none'; showToast('❌ Network error', 'error'); };
   xhr.send(formData);
 }
- 
- 
+
 function renderSubPageSubjects(gradeKey) {
   const list = document.getElementById(`sp-subjects-${gradeKey}`);
   if (!list) return;
   const subjects = subPageData[gradeKey].subjects;
-  if (!subjects.length) {
-    list.innerHTML = '<p class="empty-msg">No subjects yet. Click ＋ Add Subject.</p>';
-    return;
-  }
+  if (!subjects.length) { list.innerHTML = '<p class="empty-msg">No subjects yet. Click ＋ Add Subject.</p>'; return; }
   list.innerHTML = subjects.map((s, i) => `
     <div class="sp-subject-row" data-grade="${gradeKey}" data-idx="${i}">
-      <div class="form-group small">
-        <label>Icon</label>
+      <div class="form-group small"><label>Icon</label>
         <input type="text" data-field="icon" value="${escHtml(s.icon)}" placeholder="📚" />
       </div>
-      <div class="form-group">
-        <label>Subject Name</label>
+      <div class="form-group"><label>Subject Name</label>
         <input type="text" data-field="name" value="${escHtml(s.name)}" placeholder="Mathematics" />
       </div>
-      <div class="form-group">
-        <label>Teacher Name</label>
+      <div class="form-group"><label>Teacher Name</label>
         <input type="text" data-field="teacher" value="${escHtml(s.teacher)}" placeholder="Mr. Perera" />
       </div>
-      <div class="form-group small">
-        <label>Monthly Fee (Rs.)</label>
+      <div class="form-group small"><label>Monthly Fee (Rs.)</label>
         <input type="text" data-field="fee" value="${escHtml(s.fee)}" placeholder="2500" />
       </div>
       <div class="remove-btn-wrap">
@@ -824,25 +705,14 @@ function renderSubPageSubjects(gradeKey) {
       </div>
     </div>`).join('');
 }
- 
-function addSubPageSubject(gradeKey) {
-  subPageData[gradeKey].subjects.push({ icon: '', name: '', teacher: '', fee: '' });
-  renderSubPageSubjects(gradeKey);
-}
- 
-function removeSubPageSubject(gradeKey, i) {
-  subPageData[gradeKey].subjects.splice(i, 1);
-  renderSubPageSubjects(gradeKey);
-}
- 
+function addSubPageSubject(gradeKey) { subPageData[gradeKey].subjects.push({ icon: '', name: '', teacher: '', fee: '' }); renderSubPageSubjects(gradeKey); }
+function removeSubPageSubject(gradeKey, i) { subPageData[gradeKey].subjects.splice(i, 1); renderSubPageSubjects(gradeKey); }
 async function saveSubPageSubjects(gradeKey) {
   const rows = document.querySelectorAll(`.sp-subject-row[data-grade="${gradeKey}"]`);
   const subjects = [];
   rows.forEach(row => {
     const s = {};
-    row.querySelectorAll('[data-field]').forEach(inp => {
-      s[inp.dataset.field] = inp.value.trim();
-    });
+    row.querySelectorAll('[data-field]').forEach(inp => { s[inp.dataset.field] = inp.value.trim(); });
     subjects.push(s);
   });
   subPageData[gradeKey].subjects = subjects;
