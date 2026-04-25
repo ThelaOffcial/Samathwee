@@ -1,10 +1,8 @@
 // =============================================
-//  SAMATHWEE – script.js
+//  SAMATHWEE – script.js  (updated)
 //  Firebase Realtime Database ONLY
-//  No Firestore used anywhere
-//  Admin changes reflect instantly on site
 // =============================================
- 
+
 const firebaseConfig = {
   apiKey:            "AIzaSyDlBLrs-WquiVIivoOCuJq2g7BFhNwAtas",
   authDomain:        "samathwee.firebaseapp.com",
@@ -14,13 +12,12 @@ const firebaseConfig = {
   appId:             "1:1094489861098:web:e61feb13a5f69a8b78e093",
   databaseURL:       "https://samathwee-default-rtdb.firebaseio.com"
 };
- 
+
 firebase.initializeApp(firebaseConfig);
-const rtdb = firebase.database(); // Realtime Database ONLY
- 
+const rtdb = firebase.database();
+
 // ══════════════════════════════════════════════
 //  DEFAULT FALLBACK DATA
-//  Shown immediately while Firebase loads
 // ══════════════════════════════════════════════
 const DEFAULTS = {
   hero: {
@@ -37,11 +34,20 @@ const DEFAULTS = {
     mapUrl:  "https://maps.app.goo.gl/wZSjj3zwNjdNAKVc9"
   },
   contact: {
-    phone:   "+94 77 000 0000",
-    email:   "info@samathwee.lk",
-    address: "Panadura, Sri Lanka"
+    phone:     "+94 71 234 5678",
+    whatsapp:  "+94 71 234 5678",
+    email:     "samathwe@gmail.com",
+    address:   "No: 91/3, Sri Mahavihara Rd, Panadura, Sri Lanka",
+    facebook:  "Samathwee Education",
+    facebookUrl: "https://facebook.com/",
+    whatsappUrl: "https://wa.me/94712345678"
   },
-  footer: "© 2026 Samathwee Higher Education Center. All rights reserved. Panadura, Sri Lanka.",
+  footer: {
+    text:       "© 2026 Samathwee Higher Education Center. All rights reserved. Panadura, Sri Lanka.",
+    dev:        "Dualsyntax IT",
+    facebookUrl: "https://facebook.com/",
+    whatsappUrl: "https://wa.me/94712345678"
+  },
   grades: [
     { emoji:"🌟", name:"Grade 1–5",   sub:"Primary School",    count:"8 Subjects",  url:"grades-1-5.html",       order:1 },
     { emoji:"📘", name:"Grade 6–O/L", sub:"Junior & O/Levels", count:"17 Subjects", url:"grades-6-ol.html",      order:2 },
@@ -87,11 +93,7 @@ const DEFAULTS = {
   ],
   teachers: []
 };
- 
-// ══════════════════════════════════════════════
-//  ICON MAP — auto-assigns icons for subjects
-//  added via admin that don't have icons yet
-// ══════════════════════════════════════════════
+
 const ICON_MAP = {
   "mathematics":            { icon:"🔢", color:"#ede9fe", iconColor:"#8b5cf6" },
   "combined mathematics":   { icon:"📊", color:"#ede9fe", iconColor:"#6d28d9" },
@@ -129,7 +131,7 @@ const ICON_MAP = {
   "logic":                  { icon:"🧠", color:"#fce7f3", iconColor:"#db2777" }
 };
 const DEFAULT_ICON = { icon:"📖", color:"#ede9fe", iconColor:"#8b5cf6" };
- 
+
 function getSubjectIcon(name) {
   const key = (name || '').toLowerCase().trim();
   if (ICON_MAP[key]) return ICON_MAP[key];
@@ -138,10 +140,8 @@ function getSubjectIcon(name) {
   }
   return DEFAULT_ICON;
 }
- 
-// ══════════════════════════════════════════════
-//  DOM HELPERS
-// ══════════════════════════════════════════════
+
+// ── DOM HELPERS ──
 function setText(id, val) {
   const el = document.getElementById(id);
   if (el && val !== undefined && val !== null && val !== '') el.textContent = val;
@@ -150,10 +150,8 @@ function setHref(id, href) {
   const el = document.getElementById(id);
   if (el && href) el.href = href;
 }
- 
-// ══════════════════════════════════════════════
-//  LOADING SCREEN
-// ══════════════════════════════════════════════
+
+// ── LOADING SCREEN ──
 function dismissLoader() {
   const el = document.getElementById('loadingScreen');
   if (!el) return;
@@ -161,18 +159,14 @@ function dismissLoader() {
   setTimeout(() => { if (el) el.style.display = 'none'; }, 700);
 }
 setTimeout(dismissLoader, 400);
- 
-// ══════════════════════════════════════════════
-//  HAMBURGER MENU
-// ══════════════════════════════════════════════
+
+// ── HAMBURGER MENU ──
 document.getElementById('hamburger')?.addEventListener('click', function () {
   this.classList.toggle('open');
   document.getElementById('nav-links')?.classList.toggle('open');
 });
- 
-// ══════════════════════════════════════════════
-//  CANVAS PARTICLES
-// ══════════════════════════════════════════════
+
+// ── CANVAS PARTICLES ──
 (function () {
   const canvas = document.getElementById('bg-canvas');
   if (!canvas) return;
@@ -233,10 +227,8 @@ document.getElementById('hamburger')?.addEventListener('click', function () {
     cancelAnimationFrame(animId); resizeCanvas(); initParticles(); drawParticles();
   });
 })();
- 
-// ══════════════════════════════════════════════
-//  GRADE CARDS RENDER
-// ══════════════════════════════════════════════
+
+// ── GRADE CARDS ──
 function renderGrades(grades) {
   const grid = document.getElementById('gradesGrid');
   if (!grid) return;
@@ -251,7 +243,6 @@ function renderGrades(grades) {
       <span class="gc-arrow">↗</span>
     </a>
   `).join('');
-  // Observe each card individually for staggered reveal
   requestAnimationFrame(() => {
     document.querySelectorAll('.grade-card').forEach(c => {
       if (c.getBoundingClientRect().top < window.innerHeight - 60) {
@@ -262,17 +253,13 @@ function renderGrades(grades) {
     });
   });
 }
- 
-// ══════════════════════════════════════════════
-//  SUBJECTS RENDER
-// ══════════════════════════════════════════════
+
+// ── SUBJECTS ──
 let allSubjects = [];
- 
 function renderSubjects(subjects) {
   allSubjects = subjects.filter(Boolean);
   buildSubjectGrid(allSubjects);
 }
- 
 function buildSubjectGrid(list) {
   const grid  = document.getElementById('subjectsGrid');
   const noRes = document.getElementById('noResults');
@@ -285,7 +272,6 @@ function buildSubjectGrid(list) {
   if (noRes) noRes.style.display = 'none';
   grid.innerHTML = '';
   list.forEach((s, idx) => {
-    // Use stored icon/color if available, otherwise auto-detect
     const iconData = (s.icon && s.color && s.iconColor)
       ? { icon: s.icon, color: s.color, iconColor: s.iconColor }
       : getSubjectIcon(s.name || '');
@@ -302,7 +288,6 @@ function buildSubjectGrid(list) {
     `;
     card.style.transitionDelay = `${Math.min(idx * 0.04, 0.5)}s`;
     grid.appendChild(card);
-    // Use observer for scroll reveal; add visible immediately if already in viewport
     requestAnimationFrame(() => {
       if (card.getBoundingClientRect().top < window.innerHeight - 60) {
         card.classList.add('visible');
@@ -312,8 +297,6 @@ function buildSubjectGrid(list) {
     });
   });
 }
- 
-// Search box filter
 document.getElementById('subjectSearch')?.addEventListener('input', e => {
   const q = e.target.value.trim().toLowerCase();
   const filtered = q
@@ -324,29 +307,21 @@ document.getElementById('subjectSearch')?.addEventListener('input', e => {
     : allSubjects;
   buildSubjectGrid(filtered);
 });
- 
-// ══════════════════════════════════════════════
-//  TEACHERS RENDER + SEARCH
-// ══════════════════════════════════════════════
+
+// ── TEACHERS ──
 let allTeachers = [];
- 
 function renderTeachers(teachers) {
-  // Normalize — RTDB may return object or array
   allTeachers = Array.isArray(teachers)
     ? teachers.filter(Boolean)
     : Object.values(teachers || {}).filter(Boolean);
- 
   buildTeacherGrid(allTeachers);
 }
- 
 function buildTeacherGrid(list) {
   const grid = document.getElementById('teachersGrid');
   const noEl = document.getElementById('noTeachers');
   const noMsg = document.getElementById('noTeachersMsg');
   if (!grid) return;
- 
   const sorted = [...list].sort((a, b) => (a.order || 0) - (b.order || 0));
- 
   if (!sorted.length) {
     grid.innerHTML = '';
     if (noEl) noEl.style.display = allTeachers.length === 0 ? 'block' : 'none';
@@ -355,7 +330,6 @@ function buildTeacherGrid(list) {
   }
   if (noEl) noEl.style.display = 'none';
   if (noMsg) noMsg.style.display = 'none';
- 
   grid.innerHTML = sorted.map((t, idx) => `
     <a href="${t.name ? 'teacher.html?name=' + encodeURIComponent(t.name) : '#'}"
        class="teacher-card" style="text-decoration:none;color:inherit;cursor:pointer;display:block;transition-delay:${idx * 0.08}s">
@@ -372,8 +346,6 @@ function buildTeacherGrid(list) {
       ${t.bio           ? `<div class="teacher-bio">${t.bio}</div>`               : ''}
     </a>
   `).join('');
- 
-  // Scroll reveal for each card
   requestAnimationFrame(() => {
     grid.querySelectorAll('.teacher-card').forEach(c => {
       if (c.getBoundingClientRect().top < window.innerHeight - 60) {
@@ -384,8 +356,6 @@ function buildTeacherGrid(list) {
     });
   });
 }
- 
-// Teacher search
 document.getElementById('teacherSearch')?.addEventListener('input', e => {
   const q = e.target.value.trim().toLowerCase();
   const filtered = q
@@ -396,40 +366,26 @@ document.getElementById('teacherSearch')?.addEventListener('input', e => {
     : allTeachers;
   buildTeacherGrid(filtered);
 });
- 
-// ══════════════════════════════════════════════
-//  INTERSECTION OBSERVERS
-// ══════════════════════════════════════════════
-// ── UNIVERSAL SCROLL-REVEAL OBSERVER ──────────────────────────
+
+// ── OBSERVERS ──
 const revealObserver = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       entry.target.classList.add('visible');
-      revealObserver.unobserve(entry.target); // fire once
+      revealObserver.unobserve(entry.target);
     }
   });
 }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
- 
-// Legacy cardObserver kept for compatibility
-const cardObserver = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.querySelectorAll('.grade-card, .center-card').forEach(el => el.classList.add('visible'));
-    }
-  });
-}, { threshold: 0.08, rootMargin: "0px 0px -40px 0px" });
- 
+
 const singleObserver = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.15, rootMargin: "0px 0px -40px 0px" });
 document.querySelectorAll('.center-card').forEach(el => singleObserver.observe(el));
- 
-// ══════════════════════════════════════════════
-//  ANIMATED COUNTERS
-// ══════════════════════════════════════════════
+
+// ── COUNTERS ──
 let currentStats = { ...DEFAULTS.stats };
 let countersRan  = false;
- 
+
 function animateCounter(el, target, duration = 1400) {
   const from  = parseInt((el.textContent || '0').replace(/[^\d]/g, ''), 10) || 0;
   const start = performance.now();
@@ -441,21 +397,13 @@ function animateCounter(el, target, duration = 1400) {
   };
   requestAnimationFrame(update);
 }
- 
 function runCounters(stats) {
-  const ids = {
-    students: 'stat-students',
-    teachers: 'stat-teachers',
-    subjects: 'stat-subjects',
-    centers:  'stat-centers'
-  };
+  const ids = { students:'stat-students', teachers:'stat-teachers', subjects:'stat-subjects', centers:'stat-centers' };
   for (const [key, id] of Object.entries(ids)) {
     const el = document.getElementById(id);
     if (el) animateCounter(el, stats[key] || 0);
   }
 }
- 
-// Observe hero-stats section
 const statsEl = document.querySelector('.hero-stats');
 const statsObserver = new IntersectionObserver(entries => {
   if (entries[0].isIntersecting && !countersRan) {
@@ -464,40 +412,9 @@ const statsObserver = new IntersectionObserver(entries => {
   }
 }, { threshold: 0.4 });
 if (statsEl) statsObserver.observe(statsEl);
- 
+
 // ══════════════════════════════════════════════
-//  RENDER DEFAULTS IMMEDIATELY
-//  Shows content before Firebase data arrives
-// ══════════════════════════════════════════════
-(function renderDefaults() {
-  // Hero
-  setText('hero-tagline', DEFAULTS.hero.tagline);
-  setText('hero-desc', DEFAULTS.hero.desc);
-  const shinyEl = document.getElementById('hero-title-shiny');
-  if (shinyEl) shinyEl.textContent = DEFAULTS.hero.title;
- 
-  // Center
-  applyCenter(DEFAULTS.center);
- 
-  // Contact
-  applyContact(DEFAULTS.contact);
- 
-  // Footer
-  applyFooter(DEFAULTS.footer);
- 
-  // Grades & Subjects
-  renderGrades(DEFAULTS.grades);
-  renderSubjects(DEFAULTS.subjects);
-  renderTeachers(DEFAULTS.teachers);
- 
-  // If stats already in viewport on load
-  if (statsEl && statsEl.getBoundingClientRect().top < window.innerHeight) {
-    if (!countersRan) { countersRan = true; runCounters(currentStats); }
-  }
-})();
- 
-// ══════════════════════════════════════════════
-//  APPLY HELPERS — cleanly update each section
+//  APPLY HELPERS
 // ══════════════════════════════════════════════
 function applyHero(v) {
   if (!v) return;
@@ -508,7 +425,7 @@ function applyHero(v) {
     if (el) el.textContent = v.title;
   }
 }
- 
+
 function applyStats(v) {
   if (!v) return;
   currentStats = {
@@ -519,7 +436,7 @@ function applyStats(v) {
   };
   if (countersRan) runCounters(currentStats);
 }
- 
+
 function applyCenter(v) {
   if (!v) return;
   if (v.name !== undefined)   setText('center-name', v.name);
@@ -530,31 +447,72 @@ function applyCenter(v) {
   if (addrEl)  addrEl.textContent  = v.address ? '📍 ' + v.address : '';
   if (phoneEl) phoneEl.textContent = v.phone   ? '📞 ' + v.phone   : '';
 }
- 
+
 function applyContact(v) {
   if (!v) return;
-  if (v.phone   !== undefined) setText('contact-phone',   v.phone);
-  if (v.email   !== undefined) setText('contact-email',   v.email);
-  if (v.address !== undefined) setText('contact-address', v.address);
+  // Phone
+  if (v.phone   !== undefined) setText('contact-phone',    v.phone   || DEFAULTS.contact.phone);
+  // WhatsApp
+  if (v.whatsapp !== undefined) setText('contact-whatsapp', v.whatsapp || DEFAULTS.contact.whatsapp);
+  const waUrl = v.whatsappUrl || (v.whatsapp ? 'https://wa.me/' + v.whatsapp.replace(/[^0-9]/g,'') : '#');
+  const waLinkEl = document.getElementById('contact-wa-link');
+  if (waLinkEl) waLinkEl.href = waUrl;
+  // Email
+  if (v.email   !== undefined) setText('contact-email',   v.email   || DEFAULTS.contact.email);
+  // Facebook
+  if (v.facebook !== undefined) setText('contact-facebook', v.facebook || DEFAULTS.contact.facebook);
+  const fbLinkEl = document.getElementById('contact-fb-link');
+  if (fbLinkEl && v.facebookUrl) fbLinkEl.href = v.facebookUrl;
+  // Address
+  if (v.address !== undefined) setText('contact-address', v.address || DEFAULTS.contact.address);
+
+  // Mirror into footer
+  if (v.phone   !== undefined) setText('footer-phone',   v.phone   || '');
+  if (v.email   !== undefined) setText('footer-email',   v.email   || '');
+  if (v.address !== undefined) setText('footer-address', v.address || '');
 }
- 
+
 function applyFooter(v) {
-  const el = document.getElementById('footer-text');
-  if (!el) return;
-  if (typeof v === 'string' && v) {
-    el.innerHTML = v;
-  } else if (v && v.text) {
-    el.innerHTML = v.text;
+  if (!v) return;
+  if (typeof v === 'string') {
+    const el = document.getElementById('footer-text');
+    if (el) el.innerHTML = v;
+    return;
   }
+  if (v.text) {
+    const el = document.getElementById('footer-text');
+    if (el) el.innerHTML = v.text;
+  }
+  if (v.dev) setText('footer-dev', v.dev);
+
+  // Social links in footer
+  const fbFooter = document.getElementById('footer-fb-link');
+  const waFooter = document.getElementById('footer-wa-link');
+  if (fbFooter && v.facebookUrl) fbFooter.href = v.facebookUrl;
+  if (waFooter && v.whatsappUrl) waFooter.href = v.whatsappUrl;
 }
- 
+
+// ── RENDER DEFAULTS IMMEDIATELY ──
+(function renderDefaults() {
+  setText('hero-tagline', DEFAULTS.hero.tagline);
+  setText('hero-desc', DEFAULTS.hero.desc);
+  const shinyEl = document.getElementById('hero-title-shiny');
+  if (shinyEl) shinyEl.textContent = DEFAULTS.hero.title;
+  applyCenter(DEFAULTS.center);
+  applyContact(DEFAULTS.contact);
+  applyFooter(DEFAULTS.footer);
+  renderGrades(DEFAULTS.grades);
+  renderSubjects(DEFAULTS.subjects);
+  renderTeachers(DEFAULTS.teachers);
+  if (statsEl && statsEl.getBoundingClientRect().top < window.innerHeight) {
+    if (!countersRan) { countersRan = true; runCounters(currentStats); }
+  }
+})();
+
 // ══════════════════════════════════════════════
 //  REALTIME DATABASE LISTENERS
-//  Each path uses .on('value') — fires immediately
-//  on connect AND on every admin change
 // ══════════════════════════════════════════════
-const listeners = []; // track for cleanup
- 
+const listeners = [];
 function listen(path, callback) {
   const ref = rtdb.ref(path);
   const handler = snap => {
@@ -563,73 +521,28 @@ function listen(path, callback) {
   ref.on('value', handler, err => console.warn('RTDB read error at', path, err));
   listeners.push({ ref, handler });
 }
- 
-// Hero
-listen('config/hero', v => { if (v) applyHero(v); });
- 
-// Stats
-listen('config/stats', v => { if (v) applyStats(v); });
- 
-// Center
-listen('config/center', v => { if (v) applyCenter(v); });
- 
-// Contact
+
+listen('config/hero',    v => { if (v) applyHero(v); });
+listen('config/stats',   v => { if (v) applyStats(v); });
+listen('config/center',  v => { if (v) applyCenter(v); });
 listen('config/contact', v => { if (v) applyContact(v); });
- 
-// Footer
-listen('config/footer', v => { if (v) applyFooter(v); });
- 
-// Grades — re-render the whole grid on any change
-listen('grades', v => {
+listen('config/footer',  v => { if (v) applyFooter(v); });
+listen('grades',  v => {
   if (!v) return;
   const list = Array.isArray(v) ? v : Object.values(v);
   const clean = list.filter(Boolean);
   if (clean.length) renderGrades(clean);
 });
- 
-// Subjects — re-render the whole grid on any change
 listen('subjects', v => {
   if (!v) return;
   const list = Array.isArray(v) ? v : Object.values(v);
   const clean = list.filter(Boolean);
   if (clean.length) renderSubjects(clean);
 });
- 
-// Teachers — re-render on any change
-listen('teachers', v => {
-  if (!v) return;
-  renderTeachers(v);
-});
- 
-// Cleanup listeners on page unload
+listen('teachers', v => { if (v) renderTeachers(v); });
+
 window.addEventListener('beforeunload', () => {
   listeners.forEach(({ ref, handler }) => {
     try { ref.off('value', handler); } catch {}
   });
 });
-(function () {
-  /* ── Block right-click on the entire showcase ── */
-  document.getElementById('showcaseStage')
-    ?.addEventListener('contextmenu', e => e.preventDefault());
- 
-  /* ── Block right-click on the video itself ── */
-  const v = document.getElementById('stealthVideo');
-  if (!v) return;
- 
-  v.addEventListener('contextmenu', e => e.preventDefault());
- 
-  /* ── Kill Picture-in-Picture via keyboard or API ── */
-  document.addEventListener('enterpictureinpicture', e => {
-    if (e.target === v) document.exitPictureInPicture?.();
-  });
- 
-  /* ── Prevent drag (which exposes the video source) ── */
-  v.addEventListener('dragstart', e => e.preventDefault());
- 
-  /* ── Intercept DevTools network sniffing hint:
-        rename the element so it doesn't say "video" in inspect ──
-     (purely cosmetic in inspector, doesn't break anything) ── */
-  v.setAttribute('data-type', 'visual');
-  v.setAttribute('aria-hidden', 'true');
-  v.setAttribute('role', 'presentation');
-})();
