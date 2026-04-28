@@ -145,6 +145,42 @@
     .footer-links {
       list-style: none; display: flex; flex-direction: column; gap: 10px;
     }
+
+/* ── BANNER SLIDER ── */
+#bannerSection { width:100%; overflow:hidden; }
+.bsl-wrap { position:relative; height:480px; overflow:hidden; }
+.bsl-track { display:flex; height:100%; transition:transform .85s cubic-bezier(.4,0,.2,1); will-change:transform; }
+.bsl-slide { flex:0 0 100%; position:relative; overflow:hidden; }
+.bsl-bg { position:absolute; inset:0; background-size:cover; background-position:center; animation:kenBurns 10s ease-in-out infinite alternate; }
+@keyframes kenBurns { 0%{transform:scale(1) translate(0,0)} 100%{transform:scale(1.08) translate(-1.5%,-1%)} }
+.bsl-overlay { position:absolute; inset:0; background:linear-gradient(120deg,rgba(7,13,26,.88) 0%,rgba(7,13,26,.55) 55%,rgba(7,13,26,.2) 100%); }
+.bsl-content { position:relative; z-index:2; height:100%; display:flex; flex-direction:column; justify-content:center; padding:0 8%; max-width:780px; }
+.bsl-eyebrow { display:inline-flex; align-items:center; gap:8px; padding:5px 16px; border-radius:999px; border:1px solid rgba(243,146,35,.35); background:rgba(243,146,35,.1); color:#f39223; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.12em; margin-bottom:18px; width:fit-content; opacity:0; transform:translateY(20px); transition:opacity .6s .3s,transform .6s .3s; }
+.bsl-title { font-family:'Sora',sans-serif; font-size:clamp(1.8rem,4vw,3.2rem); font-weight:800; color:#fff; line-height:1.1; margin-bottom:14px; opacity:0; transform:translateY(24px); transition:opacity .6s .45s,transform .6s .45s; }
+.bsl-sub { font-size:1.05rem; color:rgba(255,255,255,.7); line-height:1.75; margin-bottom:32px; max-width:520px; opacity:0; transform:translateY(20px); transition:opacity .6s .6s,transform .6s .6s; }
+.bsl-cta { display:inline-flex; align-items:center; gap:10px; background:linear-gradient(135deg,#5a2d91,#7c3fb8); color:#fff; font-weight:700; font-size:.88rem; padding:14px 34px; border-radius:50px; text-decoration:none; box-shadow:0 8px 28px rgba(90,45,145,.45); transition:transform .3s,box-shadow .3s; opacity:0; transform:translateY(16px); transition:opacity .6s .75s,transform .6s .75s; width:fit-content; }
+.bsl-cta:hover { transform:translateY(-3px)!important; box-shadow:0 16px 40px rgba(90,45,145,.6)!important; }
+/* Active slide — animate in content */
+.bsl-slide.bsl-active .bsl-eyebrow,
+.bsl-slide.bsl-active .bsl-title,
+.bsl-slide.bsl-active .bsl-sub,
+.bsl-slide.bsl-active .bsl-cta { opacity:1; transform:translateY(0); }
+/* Arrows */
+.bsl-arrow { position:absolute; top:50%; transform:translateY(-50%); z-index:10; width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2); color:#fff; font-size:1.2rem; cursor:pointer; backdrop-filter:blur(6px); transition:all .25s; display:flex; align-items:center; justify-content:center; }
+.bsl-arrow:hover { background:rgba(255,255,255,.22); transform:translateY(-50%) scale(1.08); }
+.bsl-prev { left:20px; }
+.bsl-next { right:20px; }
+/* Dots */
+.bsl-dots { position:absolute; bottom:20px; left:50%; transform:translateX(-50%); display:flex; gap:8px; z-index:10; }
+.bsl-dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.35); cursor:pointer; transition:all .3s; border:none; padding:0; }
+.bsl-dot.active { background:#f39223; width:24px; border-radius:4px; }
+@media(max-width:768px){
+  .bsl-wrap { height:360px; }
+  .bsl-content { padding:0 6%; }
+  .bsl-title { font-size:1.6rem; }
+  .bsl-arrow { width:36px; height:36px; font-size:1rem; }
+}
+
     .footer-links li a, .footer-links li {
       display: flex; align-items: center; gap: 8px;
       color: rgba(255,255,255,0.5); font-size: 0.88rem; font-weight: 600;
@@ -270,6 +306,16 @@
   </div>
 </section>
 
+
+<!-- BANNERS -->
+<section id="bannerSection" style="display:none">
+  <div class="bsl-wrap" id="bannerSliderWrap">
+    <div class="bsl-track" id="bannerTrack"></div>
+    <button class="bsl-arrow bsl-prev" id="bslPrev" onclick="slideBanner(-1)">&#10094;</button>
+    <button class="bsl-arrow bsl-next" id="bslNext" onclick="slideBanner(1)">&#10095;</button>
+    <div class="bsl-dots" id="bannerDots"></div>
+  </div>
+</section>
 <!-- GRADES -->
 <section class="grade-section" id="grades">
   <div class="grade-inner">

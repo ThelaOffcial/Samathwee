@@ -37,6 +37,25 @@ function toggleAuth(type) {
   document.getElementById('signupForm').style.display = type === 'signup' ? 'block' : 'none';
 }
 
+// Google sign-in
+async function doGoogleLogin() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  const errEl = document.getElementById('loginError') || document.getElementById('signupError');
+  if (errEl) errEl.style.display = 'none';
+  try {
+    await auth.signInWithPopup(provider);
+  } catch (err) {
+    const msg = '❌ ' + friendlyAuthError(err.code);
+    const loginErr = document.getElementById('loginError');
+    const signupErr = document.getElementById('signupError');
+    if (loginErr && document.getElementById('loginForm').style.display !== 'none') {
+      loginErr.textContent = msg; loginErr.style.display = 'block';
+    } else if (signupErr) {
+      signupErr.textContent = msg; signupErr.style.display = 'block';
+    }
+  }
+}
+
 async function doLogin() {
   const email    = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
@@ -82,6 +101,9 @@ function friendlyAuthError(code) {
     'auth/too-many-requests': 'Too many attempts. Try again later.',
     'auth/network-request-failed': 'Network error. Check your connection.',
     'auth/invalid-credential': 'Invalid email or password.',
+    'auth/popup-closed-by-user': 'Sign-in popup was closed.',
+    'auth/cancelled-popup-request': 'Sign-in was cancelled.',
+    'auth/popup-blocked': 'Pop-up was blocked. Allow pop-ups and try again.',
   };
   return map[code] || 'Authentication failed. Try again.';
 }
@@ -137,7 +159,7 @@ window.addEventListener('load', () => {
 async function loadAllData() {
   await Promise.all([
     loadHero(), loadStats(), loadCenter(), loadContact(), loadFooter(),
-    loadGrades(), loadSubjects(), loadTeachers(), loadAllSubPageData()
+    loadGrades(), loadSubjects(), loadTeachers(), loadAllSubPageData(), loadBanners()
   ]);
   if (typeof loadTimetable === 'function') loadTimetable();
 }
@@ -218,7 +240,7 @@ async function saveCenter() {
   }, 'Center info saved!');
 }
 
-// ── CONTACT (enhanced) ──
+// ── CONTACT ──
 async function loadContact() {
   try {
     const data = await rtdbRead('config/contact');
@@ -245,7 +267,7 @@ async function saveContact() {
   }, 'Contact details saved!');
 }
 
-// ── FOOTER (enhanced) ──
+// ── FOOTER ──
 async function loadFooter() {
   try {
     const data = await rtdbRead('config/footer');
@@ -253,8 +275,7 @@ async function loadFooter() {
       if (typeof data === 'string') {
         document.getElementById('footerText').value = data;
       } else {
-        document.getElementById('footerText').value       = data.text       || '';
-        document.getElementById('footerDev').value        = data.dev        || '';
+        document.getElementById('footerText').value        = data.text        || '';
         document.getElementById('footerFacebookUrl').value = data.facebookUrl || '';
         document.getElementById('footerWhatsappUrl').value = data.whatsappUrl || '';
       }
@@ -264,10 +285,176 @@ async function loadFooter() {
 async function saveFooter() {
   await saveData('config/footer', {
     text:        document.getElementById('footerText').value.trim(),
-    dev:         document.getElementById('footerDev').value.trim(),
     facebookUrl: document.getElementById('footerFacebookUrl').value.trim(),
     whatsappUrl: document.getElementById('footerWhatsappUrl').value.trim()
   }, 'Footer saved!');
+}
+
+// ══════════════════════════════════════════════
+//  BANNERS
+// ══════════════════════════════════════════════
+const CLOUDINARY_CLOUD_NAME    = 'drmmn0xp3';
+const CLOUDINARY_UPLOAD_PRESET = 'samathwee';
+const CLOUDINARY_FOLDER        = 'samathwee';
+
+let bannersData = [];
+
+async function loadBanners() {
+  try {
+    const data = await rtdbRead('config/banners');
+    if (data) {
+      bannersData = Array.isArray(data) ? data.filter(Boolean) : Object.values(data).filter(Boolean);
+    } else { bannersData = []; }
+  } catch (e) { bannersData = []; }
+  renderBannersList();
+}
+
+function renderBannersList() {
+  const list = document.getElementById('bannersList');
+  if (!list) return;
+  if (!bannersData.length) {
+    list.innerHTML = '<p class="empty-msg">No banners yet. Add one above.</p>';
+    return;
+  }
+  list.innerHTML = bannersData.map((b, i) => `
+    <div class="banner-row" data-idx="${i}">
+      <div class="banner-preview-thumb">
+        ${b.image ? `<img src="${escHtml(b.image)}" alt="Banner ${i+1}" onerror="this.style.display='none'" />` : '🖼️'}
+      </div>
+      <div class="banner-fields">
+        <div class="form-row-2">
+          <div class="form-group"><label>Title</label>
+            <input type="text" data-field="title" data-idx="${i}" value="${escHtml(b.title)}" placeholder="Banner Title" />
+          </div>
+          <div class="form-group"><label>Subtitle</label>
+            <input type="text" data-field="sub" data-idx="${i}" value="${escHtml(b.sub)}" placeholder="Subtitle text" />
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group"><label>Button Text</label>
+            <input type="text" data-field="btnText" data-idx="${i}" value="${escHtml(b.btnText)}" placeholder="Learn More" />
+          </div>
+          <div class="form-group"><label>Button Link</label>
+            <input type="text" data-field="btnLink" data-idx="${i}" value="${escHtml(b.btnLink)}" placeholder="#grades" />
+          </div>
+        </div>
+        <div class="form-group"><label>Image URL</label>
+          <div class="image-upload-row">
+            <input type="text" data-field="image" data-idx="${i}" value="${escHtml(b.image)}" placeholder="https://..." class="image-url-input" />
+            <input type="file" accept="image/*" style="display:none;" id="banner-file-${i}" onchange="handleBannerRowUpload(event,${i})" />
+            <button type="button" class="btn-upload" onclick="document.getElementById('banner-file-${i}').click()">📤 Upload</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;margin-top:6px;">
+          <button class="btn-save" style="font-size:12px;padding:7px 16px;" onclick="saveSingleBanner(${i})">💾 Save This</button>
+          <span style="color:var(--t3);font-size:11px;">Order: ${i + 1}</span>
+        </div>
+      </div>
+      <button class="btn-remove banner-remove" onclick="removeBannerRow(${i})">✕</button>
+    </div>`).join('');
+}
+
+function addBannerRow() {
+  const title   = document.getElementById('bannerTitle').value.trim();
+  const sub     = document.getElementById('bannerSub').value.trim();
+  const btnText = document.getElementById('bannerBtnText').value.trim();
+  const btnLink = document.getElementById('bannerBtnLink').value.trim();
+  const image   = document.getElementById('bannerImgUrl').value.trim();
+
+  bannersData.push({ title, sub, btnText, btnLink, image, order: bannersData.length + 1 });
+  renderBannersList();
+
+  // Clear form
+  ['bannerTitle','bannerSub','bannerBtnText','bannerBtnLink','bannerImgUrl'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  document.getElementById('bannerPreview').innerHTML = '';
+  showToast('Banner added — click Save All Banners to persist.');
+}
+
+function removeBannerRow(i) { bannersData.splice(i, 1); renderBannersList(); }
+
+function collectBannerValues() {
+  document.querySelectorAll('.banner-row').forEach(row => {
+    const idx = parseInt(row.dataset.idx);
+    if (isNaN(idx) || !bannersData[idx]) return;
+    row.querySelectorAll('[data-field]').forEach(inp => {
+      bannersData[idx][inp.dataset.field] = inp.value.trim();
+    });
+  });
+}
+
+async function saveSingleBanner(i) {
+  collectBannerValues();
+  await saveData('config/banners', bannersData.map((b, idx) => ({
+    title: b.title || '', sub: b.sub || '', image: b.image || '',
+    btnText: b.btnText || '', btnLink: b.btnLink || '', order: idx + 1
+  })), `Banner ${i + 1} saved!`);
+}
+
+async function saveBanners() {
+  collectBannerValues();
+  const toSave = bannersData.map((b, i) => ({
+    title: b.title || '', sub: b.sub || '', image: b.image || '',
+    btnText: b.btnText || '', btnLink: b.btnLink || '', order: i + 1
+  }));
+  await saveData('config/banners', toSave, 'All banners saved!');
+}
+
+// Upload for add-form banner
+async function handleBannerUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { showToast('❌ Please select an image file', 'error'); return; }
+  const progressDiv = document.getElementById('bannerProgress');
+  const previewDiv  = document.getElementById('bannerPreview');
+  const urlInput    = document.getElementById('bannerImgUrl');
+  progressDiv.style.display = 'block'; progressDiv.textContent = 'Uploading… 0%';
+  const formData = new FormData();
+  formData.append('file', file); formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET); formData.append('folder', CLOUDINARY_FOLDER + '/banners');
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, true);
+  xhr.upload.addEventListener('progress', e => {
+    if (e.lengthComputable) progressDiv.textContent = `Uploading… ${Math.round((e.loaded / e.total) * 100)}%`;
+  });
+  xhr.onload = function() {
+    progressDiv.style.display = 'none';
+    if (xhr.status === 200) {
+      const url = JSON.parse(xhr.responseText).secure_url;
+      urlInput.value = url;
+      previewDiv.innerHTML = `<img src="${url}" alt="Preview" />`;
+      showToast('✅ Image uploaded!');
+    } else { showToast('❌ Upload failed', 'error'); }
+    event.target.value = '';
+  };
+  xhr.onerror = () => { progressDiv.style.display = 'none'; showToast('❌ Network error', 'error'); };
+  xhr.send(formData);
+}
+
+// Upload for existing banner row
+async function handleBannerRowUpload(event, index) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const formData = new FormData();
+  formData.append('file', file); formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET); formData.append('folder', CLOUDINARY_FOLDER + '/banners');
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, true);
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      const url = JSON.parse(xhr.responseText).secure_url;
+      if (bannersData[index]) bannersData[index].image = url;
+      // Update the input field
+      const inp = document.querySelector(`.banner-row[data-idx="${index}"] input[data-field="image"]`);
+      if (inp) inp.value = url;
+      // Update preview thumb
+      const thumb = document.querySelector(`.banner-row[data-idx="${index}"] .banner-preview-thumb`);
+      if (thumb) thumb.innerHTML = `<img src="${url}" alt="Banner" />`;
+      showToast('✅ Banner image uploaded!');
+    } else { showToast('❌ Upload failed', 'error'); }
+    event.target.value = '';
+  };
+  xhr.onerror = () => showToast('❌ Network error', 'error');
+  xhr.send(formData);
 }
 
 // ── GRADES ──
@@ -376,12 +563,8 @@ async function saveSubjects() {
 }
 
 // ══════════════════════════════════════════════
-//  TEACHERS — with INDIVIDUAL SAVE per teacher
+//  TEACHERS — individual save per teacher
 // ══════════════════════════════════════════════
-const CLOUDINARY_CLOUD_NAME    = 'drmmn0xp3';
-const CLOUDINARY_UPLOAD_PRESET = 'samathwee';
-const CLOUDINARY_FOLDER        = 'samathwee';
-
 let teachersData = [];
 
 async function loadTeachers() {
@@ -402,27 +585,22 @@ function renderTeacherRows() {
     <div class="teacher-row" data-idx="${i}" id="teacher-row-${i}">
       <div class="teacher-fields">
         <div class="form-row-2">
-          <div class="form-group">
-            <label>Full Name</label>
+          <div class="form-group"><label>Full Name</label>
             <input type="text" data-field="name" data-idx="${i}" value="${escHtml(t.name)}" placeholder="Mr. Perera" />
           </div>
-          <div class="form-group">
-            <label>Subject(s)</label>
+          <div class="form-group"><label>Subject(s)</label>
             <input type="text" data-field="subject" data-idx="${i}" value="${escHtml(t.subject)}" placeholder="Mathematics, Physics" />
           </div>
         </div>
         <div class="form-row-2">
-          <div class="form-group">
-            <label>Qualification</label>
+          <div class="form-group"><label>Qualification</label>
             <input type="text" data-field="qualification" data-idx="${i}" value="${escHtml(t.qualification)}" placeholder="BSc (Hons)" />
           </div>
-          <div class="form-group">
-            <label>Experience</label>
+          <div class="form-group"><label>Experience</label>
             <input type="text" data-field="experience" data-idx="${i}" value="${escHtml(t.experience)}" placeholder="10+ Years" />
           </div>
         </div>
-        <div class="form-group">
-          <label>Bio (optional)</label>
+        <div class="form-group"><label>Bio (optional)</label>
           <input type="text" data-field="bio" data-idx="${i}" value="${escHtml(t.bio)}" placeholder="Short description…" />
         </div>
         <div class="form-group">
@@ -437,7 +615,6 @@ function renderTeacherRows() {
           </div>
           <div class="upload-progress" id="progress-${i}" style="display:none;"></div>
         </div>
-        <!-- Individual save button -->
         <div style="display:flex;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid rgba(148,163,184,0.1);">
           <button class="btn-save" style="font-size:12.5px;padding:9px 20px;" onclick="saveIndividualTeacher(${i})">💾 Save This Teacher</button>
         </div>
@@ -450,7 +627,6 @@ function renderTeacherRows() {
 function addTeacher() {
   teachersData.push({ name: '', subject: '', qualification: '', experience: '', bio: '', image: '', order: teachersData.length + 1 });
   renderTeacherRows();
-  // Scroll to the newly added teacher
   setTimeout(() => {
     const list = document.getElementById('teachersList');
     if (list) list.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -459,23 +635,15 @@ function addTeacher() {
 
 function removeTeacher(i) { teachersData.splice(i, 1); renderTeacherRows(); }
 
-// Save ONE teacher by index
 async function saveIndividualTeacher(i) {
   const row = document.getElementById(`teacher-row-${i}`);
   if (!row || !teachersData[i]) return;
-
-  // Collect current values from inputs
-  row.querySelectorAll('[data-field]').forEach(inp => {
-    teachersData[i][inp.dataset.field] = inp.value.trim();
-  });
-
+  row.querySelectorAll('[data-field]').forEach(inp => { teachersData[i][inp.dataset.field] = inp.value.trim(); });
   const btn = row.querySelector('.btn-save');
   const origText = btn ? btn.textContent : '';
   if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
-
   setSaveStatus('saving');
   try {
-    // Save entire teachers array to keep order consistent
     const toSave = teachersData.map((t, idx) => ({
       name: t.name || '', subject: t.subject || '', qualification: t.qualification || '',
       experience: t.experience || '', bio: t.bio || '', image: t.image || '', order: idx + 1
@@ -491,7 +659,6 @@ async function saveIndividualTeacher(i) {
   }
 }
 
-// Save ALL teachers at once
 async function saveTeachers() {
   document.querySelectorAll('.teacher-row').forEach(row => {
     const idx = parseInt(row.dataset.idx);
@@ -527,7 +694,7 @@ async function handleTeacherImageUpload(event, index) {
       urlInput.value = url;
       if (teachersData[index]) teachersData[index].image = url;
       previewDiv.innerHTML = `<img src="${url}" alt="Preview" />`;
-      showToast('✅ Image uploaded successfully!', 'success');
+      showToast('✅ Image uploaded successfully!');
     } else {
       let errorMsg = 'Upload failed';
       try { const err = JSON.parse(xhr.responseText); errorMsg = err.error?.message || errorMsg; } catch {}
@@ -604,7 +771,6 @@ function renderSubPageTeachers(gradeKey) {
           <input type="text" data-field="bio" value="${escHtml(t.bio)}" placeholder="Short description…" />
         </div>
         <input type="hidden" data-field="image" value="${escHtml(t.image)}" id="sp-img-${gradeKey}-${i}" />
-        <!-- Individual save button -->
         <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(148,163,184,0.1);">
           <button class="btn-save" style="font-size:12px;padding:8px 18px;" onclick="saveIndividualSubPageTeacher('${gradeKey}', ${i})">💾 Save This Teacher</button>
         </div>
@@ -625,7 +791,6 @@ async function saveIndividualSubPageTeacher(gradeKey, i) {
   const t = { image: subPageData[gradeKey].teachers[i]?.image || '' };
   row.querySelectorAll('[data-field]').forEach(inp => { t[inp.dataset.field] = inp.value.trim(); });
   subPageData[gradeKey].teachers[i] = t;
-
   const btn = row.querySelector('.btn-save');
   const origText = btn ? btn.textContent : '';
   if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
@@ -672,7 +837,7 @@ async function handleSubPageImageUpload(event, gradeKey, index) {
       const url = JSON.parse(xhr.responseText).secure_url;
       if (imgInput) imgInput.value = url;
       if (subPageData[gradeKey].teachers[index]) subPageData[gradeKey].teachers[index].image = url;
-      if (avatarDiv) avatarDiv.innerHTML = `<img src="${url}" alt="Teacher" />`;
+      if (avatarDiv) avatarDiv.innerHTML = `<img src="${url}" alt="Teacher" style="width:100%;height:100%;object-fit:cover;border-radius:50%" />`;
       showToast('✅ Photo uploaded!');
     } else { showToast('❌ Upload failed', 'error'); }
     event.target.value = '';

@@ -3,283 +3,189 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title id="pageTitle">Teacher Profile | Samathwee</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,600&family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <title id="pageTitle">Teacher | Samathwee</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --bg:      #030812;
-      --surf:    #071323;
-      --card:    #0c1d35;
-      --border:  rgba(148,163,184,0.08);
-      --sky:     #38bdf8;
-      --sky-dim: rgba(56,189,248,0.1);
-      --gold:    #f59e0b;
-      --green:   #34d399;
-      --t1:      #f1f5f9;
-      --t2:      #94a3b8;
-      --t3:      #475569;
-      --ff-d:    'Playfair Display', Georgia, serif;
-      --ff-b:    'Sora', system-ui, sans-serif;
-      --ff-m:    'JetBrains Mono', monospace;
+      --bg:    #06090f;
+      --surf:  #0c1422;
+      --card:  #111d2e;
+      --bord:  rgba(148,163,184,0.09);
+      --sky:   #38bdf8;
+      --gold:  #f59e0b;
+      --green: #34d399;
+      --red:   #f87171;
+      --t1:    #f1f5f9;
+      --t2:    #94a3b8;
+      --t3:    #475569;
+      --ff-d:  'Playfair Display', serif;
+      --ff-b:  'Sora', sans-serif;
+      --ff-m:  'JetBrains Mono', monospace;
+      --accent: #38bdf8;
     }
     html { scroll-behavior: smooth; }
     body { font-family: var(--ff-b); background: var(--bg); color: var(--t1); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
     a { color: inherit; text-decoration: none; }
+    img { display: block; }
 
     /* ── LOADER ── */
-    .loader {
-      position: fixed; inset: 0; background: var(--bg);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 20px; z-index: 9999;
-      transition: opacity .5s ease, visibility .5s ease;
-    }
+    .loader { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; transition: opacity .5s, visibility .5s; }
     .loader.gone { opacity: 0; visibility: hidden; }
-    .loader-ring {
-      width: 56px; height: 56px;
-      border: 3px solid rgba(56,189,248,0.15);
-      border-top-color: var(--sky);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
+    .loader-ring { width: 48px; height: 48px; border: 3px solid rgba(56,189,248,.15); border-top-color: var(--sky); border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .loader p { color: var(--t3); font-size: 13px; font-family: var(--ff-m); letter-spacing: 0.08em; }
-
-    /* ── GRID BG ── */
-    .grid-bg {
-      position: absolute; inset: 0; pointer-events: none; z-index: 0;
-      background-image:
-        linear-gradient(rgba(148,163,184,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(148,163,184,0.03) 1px, transparent 1px);
-      background-size: 52px 52px;
-    }
+    .loader p { color: var(--t3); font-size: 12px; font-family: var(--ff-m); letter-spacing: .1em; }
 
     /* ── NAV ── */
-    .nav {
-      position: relative; z-index: 20;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 22px 6%; border-bottom: 1px solid var(--border);
-    }
-    .back-btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      color: var(--t2); font-size: 13.5px; font-weight: 600;
-      padding: 9px 22px; border-radius: 999px;
-      border: 1px solid var(--border); background: rgba(255,255,255,0.03);
-      transition: all .25s;
-    }
-    .back-btn:hover { color: var(--t1); border-color: rgba(148,163,184,0.2); background: rgba(255,255,255,0.06); transform: translateX(-3px); }
-    .nav-logo {
-      font-family: var(--ff-d); font-size: 1rem; color: var(--t2);
-      display: flex; align-items: center; gap: 8px;
-    }
+    .nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 14px 5%; background: rgba(6,9,15,.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--bord); }
+    .back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 8px 20px; border-radius: 999px; border: 1px solid var(--bord); background: rgba(255,255,255,.03); color: var(--t2); font-size: 13px; font-weight: 600; transition: all .25s; }
+    .back-btn:hover { color: var(--t1); background: rgba(255,255,255,.07); transform: translateX(-3px); }
+    .nav-logo { font-family: var(--ff-d); font-size: .95rem; color: var(--t3); display: flex; align-items: center; gap: 8px; }
+    .nav-logo span { color: var(--sky); }
 
     /* ── HERO ── */
-    .hero {
+    .tp-hero {
       position: relative; overflow: hidden;
-      background: radial-gradient(ellipse 80% 60% at 30% 50%, rgba(56,189,248,0.07) 0%, transparent 65%),
-                  radial-gradient(ellipse 50% 80% at 80% 20%, rgba(245,158,11,0.05) 0%, transparent 55%);
-      padding: 70px 6% 80px;
+      background: linear-gradient(135deg, #06090f 0%, #0a1628 60%, #0c1d35 100%);
+      padding: 60px 5% 0;
     }
-    .hero-inner {
-      position: relative; z-index: 2;
-      max-width: 1100px; margin: 0 auto;
-      display: grid; grid-template-columns: auto 1fr; gap: 60px; align-items: center;
+    .tp-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 70% at 70% 30%, rgba(56,189,248,.06), transparent 65%); pointer-events: none; }
+    .tp-hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(148,163,184,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,.025) 1px, transparent 1px); background-size: 48px 48px; pointer-events: none; }
+
+    .tp-hero-inner { position: relative; z-index: 2; max-width: 1100px; margin: 0 auto; }
+
+    /* Hero card */
+    .tp-card {
+      background: rgba(17,29,46,.8);
+      border: 1px solid rgba(56,189,248,.15);
+      border-radius: 28px;
+      padding: 40px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 44px;
+      align-items: center;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 24px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(56,189,248,.08);
+      animation: fadeUp .7s ease both;
     }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
     /* Avatar */
-    .avatar-wrap { position: relative; flex-shrink: 0; }
-    .avatar-glow {
-      position: absolute; inset: -14px; border-radius: 50%;
-      background: conic-gradient(from 0deg, var(--sky), var(--gold), var(--sky));
-      animation: rotateConic 6s linear infinite;
-      opacity: 0.5;
-    }
-    @keyframes rotateConic { to { transform: rotate(360deg); } }
-    .avatar-ring {
-      position: relative; z-index: 1;
-      width: 180px; height: 180px; border-radius: 50%;
+    .tp-av-wrap { position: relative; flex-shrink: 0; }
+    .tp-av-ring {
+      width: 150px; height: 150px; border-radius: 50%;
       background: linear-gradient(135deg, #0d2a4a, #1a3c6e);
-      border: 3px solid rgba(56,189,248,0.25);
+      border: 3px solid transparent;
       display: flex; align-items: center; justify-content: center;
-      overflow: hidden;
-      box-shadow: 0 0 0 8px var(--bg), 0 20px 60px rgba(0,0,0,0.5);
-      font-family: var(--ff-d); font-size: 4rem; font-weight: 800; color: var(--sky);
+      overflow: hidden; position: relative;
+      box-shadow: 0 0 0 4px var(--bg), 0 0 0 6px rgba(56,189,248,.3), 0 16px 48px rgba(0,0,0,.5);
+      animation: ringGlow 4s ease-in-out infinite;
     }
-    .avatar-ring img { width: 100%; height: 100%; object-fit: cover; }
-    .av-status {
-      position: absolute; bottom: 6px; right: 6px; z-index: 5;
-      width: 22px; height: 22px; border-radius: 50%;
-      background: var(--green); border: 3px solid var(--bg);
-      box-shadow: 0 0 10px rgba(52,211,153,0.5);
+    @keyframes ringGlow {
+      0%,100% { box-shadow: 0 0 0 4px var(--bg), 0 0 0 6px rgba(56,189,248,.25), 0 16px 48px rgba(0,0,0,.5); }
+      50% { box-shadow: 0 0 0 4px var(--bg), 0 0 0 8px rgba(56,189,248,.5), 0 16px 48px rgba(0,0,0,.5), 0 0 30px rgba(56,189,248,.2); }
     }
+    .tp-av-ring img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+    .tp-av-initials { font-family: var(--ff-d); font-size: 3.5rem; font-weight: 800; color: var(--sky); }
+    .tp-av-status { position: absolute; bottom: 4px; right: 4px; width: 20px; height: 20px; border-radius: 50%; background: var(--green); border: 3px solid var(--bg); box-shadow: 0 0 10px rgba(52,211,153,.5); }
 
     /* Info */
-    .info-col { min-width: 0; }
-    .faculty-badge {
-      display: inline-flex; align-items: center; gap: 7px;
-      padding: 5px 16px; border-radius: 999px;
-      border: 1px solid rgba(56,189,248,0.2); background: rgba(56,189,248,0.06);
-      font-size: 10.5px; font-weight: 700; color: var(--sky);
-      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 18px;
-    }
-    .faculty-badge::before {
-      content: '';
-      width: 6px; height: 6px; border-radius: 50%; background: var(--sky);
-      box-shadow: 0 0 8px var(--sky); animation: pulse 2s infinite;
-    }
-    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+    .tp-info { min-width: 0; }
+    .tp-badge { display: inline-flex; align-items: center; gap: 7px; padding: 5px 16px; border-radius: 999px; border: 1px solid rgba(56,189,248,.2); background: rgba(56,189,248,.06); font-size: 10px; font-weight: 700; color: var(--sky); text-transform: uppercase; letter-spacing: .12em; margin-bottom: 14px; }
+    .tp-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--sky); box-shadow: 0 0 8px var(--sky); animation: dot 2s infinite; }
+    @keyframes dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+    .tp-name { font-family: var(--ff-d); font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800; line-height: 1.05; margin-bottom: 16px; color: var(--t1); }
+    .tp-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .tp-tag { padding: 6px 16px; border-radius: 999px; background: rgba(56,189,248,.08); border: 1px solid rgba(56,189,248,.2); font-size: 12.5px; font-weight: 600; color: var(--sky); }
 
-    .teacher-name {
-      font-family: var(--ff-d); font-size: clamp(2.5rem, 5vw, 4rem);
-      font-weight: 800; line-height: 1.05; color: var(--t1); margin-bottom: 20px;
-    }
-    .subject-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
-    .subject-tag {
-      padding: 7px 18px; border-radius: 999px;
-      background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.2);
-      font-size: 13px; font-weight: 600; color: var(--sky);
-    }
-    .meta-row { display: flex; flex-wrap: wrap; gap: 20px; }
-    .meta-pill {
-      display: flex; align-items: center; gap: 8px;
-      color: var(--t2); font-size: 13px;
-    }
-    .meta-pill .mi { font-size: 15px; }
+    /* Quick stats strip */
+    .tp-stats { display: flex; gap: 0; margin-top: 8px; padding-top: 20px; border-top: 1px solid var(--bord); flex-wrap: wrap; }
+    .tp-stat { flex: 1; min-width: 100px; padding: 0 20px 0 0; }
+    .tp-stat:not(:first-child) { border-left: 1px solid var(--bord); padding-left: 20px; }
+    .tp-stat-num { font-family: var(--ff-d); font-size: 1.6rem; font-weight: 700; color: var(--t1); line-height: 1; }
+    .tp-stat-label { font-size: 10.5px; color: var(--t3); font-weight: 600; text-transform: uppercase; letter-spacing: .1em; margin-top: 4px; }
 
-    /* ── BIO ── */
-    .bio-section { background: var(--surf); border-top: 1px solid var(--border); padding: 60px 6%; }
-    .bio-inner { max-width: 820px; margin: 0 auto; }
-    .bio-text {
-      font-size: 1.05rem; color: var(--t2); line-height: 1.9;
-      border-left: 3px solid var(--sky); padding-left: 24px;
-      border-radius: 0 4px 4px 0;
-    }
+    /* ── TABS ── */
+    .tp-tabs-nav { max-width: 1100px; margin: 0 auto; padding: 0 0; position: relative; z-index: 2; display: flex; gap: 4px; padding-top: 32px; }
+    .tp-tab-btn { padding: 14px 28px; border: none; background: transparent; color: var(--t3); font-family: var(--ff-b); font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 14px 14px 0 0; transition: all .25s; position: relative; letter-spacing: .02em; }
+    .tp-tab-btn:hover { color: var(--t2); background: rgba(255,255,255,.03); }
+    .tp-tab-btn.active { color: var(--sky); background: rgba(56,189,248,.06); border: 1px solid rgba(56,189,248,.15); border-bottom-color: transparent; }
+    .tp-tab-btn.active::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 2px; background: var(--sky); border-radius: 2px 2px 0 0; }
 
-    /* ── SECTION SHARED ── */
-    .section-eyebrow {
-      font-size: 10px; font-weight: 700; color: var(--sky);
-      text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 8px;
-    }
-    .section-h2 {
-      font-family: var(--ff-d); font-size: clamp(1.6rem, 3vw, 2.4rem);
-      font-weight: 700; color: var(--t1); margin-bottom: 40px;
-    }
+    /* ── TAB CONTENT AREA ── */
+    .tp-body { background: var(--surf); border-top: 1px solid rgba(56,189,248,.1); min-height: 400px; padding: 48px 5% 80px; }
+    .tp-body-inner { max-width: 1100px; margin: 0 auto; }
+    .tp-tab-panel { display: none; animation: fadeUp .35s ease; }
+    .tp-tab-panel.active { display: block; }
 
-    /* ── CLASSES (from timetable) ── */
-    .classes-section { padding: 80px 6%; border-top: 1px solid var(--border); }
-    .classes-inner { max-width: 1100px; margin: 0 auto; }
+    /* ── OVERVIEW TAB ── */
+    .overview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .tp-section-label { font-size: 10px; font-weight: 700; color: var(--sky); text-transform: uppercase; letter-spacing: .15em; margin-bottom: 16px; }
+    .tp-bio-card { background: var(--card); border: 1px solid var(--bord); border-radius: 20px; padding: 28px; grid-column: 1 / -1; }
+    .tp-bio-text { font-size: 1rem; color: var(--t2); line-height: 1.9; border-left: 3px solid var(--sky); padding-left: 20px; }
 
-    /* Class cards */
-    .class-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; margin-bottom: 50px; }
-    .class-card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: 16px; padding: 24px;
-      transition: border-color .3s, transform .3s;
-    }
-    .class-card:hover { border-color: rgba(56,189,248,0.25); transform: translateY(-4px); }
-    .cc-grade {
-      font-size: 10px; font-weight: 700; color: var(--sky);
-      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .cc-subject { font-family: var(--ff-d); font-size: 1.2rem; font-weight: 700; color: var(--t1); margin-bottom: 12px; }
-    .cc-time-list { display: flex; flex-direction: column; gap: 6px; }
-    .cc-slot {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 12px; color: var(--t2); font-family: var(--ff-m);
-    }
-    .cc-slot .day {
-      display: inline-block; min-width: 32px; padding: 2px 8px;
-      border-radius: 4px; font-size: 10px; font-weight: 700;
-      background: rgba(56,189,248,0.08); color: var(--sky);
-    }
+    /* Subject cards */
+    .tp-subject-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; grid-column: 1 / -1; }
+    .tp-subject-card { background: var(--card); border: 1px solid var(--bord); border-radius: 16px; padding: 20px; display: flex; align-items: center; gap: 14px; transition: border-color .25s, transform .25s; }
+    .tp-subject-card:hover { border-color: rgba(56,189,248,.25); transform: translateY(-3px); }
+    .tp-subject-icon { width: 44px; height: 44px; border-radius: 12px; background: rgba(56,189,248,.1); border: 1px solid rgba(56,189,248,.2); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+    .tp-subject-name { font-weight: 700; font-size: 13.5px; color: var(--t1); }
 
-    /* ── TIMETABLE GRID ── */
-    .tt-wrap {
-      overflow-x: auto;
-      border: 1px solid var(--border); border-radius: 16px; margin-bottom: 20px;
-    }
-    .tt-table { width: 100%; border-collapse: collapse; min-width: 620px; }
-    .tt-table th {
-      padding: 14px 16px; text-align: center;
-      font-size: 10.5px; font-weight: 700; color: var(--t3);
-      text-transform: uppercase; letter-spacing: 0.1em;
-      background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border);
-      white-space: nowrap;
-    }
-    .tt-table th:first-child { text-align: left; }
-    .tt-table td {
-      padding: 10px 12px; border-bottom: 1px solid rgba(148,163,184,0.04);
-      border-right: 1px solid rgba(148,163,184,0.04); vertical-align: middle;
-      min-width: 120px;
-    }
-    .tt-table td:first-child {
-      font-family: var(--ff-m); font-size: 12px; color: var(--t3);
-      white-space: nowrap; min-width: 110px; text-align: left;
-    }
-    .tt-table tr:last-child td { border-bottom: none; }
-    .tt-table td:last-child { border-right: none; }
-    .cell-filled {
-      border-left: 3px solid var(--sky); padding: 8px 10px;
-      border-radius: 0 8px 8px 0;
-      background: rgba(56,189,248,0.05);
-    }
-    .cell-subject { font-size: 12px; font-weight: 700; color: var(--t1); margin-bottom: 3px; }
-    .cell-grade { font-size: 10px; color: var(--sky); font-weight: 600; }
-    .cell-empty { text-align: center; color: var(--t3); font-size: 12px; opacity: 0.4; }
+    /* ── SCHEDULE TAB ── */
+    .day-selector { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+    .day-btn { padding: 10px 20px; border-radius: 999px; border: 1px solid var(--bord); background: rgba(255,255,255,.03); color: var(--t2); font-family: var(--ff-b); font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; }
+    .day-btn:hover { border-color: rgba(148,163,184,.2); color: var(--t1); }
+    .day-btn.active { background: rgba(56,189,248,.1); border-color: rgba(56,189,248,.35); color: var(--sky); }
+    .day-btn.has-class { border-color: rgba(56,189,248,.2); }
 
-    /* ── QUALIFICATIONS ── */
-    .qual-section { background: var(--surf); padding: 80px 6%; border-top: 1px solid var(--border); }
-    .qual-inner { max-width: 1100px; margin: 0 auto; }
-    .qual-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
-    .qual-card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: 16px; padding: 28px;
-      display: flex; gap: 18px; align-items: flex-start;
-      transition: border-color .3s;
-    }
-    .qual-card:hover { border-color: rgba(245,158,11,0.25); }
-    .qual-icon { font-size: 1.8rem; flex-shrink: 0; margin-top: 2px; }
-    .qual-title { font-weight: 700; font-size: 14px; color: var(--t1); margin-bottom: 5px; }
-    .qual-sub { font-size: 12.5px; color: var(--t2); line-height: 1.6; }
+    .day-slots { display: flex; flex-direction: column; gap: 14px; }
+    .slot-card { background: var(--card); border: 1px solid var(--bord); border-radius: 18px; padding: 22px 24px; display: flex; align-items: center; gap: 20px; transition: border-color .25s, transform .25s; animation: fadeUp .3s ease; }
+    .slot-card:hover { border-color: rgba(56,189,248,.2); transform: translateY(-2px); }
+    .slot-time { font-family: var(--ff-m); font-size: 14px; color: var(--t2); min-width: 120px; flex-shrink: 0; }
+    .slot-time strong { color: var(--t1); font-size: 16px; display: block; margin-bottom: 2px; }
+    .slot-divider { width: 1px; height: 40px; background: var(--bord); flex-shrink: 0; }
+    .slot-subject { font-size: 1.05rem; font-weight: 700; color: var(--t1); }
+    .slot-grade-badge { padding: 4px 14px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .no-class-msg { text-align: center; padding: 60px 20px; color: var(--t3); font-size: 14px; border: 1px dashed rgba(148,163,184,.1); border-radius: 16px; }
+    .no-class-msg span { font-size: 2rem; display: block; margin-bottom: 12px; }
 
-    /* ── EMPTY NOTE ── */
-    .empty-note {
-      text-align: center; padding: 40px; color: var(--t3); font-size: 13.5px;
-      border: 1px dashed rgba(148,163,184,0.1); border-radius: 14px;
-    }
+    /* ── CREDENTIALS TAB ── */
+    .cred-timeline { position: relative; padding-left: 28px; }
+    .cred-timeline::before { content: ''; position: absolute; left: 9px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, rgba(56,189,248,.4), rgba(56,189,248,.05)); }
+    .cred-item { position: relative; padding-bottom: 32px; }
+    .cred-item::before { content: ''; position: absolute; left: -23px; top: 4px; width: 14px; height: 14px; border-radius: 50%; background: var(--bg); border: 2px solid var(--sky); box-shadow: 0 0 10px rgba(56,189,248,.4); }
+    .cred-card { background: var(--card); border: 1px solid var(--bord); border-radius: 18px; padding: 24px; transition: border-color .25s; }
+    .cred-card:hover { border-color: rgba(245,158,11,.2); }
+    .cred-icon { font-size: 1.8rem; margin-bottom: 12px; }
+    .cred-title { font-weight: 700; font-size: 15px; color: var(--t1); margin-bottom: 6px; }
+    .cred-value { font-size: 14px; color: var(--t2); line-height: 1.7; }
+    .cred-badge { display: inline-block; padding: 3px 12px; border-radius: 999px; font-size: 10.5px; font-weight: 700; background: rgba(245,158,11,.1); color: var(--gold); border: 1px solid rgba(245,158,11,.2); margin-bottom: 10px; }
 
     /* ── FOOTER ── */
-    .page-footer {
-      padding: 50px 6%; text-align: center;
-      border-top: 1px solid var(--border);
-      background: var(--bg);
-    }
-    .back-cta-btn {
-      display: inline-flex; align-items: center; gap: 10px;
-      padding: 14px 36px; border-radius: 999px;
-      background: var(--sky-dim); border: 1px solid rgba(56,189,248,0.25);
-      color: var(--sky); font-weight: 700; font-size: 14px;
-      transition: all .3s; margin-bottom: 20px;
-    }
-    .back-cta-btn:hover { background: rgba(56,189,248,0.18); transform: translateX(-4px); }
-    .page-footer p { color: var(--t3); font-size: 12px; margin-top: 14px; }
+    .tp-footer { background: var(--bg); border-top: 1px solid var(--bord); padding: 50px 5%; text-align: center; }
+    .tp-footer-btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 36px; border-radius: 999px; background: rgba(56,189,248,.08); border: 1px solid rgba(56,189,248,.2); color: var(--sky); font-weight: 700; font-size: 14px; transition: all .3s; margin-bottom: 20px; }
+    .tp-footer-btn:hover { background: rgba(56,189,248,.15); transform: translateX(-4px); }
+    .tp-footer p { color: var(--t3); font-size: 12px; }
 
-    /* ── ERROR ── */
-    .error-page {
-      min-height: 100vh; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 20px; padding: 40px;
-    }
-    .error-page h2 { font-family: var(--ff-d); font-size: 2rem; color: var(--t1); }
+    /* ── ERROR PAGE ── */
+    .error-page { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 40px; text-align: center; }
+    .error-page h2 { font-family: var(--ff-d); font-size: 2rem; }
     .error-page p { color: var(--t2); }
-    .error-page a { color: var(--sky); font-weight: 600; border-bottom: 1px solid rgba(56,189,248,0.3); }
+    .error-page a { color: var(--sky); font-weight: 600; }
 
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
-      .hero-inner { grid-template-columns: 1fr; gap: 36px; justify-items: center; text-align: center; }
-      .teacher-name { font-size: 2.2rem; }
-      .subject-tags, .meta-row { justify-content: center; }
-      .bio-section, .classes-section, .qual-section { padding: 50px 5%; }
+      .tp-card { grid-template-columns: 1fr; text-align: center; gap: 24px; padding: 28px 22px; }
+      .tp-av-wrap { margin: 0 auto; }
+      .tp-tags, .tp-stats { justify-content: center; }
+      .tp-stats { flex-direction: column; gap: 16px; }
+      .tp-stat { border-left: none !important; padding: 0 !important; border-top: 1px solid var(--bord); padding-top: 14px !important; }
+      .tp-stat:first-child { border-top: none; padding-top: 0 !important; }
+      .overview-grid { grid-template-columns: 1fr; }
+      .tp-tabs-nav { overflow-x: auto; flex-wrap: nowrap; gap: 2px; }
+      .tp-tab-btn { white-space: nowrap; padding: 12px 18px; font-size: 13px; }
+      .slot-card { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .slot-divider { width: 40px; height: 1px; }
     }
   </style>
 </head>
@@ -290,78 +196,90 @@
   <p>Loading profile…</p>
 </div>
 
-<div id="page" style="display:none">
-
+<div id="mainPage" style="display:none;">
+  <!-- NAV -->
   <nav class="nav">
     <a href="index.html" class="back-btn">← Back to Home</a>
-    <div class="nav-logo">🏫 Samathwee Education Center</div>
+    <div class="nav-logo">🏫 <span>Samathwee</span> Education Center</div>
   </nav>
 
   <!-- HERO -->
-  <section class="hero">
-    <div class="grid-bg"></div>
-    <div class="hero-inner">
-      <div class="avatar-wrap">
-        <div class="avatar-glow"></div>
-        <div class="avatar-ring" id="avatarRing">
-          <span id="avatarInitial">?</span>
+  <section class="tp-hero">
+    <div class="tp-hero-grid"></div>
+    <div class="tp-hero-inner">
+      <div class="tp-card">
+        <div class="tp-av-wrap">
+          <div class="tp-av-ring" id="avRing">
+            <span class="tp-av-initials" id="avInitials">?</span>
+          </div>
+          <div class="tp-av-status"></div>
         </div>
-        <div class="av-status"></div>
+        <div class="tp-info">
+          <div class="tp-badge">Faculty Member · Samathwee</div>
+          <h1 class="tp-name" id="tName">Loading…</h1>
+          <div class="tp-tags" id="tTags"></div>
+          <div class="tp-stats" id="tStats"></div>
+        </div>
       </div>
-      <div class="info-col">
-        <div class="faculty-badge">Faculty Member · Samathwee</div>
-        <h1 class="teacher-name" id="tName">Loading…</h1>
-        <div class="subject-tags" id="tSubjects"></div>
-        <div class="meta-row" id="tMeta"></div>
-      </div>
-    </div>
-  </section>
 
-  <!-- BIO -->
-  <section class="bio-section" id="bioSection" style="display:none">
-    <div class="bio-inner">
-      <div class="section-eyebrow">About</div>
-      <p class="bio-text" id="tBio"></p>
-    </div>
-  </section>
-
-  <!-- CLASSES & TIMETABLE -->
-  <section class="classes-section">
-    <div class="classes-inner">
-      <div class="section-eyebrow">Teaching Load</div>
-      <h2 class="section-h2">Classes & Schedule</h2>
-
-      <!-- Summary cards -->
-      <div class="class-cards" id="classCards"></div>
-
-      <!-- Weekly timetable grid -->
-      <div class="section-eyebrow" style="margin-bottom:16px;">📅 Weekly Timetable</div>
-      <div id="ttWrap">
-        <div class="empty-note" id="noTT">No timetable slots have been added for this teacher yet.</div>
+      <!-- TAB NAV -->
+      <div class="tp-tabs-nav">
+        <button class="tp-tab-btn active" onclick="switchTab('overview', this)">📋 Overview</button>
+        <button class="tp-tab-btn" onclick="switchTab('schedule', this)" id="scheduleTabBtn">📅 Schedule</button>
+        <button class="tp-tab-btn" onclick="switchTab('credentials', this)">🎓 Credentials</button>
       </div>
     </div>
   </section>
 
-  <!-- QUALIFICATIONS -->
-  <section class="qual-section" id="qualSection">
-    <div class="qual-inner">
-      <div class="section-eyebrow">Credentials</div>
-      <h2 class="section-h2">Qualifications & Experience</h2>
-      <div class="qual-cards" id="qualCards"></div>
-    </div>
-  </section>
+  <!-- BODY -->
+  <div class="tp-body">
+    <div class="tp-body-inner">
 
-  <footer class="page-footer">
-    <a href="index.html#teachers" class="back-cta-btn">← Browse All Teachers</a>
+      <!-- OVERVIEW TAB -->
+      <div class="tp-tab-panel active" id="tab-overview">
+        <div class="overview-grid">
+          <div class="tp-bio-card" id="bioCard" style="display:none;">
+            <div class="tp-section-label">About This Teacher</div>
+            <p class="tp-bio-text" id="tBio"></p>
+          </div>
+          <div id="subjectCardsWrap" style="grid-column:1/-1;">
+            <div class="tp-section-label">Subjects Taught</div>
+            <div class="tp-subject-cards" id="subjectCards"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCHEDULE TAB -->
+      <div class="tp-tab-panel" id="tab-schedule">
+        <div class="tp-section-label">Weekly Class Schedule</div>
+        <div class="day-selector" id="daySelector"></div>
+        <div class="day-slots" id="daySlots">
+          <div class="no-class-msg"><span>📅</span>Select a day to view classes</div>
+        </div>
+      </div>
+
+      <!-- CREDENTIALS TAB -->
+      <div class="tp-tab-panel" id="tab-credentials">
+        <div class="tp-section-label">Qualifications &amp; Experience</div>
+        <div class="cred-timeline" id="credTimeline"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="tp-footer">
+    <a href="index.html#teachers" class="tp-footer-btn">← Browse All Teachers</a>
     <p>© 2026 Samathwee Higher Education Center · Panadura, Sri Lanka</p>
   </footer>
-
 </div>
 
-<div id="errorPage" style="display:none">
+<div id="errorPage" style="display:none;">
   <div class="error-page">
+    <div style="font-size:4rem;">🔍</div>
     <h2>Teacher not found</h2>
     <p>We couldn't find a profile for this teacher.</p>
+    <br>
     <a href="index.html">← Return to Home</a>
   </div>
 </div>
@@ -389,223 +307,248 @@ const GRADE_LABELS = {
   'al_science':'A/L — Science','al_commerce':'A/L — Commerce','al_arts':'A/L — Arts',
   'cambridge_primary':'Cambridge Primary','cambridge_igcse':'Cambridge IGCSE','cambridge_al':'Cambridge A-Level',
   'london_igcse':'London IGCSE','london_al':'London A-Level',
-  // backwards compat
   'grade1_5':'Grade 1–5','grade6_ol':'Grade 6–O/L','grade_al':'A / Levels',
   'grade_cambridge':'Cambridge','grade_london':'London'
 };
 const GRADE_COLORS = {
   'grade1':'#ff6b6b','grade2':'#ff8c42','grade3':'#ffd93d','grade4':'#6bcb77','grade5':'#4d96ff',
-  'grade6':'#8b5cf6','grade7':'#a855f7','grade8':'#7c3aed','grade9':'#6d28d9','grade10':'#5b21b6',
-  'grade11_ol':'#8b5cf6',
+  'grade6':'#8b5cf6','grade7':'#a855f7','grade8':'#7c3aed','grade9':'#6d28d9','grade10':'#5b21b6','grade11_ol':'#8b5cf6',
   'al_science':'#38bdf8','al_commerce':'#22c55e','al_arts':'#f59e0b',
   'cambridge_primary':'#0073cc','cambridge_igcse':'#005da8','cambridge_al':'#c47d00',
   'london_igcse':'#b22222','london_al':'#8b1a1a',
-  'grade1_5':'#ff6b6b','grade6_ol':'#8b5cf6','grade_al':'#38bdf8',
-  'grade_cambridge':'#f59e0b','grade_london':'#34d399'
+  'grade1_5':'#ff6b6b','grade6_ol':'#8b5cf6','grade_al':'#38bdf8','grade_cambridge':'#f59e0b','grade_london':'#34d399'
+};
+const SUBJECT_ICONS = {
+  math:'🔢',mathematics:'🔢',physics:'⚛️',chemistry:'🧬',biology:'🔬',english:'🔤',
+  sinhala:'📖',history:'🏛️',geography:'🌍',ict:'💻',science:'🧪',economics:'📈',
+  commerce:'💼',accounting:'🧾',art:'🎨',music:'🎵',drama:'🎭',pe:'⚽','physical education':'⚽',
+  buddhism:'🙏',logic:'🧠',psychology:'🧘',sociology:'👥',literature:'📚',tamil:'📝',
+  'business studies':'🏢','combined mathematics':'📊'
 };
 
-function showLoader(v) { document.getElementById('loader').classList.toggle('gone', !v); }
-function el(id) { return document.getElementById(id); }
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+let mySlots = [];
+let activeDay = '';
 
+function getIcon(subj) {
+  const k = (subj||'').toLowerCase();
+  for (const [key, icon] of Object.entries(SUBJECT_ICONS)) {
+    if (k.includes(key)) return icon;
+  }
+  return '📖';
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmt(t) {
+  if (!t) return '';
+  const [h, m] = t.split(':').map(Number);
+  return `${h%12||12}:${String(m).padStart(2,'0')} ${h>=12?'PM':'AM'}`;
+}
+
+// ── TAB SWITCHER ──
+function switchTab(name, btn) {
+  document.querySelectorAll('.tp-tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tp-tab-panel').forEach(p => p.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const panel = document.getElementById('tab-' + name);
+  if (panel) panel.classList.add('active');
+}
+
+// ── DAY SELECTOR ──
+function buildDaySelector() {
+  const activeDays = DAYS.filter(d => mySlots.some(s => s.day === d));
+  const sel = document.getElementById('daySelector');
+  sel.innerHTML = '';
+  if (!activeDays.length) {
+    document.getElementById('daySlots').innerHTML = '<div class="no-class-msg"><span>📅</span>No schedule found for this teacher yet.</div>';
+    return;
+  }
+  DAYS.forEach(day => {
+    if (!activeDays.includes(day)) return;
+    const btn = document.createElement('button');
+    btn.className = 'day-btn has-class';
+    btn.textContent = day;
+    btn.onclick = () => selectDay(day, btn);
+    sel.appendChild(btn);
+  });
+  // Auto-select first active day
+  const firstBtn = sel.querySelector('.day-btn');
+  if (firstBtn) firstBtn.click();
+}
+
+function selectDay(day, btn) {
+  document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  activeDay = day;
+
+  const slots = mySlots.filter(s => s.day === day).sort((a,b) => a.startTime.localeCompare(b.startTime));
+  const container = document.getElementById('daySlots');
+
+  if (!slots.length) {
+    container.innerHTML = '<div class="no-class-msg"><span>😌</span>No classes scheduled for this day.</div>';
+    return;
+  }
+
+  container.innerHTML = slots.map(s => {
+    const color = GRADE_COLORS[s.grade] || '#38bdf8';
+    const label = GRADE_LABELS[s.grade] || s.grade;
+    const icon = getIcon(s.subject);
+    return `
+      <div class="slot-card">
+        <div class="slot-time">
+          <strong>${fmt(s.startTime)}</strong>
+          ${fmt(s.endTime)}
+        </div>
+        <div class="slot-divider"></div>
+        <div style="font-size:1.5rem;">${icon}</div>
+        <div style="flex:1;min-width:0;">
+          <div class="slot-subject">${esc(s.subject)}</div>
+          <div style="margin-top:6px;">
+            <span class="slot-grade-badge" style="background:${color}18;color:${color};border:1px solid ${color}33">
+              ${esc(label)}
+            </span>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── INIT ──
 async function init() {
   const params = new URLSearchParams(location.search);
-  const name = params.get('name') || '';
+  const name = (params.get('name') || '').trim();
   if (!name) { showError(); return; }
 
   try {
-    // Load teachers
-    const tSnap = await db.ref('teachers').once('value');
-    const rawTeachers = tSnap.val();
-    const teachers = rawTeachers
-      ? (Array.isArray(rawTeachers) ? rawTeachers : Object.values(rawTeachers)).filter(Boolean)
-      : [];
+    const [tSnap, ttSnap] = await Promise.all([
+      db.ref('teachers').once('value'),
+      db.ref('timetable/slots').once('value')
+    ]);
 
-    // Also check subpage teachers for richer data
+    const rawT = tSnap.val();
+    const teachers = rawT ? (Array.isArray(rawT) ? rawT : Object.values(rawT)).filter(Boolean) : [];
+
     const teacher = teachers.find(t => (t.name||'').toLowerCase() === name.toLowerCase())
       || teachers.find(t => (t.name||'').toLowerCase().includes(name.toLowerCase()));
 
-    // Load timetable
-    const ttSnap = await db.ref('timetable/slots').once('value');
-    const ttRaw = ttSnap.val();
-    const allSlots = ttRaw
-      ? (Array.isArray(ttRaw) ? ttRaw : Object.values(ttRaw)).filter(Boolean)
-      : [];
-
-    const mySlots = allSlots.filter(s =>
+    const rawTT = ttSnap.val();
+    const allSlots = rawTT ? (Array.isArray(rawTT) ? rawTT : Object.values(rawTT)).filter(Boolean) : [];
+    mySlots = allSlots.filter(s =>
       (s.teacherName||'').toLowerCase() === name.toLowerCase()
       || (s.teacherName||'').toLowerCase().includes(name.toLowerCase())
     );
 
     if (!teacher && mySlots.length === 0) { showError(); return; }
-
-    renderPage(teacher || { name }, mySlots);
-  } catch(e) {
+    renderProfile(teacher || { name }, mySlots);
+  } catch (e) {
     console.error(e);
     showError();
   }
 }
 
 function showError() {
-  showLoader(false);
-  el('errorPage').style.display = 'block';
+  document.getElementById('loader').classList.add('gone');
+  document.getElementById('errorPage').style.display = 'block';
 }
 
-function renderPage(t, slots) {
-  // Page title
+function renderProfile(t, slots) {
   document.title = `${t.name} | Samathwee`;
-  el('pageTitle').textContent = `${t.name} | Samathwee`;
 
   // Avatar
-  const ring = el('avatarRing');
+  const ring = document.getElementById('avRing');
+  const initials = (t.name||'T').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
   if (t.image) {
-    ring.innerHTML = `<img src="${esc(t.image)}" alt="${esc(t.name)}" />`;
+    const img = document.createElement('img');
+    img.src = t.image;
+    img.alt = t.name || '';
+    img.onerror = () => { ring.innerHTML = `<span class="tp-av-initials">${initials}</span>`; };
+    ring.innerHTML = '';
+    ring.appendChild(img);
   } else {
-    const initials = (t.name||'T').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-    ring.innerHTML = `<span style="color:var(--sky)">${initials}</span>`;
+    document.getElementById('avInitials').textContent = initials;
   }
 
   // Name
-  el('tName').textContent = t.name || '—';
+  document.getElementById('tName').textContent = t.name || '—';
 
   // Subject tags
-  const subEl = el('tSubjects');
+  const tagsEl = document.getElementById('tTags');
   if (t.subject) {
     t.subject.split(',').forEach(s => {
-      const d = document.createElement('span');
-      d.className = 'subject-tag';
-      d.textContent = s.trim();
-      subEl.appendChild(d);
+      const span = document.createElement('span');
+      span.className = 'tp-tag';
+      span.textContent = s.trim();
+      tagsEl.appendChild(span);
     });
   }
 
-  // Meta pills
-  const metaEl = el('tMeta');
-  if (t.experience) metaEl.innerHTML += `<div class="meta-pill"><span class="mi">⏱</span> ${esc(t.experience)}</div>`;
-  if (t.qualification) metaEl.innerHTML += `<div class="meta-pill"><span class="mi">🎓</span> ${esc(t.qualification)}</div>`;
+  // Stats
+  const statsEl = document.getElementById('tStats');
+  const statsData = [];
+  if (t.experience) statsData.push({ num: t.experience, label: 'Experience' });
+  if (slots.length) statsData.push({ num: slots.length, label: 'Weekly Classes' });
+  const uniqueGrades = [...new Set(slots.map(s => s.grade))];
+  if (uniqueGrades.length) statsData.push({ num: uniqueGrades.length, label: 'Grade Groups' });
+  if (t.qualification) statsData.push({ num: '🎓', label: t.qualification });
+
+  statsEl.innerHTML = statsData.map(s => `
+    <div class="tp-stat">
+      <div class="tp-stat-num">${esc(s.num)}</div>
+      <div class="tp-stat-label">${esc(s.label)}</div>
+    </div>`).join('');
 
   // Bio
   if (t.bio) {
-    el('tBio').textContent = t.bio;
-    el('bioSection').style.display = 'block';
+    document.getElementById('tBio').textContent = t.bio;
+    document.getElementById('bioCard').style.display = 'block';
   }
 
-  // Qualifications cards
-  const qc = el('qualCards');
-  if (t.qualification) {
-    qc.innerHTML += `
-      <div class="qual-card">
-        <div class="qual-icon">🎓</div>
-        <div><div class="qual-title">Academic Qualification</div><div class="qual-sub">${esc(t.qualification)}</div></div>
-      </div>`;
-  }
-  if (t.experience) {
-    qc.innerHTML += `
-      <div class="qual-card">
-        <div class="qual-icon">⏱</div>
-        <div><div class="qual-title">Teaching Experience</div><div class="qual-sub">${esc(t.experience)}</div></div>
-      </div>`;
-  }
-  if (t.subject) {
-    qc.innerHTML += `
-      <div class="qual-card">
-        <div class="qual-icon">📖</div>
-        <div><div class="qual-title">Subjects Taught</div><div class="qual-sub">${esc(t.subject)}</div></div>
-      </div>`;
-  }
-  if (!qc.innerHTML.trim()) {
-    qc.innerHTML = '<p style="color:var(--t3);font-size:13px;">Qualification details coming soon.</p>';
+  // Subject cards (overview)
+  const subjectsFromSlots = [...new Set(slots.map(s => s.subject).filter(Boolean))];
+  const subjectsFromProfile = t.subject ? t.subject.split(',').map(s => s.trim()) : [];
+  const allSubjects = [...new Set([...subjectsFromProfile, ...subjectsFromSlots])];
+
+  const subCardEl = document.getElementById('subjectCards');
+  if (allSubjects.length) {
+    subCardEl.innerHTML = allSubjects.map(subj => `
+      <div class="tp-subject-card">
+        <div class="tp-subject-icon">${getIcon(subj)}</div>
+        <div class="tp-subject-name">${esc(subj)}</div>
+      </div>`).join('');
+  } else {
+    document.getElementById('subjectCardsWrap').style.display = 'none';
   }
 
-  // Class cards (group slots by grade+subject)
-  renderClassCards(slots);
+  // Schedule tab
+  buildDaySelector();
 
-  // Timetable grid
-  renderTimetable(slots);
+  // Update schedule tab label with slot count
+  if (slots.length) {
+    const btn = document.getElementById('scheduleTabBtn');
+    if (btn) btn.textContent = `📅 Schedule (${slots.length})`;
+  }
+
+  // Credentials
+  const credEl = document.getElementById('credTimeline');
+  const creds = [];
+  if (t.name)          creds.push({ icon:'👤', badge:'Profile', title:'Name', value: t.name });
+  if (t.qualification) creds.push({ icon:'🎓', badge:'Education', title:'Academic Qualification', value: t.qualification });
+  if (t.experience)    creds.push({ icon:'⏱', badge:'Career', title:'Teaching Experience', value: t.experience });
+  if (t.subject)       creds.push({ icon:'📚', badge:'Expertise', title:'Subjects Taught', value: t.subject });
+  if (!creds.length)   creds.push({ icon:'📋', badge:'Coming Soon', title:'Credentials', value: 'Qualification details will be added soon.' });
+
+  credEl.innerHTML = creds.map(c => `
+    <div class="cred-item">
+      <div class="cred-card">
+        <div class="cred-icon">${c.icon}</div>
+        <div class="cred-badge">${esc(c.badge)}</div>
+        <div class="cred-title">${esc(c.title)}</div>
+        <div class="cred-value">${esc(c.value)}</div>
+      </div>
+    </div>`).join('');
 
   // Show page
-  el('page').style.display = 'block';
-  showLoader(false);
-}
-
-function renderClassCards(slots) {
-  const cc = el('classCards');
-  if (!slots.length) { cc.style.display = 'none'; return; }
-
-  // Group by grade+subject
-  const groups = {};
-  slots.forEach(s => {
-    const key = `${s.grade}||${s.subject}`;
-    if (!groups[key]) groups[key] = { grade: s.grade, subject: s.subject, times: [] };
-    groups[key].times.push({ day: s.day, start: s.startTime, end: s.endTime });
-  });
-
-  Object.values(groups).forEach(g => {
-    const color = GRADE_COLORS[g.grade] || '#38bdf8';
-    const label = GRADE_LABELS[g.grade] || g.grade;
-    g.times.sort((a,b) => DAYS.indexOf(a.day) - DAYS.indexOf(b.day));
-    const timesHtml = g.times.map(t => `
-      <div class="cc-slot">
-        <span class="day" style="background:${color}18;color:${color}">${(t.day||'').slice(0,3)}</span>
-        <span>${fmt(t.start)} – ${fmt(t.end)}</span>
-      </div>`).join('');
-
-    const card = document.createElement('div');
-    card.className = 'class-card';
-    card.innerHTML = `
-      <div class="cc-grade" style="color:${color}">
-        <span style="width:8px;height:8px;border-radius:50%;background:${color};display:inline-block;box-shadow:0 0 6px ${color}"></span>
-        ${esc(label)}
-      </div>
-      <div class="cc-subject">${esc(g.subject)}</div>
-      <div class="cc-time-list">${timesHtml}</div>`;
-    cc.appendChild(card);
-  });
-}
-
-function renderTimetable(slots) {
-  const wrap = el('ttWrap');
-  if (!slots.length) { el('noTT').style.display = 'block'; return; }
-
-  // Unique days and time ranges
-  const activeDays = DAYS.filter(d => slots.some(s => s.day === d));
-  const timeKeys = [...new Set(slots.map(s => `${s.startTime}|${s.endTime}`))].sort();
-
-  const headerCells = activeDays.map(d => `<th>${d.slice(0,3)}<span style="font-weight:400;font-size:9px">${d.slice(3)}</span></th>`).join('');
-
-  const rows = timeKeys.map(tk => {
-    const [start, end] = tk.split('|');
-    const cells = activeDays.map(day => {
-      const slot = slots.find(s => s.startTime === start && s.endTime === end && s.day === day);
-      if (!slot) return `<td><div class="cell-empty">—</div></td>`;
-      const color = GRADE_COLORS[slot.grade] || '#38bdf8';
-      const label = GRADE_LABELS[slot.grade] || slot.grade;
-      return `<td><div class="cell-filled" style="border-left-color:${color}">
-        <div class="cell-subject">${esc(slot.subject)}</div>
-        <div class="cell-grade" style="color:${color}">${esc(label)}</div>
-      </div></td>`;
-    }).join('');
-
-    return `<tr>
-      <td>${fmt(start)}<br><span style="font-size:10px;color:var(--t3)">${fmt(end)}</span></td>
-      ${cells}
-    </tr>`;
-  }).join('');
-
-  wrap.innerHTML = `
-    <div class="tt-wrap">
-      <table class="tt-table">
-        <thead><tr><th>Time</th>${headerCells}</tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>`;
-}
-
-function fmt(t) {
-  if (!t) return '';
-  const [h, m] = t.split(':').map(Number);
-  const ap = h >= 12 ? 'PM' : 'AM';
-  return `${h%12||12}:${String(m).padStart(2,'0')} ${ap}`;
+  document.getElementById('mainPage').style.display = 'block';
+  document.getElementById('loader').classList.add('gone');
 }
 
 init();

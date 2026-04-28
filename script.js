@@ -546,3 +546,92 @@ window.addEventListener('beforeunload', () => {
     try { ref.off('value', handler); } catch {}
   });
 });
+// ══════════════════════════════════════════════
+//  BANNER SLIDER
+// ══════════════════════════════════════════════
+let bannerSlides = [];
+let bannerCurrent = 0;
+let bannerTimer = null;
+
+function initBannerSlider(banners) {
+  const active = banners.filter(b => b.active !== false && (b.image || b.title));
+  if (!active.length) return;
+  bannerSlides = active;
+
+  const section = document.getElementById('bannerSection');
+  const track   = document.getElementById('bannerTrack');
+  const dots    = document.getElementById('bannerDots');
+  if (!section || !track) return;
+
+  // Build slides
+  track.innerHTML = '';
+  dots.innerHTML  = '';
+
+  bannerSlides.forEach((b, i) => {
+    const slide = document.createElement('div');
+    slide.className = `bsl-slide${i === 0 ? ' bsl-active' : ''}`;
+    slide.innerHTML = `
+      <div class="bsl-bg" style="background-image:url('${escBanner(b.image)}')"></div>
+      <div class="bsl-overlay"></div>
+      <div class="bsl-content">
+        ${b.subtitle ? `<div class="bsl-eyebrow">✦ ${escBanner(b.subtitle)}</div>` : ''}
+        ${b.title    ? `<h2 class="bsl-title">${escBanner(b.title)}</h2>` : ''}
+        ${b.ctaText  ? `<a href="${escBanner(b.ctaUrl||'#')}" class="bsl-cta">${escBanner(b.ctaText)} →</a>` : ''}
+      </div>`;
+    track.appendChild(slide);
+
+    const dot = document.createElement('button');
+    dot.className = `bsl-dot${i === 0 ? ' active' : ''}`;
+    dot.setAttribute('aria-label', `Slide ${i+1}`);
+    dot.onclick = () => goToBanner(i);
+    dots.appendChild(dot);
+  });
+
+  section.style.display = 'block';
+  startBannerAuto();
+
+  // Pause on hover
+  const wrap = document.getElementById('bannerSliderWrap');
+  if (wrap) {
+    wrap.addEventListener('mouseenter', () => clearInterval(bannerTimer));
+    wrap.addEventListener('mouseleave', startBannerAuto);
+  }
+}
+
+function escBanner(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function goToBanner(idx) {
+  const slides = document.querySelectorAll('.bsl-slide');
+  const dotEls = document.querySelectorAll('.bsl-dot');
+  const track  = document.getElementById('bannerTrack');
+  if (!slides.length) return;
+  slides[bannerCurrent].classList.remove('bsl-active');
+  dotEls[bannerCurrent]?.classList.remove('active');
+  bannerCurrent = (idx + bannerSlides.length) % bannerSlides.length;
+  slides[bannerCurrent].classList.add('bsl-active');
+  dotEls[bannerCurrent]?.classList.add('active');
+  if (track) track.style.transform = `translateX(-${bannerCurrent * 100}%)`;
+}
+
+function slideBanner(dir) {
+  clearInterval(bannerTimer);
+  goToBanner(bannerCurrent + dir);
+  startBannerAuto();
+}
+
+function startBannerAuto() {
+  clearInterval(bannerTimer);
+  if (bannerSlides.length > 1) {
+    bannerTimer = setInterval(() => goToBanner(bannerCurrent + 1), 6000);
+  }
+}
+
+// Add to listeners section at the bottom of script.js:
+listen('config/banners', v => {
+  if (!v) return;
+  const list = Array.isArray(v) ? v : Object.values(v);
+  const clean = list.filter(Boolean);
+  if (clean.length) initBannerSlider(clean);
+});
