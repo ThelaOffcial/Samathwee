@@ -338,6 +338,116 @@
     @media (max-width: 480px) {
       .contact-item { padding: 20px 18px; }
     }
+
+    /* ══════════════════════════════════════════════
+       FOOTER REVEAL ANIMATIONS
+    ══════════════════════════════════════════════ */
+
+    /* Keyframes */
+    @keyframes ftFadeUp {
+      from { opacity: 0; transform: translateY(36px); }
+      to   { opacity: 1; transform: translateY(0);    }
+    }
+    @keyframes ftFadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes ftSlideLeft {
+      from { opacity: 0; transform: translateX(-28px); }
+      to   { opacity: 1; transform: translateX(0);     }
+    }
+    @keyframes ftSlideRight {
+      from { opacity: 0; transform: translateX(28px); }
+      to   { opacity: 1; transform: translateX(0);    }
+    }
+    @keyframes ftScaleIn {
+      from { opacity: 0; transform: scale(0.82); }
+      to   { opacity: 1; transform: scale(1);    }
+    }
+    @keyframes ftLineDraw {
+      from { transform: scaleX(0); }
+      to   { transform: scaleX(1); }
+    }
+
+    /* Base hidden state — elements start invisible */
+    .footer-brand,
+    .footer-col,
+    .footer-bottom,
+    .fsoc-btn {
+      opacity: 0;
+    }
+
+    /* Once .ft-revealed is added by JS, run the animations */
+    .site-footer.ft-revealed .footer-brand {
+      animation: ftSlideLeft 0.75s cubic-bezier(0.22,1,0.36,1) 0.05s both;
+    }
+    .site-footer.ft-revealed .footer-col:nth-child(1) {
+      animation: ftFadeUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.20s both;
+    }
+    .site-footer.ft-revealed .footer-col:nth-child(2) {
+      animation: ftFadeUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.32s both;
+    }
+    .site-footer.ft-revealed .footer-col:nth-child(3) {
+      animation: ftFadeUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.44s both;
+    }
+    .site-footer.ft-revealed .fsoc-btn:nth-child(1) {
+      animation: ftScaleIn 0.55s cubic-bezier(0.34,1.56,0.64,1) 0.62s both;
+    }
+    .site-footer.ft-revealed .fsoc-btn:nth-child(2) {
+      animation: ftScaleIn 0.55s cubic-bezier(0.34,1.56,0.64,1) 0.74s both;
+    }
+    .site-footer.ft-revealed .footer-bottom {
+      animation: ftFadeIn 0.65s ease 0.80s both;
+    }
+
+    /* Animated divider line above footer-bottom */
+    .footer-bottom {
+      position: relative;
+    }
+    .footer-bottom::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(243,146,35,0.35), rgba(90,45,145,0.5), transparent);
+      transform: scaleX(0);
+      transform-origin: left center;
+    }
+    .site-footer.ft-revealed .footer-bottom::before {
+      animation: ftLineDraw 0.9s cubic-bezier(0.22,1,0.36,1) 0.75s both;
+    }
+
+    /* Individual footer link hover — stagger reveal for each li */
+    .site-footer.ft-revealed .footer-links li {
+      animation: ftFadeUp 0.45s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    .site-footer.ft-revealed .footer-col:nth-child(1) .footer-links li:nth-child(1) { animation-delay: 0.30s; }
+    .site-footer.ft-revealed .footer-col:nth-child(1) .footer-links li:nth-child(2) { animation-delay: 0.37s; }
+    .site-footer.ft-revealed .footer-col:nth-child(1) .footer-links li:nth-child(3) { animation-delay: 0.44s; }
+    .site-footer.ft-revealed .footer-col:nth-child(1) .footer-links li:nth-child(4) { animation-delay: 0.51s; }
+    .site-footer.ft-revealed .footer-col:nth-child(1) .footer-links li:nth-child(5) { animation-delay: 0.58s; }
+    .site-footer.ft-revealed .footer-col:nth-child(1) .footer-links li:nth-child(6) { animation-delay: 0.65s; }
+
+    .site-footer.ft-revealed .footer-col:nth-child(2) .footer-links li:nth-child(1) { animation-delay: 0.40s; }
+    .site-footer.ft-revealed .footer-col:nth-child(2) .footer-links li:nth-child(2) { animation-delay: 0.47s; }
+    .site-footer.ft-revealed .footer-col:nth-child(2) .footer-links li:nth-child(3) { animation-delay: 0.54s; }
+    .site-footer.ft-revealed .footer-col:nth-child(2) .footer-links li:nth-child(4) { animation-delay: 0.61s; }
+    .site-footer.ft-revealed .footer-col:nth-child(2) .footer-links li:nth-child(5) { animation-delay: 0.68s; }
+
+    .site-footer.ft-revealed .footer-col:nth-child(3) .footer-links li:nth-child(1) { animation-delay: 0.52s; }
+    .site-footer.ft-revealed .footer-col:nth-child(3) .footer-links li:nth-child(2) { animation-delay: 0.59s; }
+    .site-footer.ft-revealed .footer-col:nth-child(3) .footer-links li:nth-child(3) { animation-delay: 0.66s; }
+
+    /* Respect prefers-reduced-motion */
+    @media (prefers-reduced-motion: reduce) {
+      .footer-brand,
+      .footer-col,
+      .footer-bottom,
+      .fsoc-btn,
+      .footer-links li {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
   </style>
 </head>
 <body>
