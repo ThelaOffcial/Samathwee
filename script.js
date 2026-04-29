@@ -1,5 +1,5 @@
 // =============================================
-//  SAMATHWEE – script.js  (updated)
+//  SAMATHWEE – script.js
 //  Firebase Realtime Database ONLY
 // =============================================
 
@@ -34,17 +34,17 @@ const DEFAULTS = {
     mapUrl:  "https://maps.app.goo.gl/wZSjj3zwNjdNAKVc9"
   },
   contact: {
-    phone:     "+94 71 234 5678",
-    whatsapp:  "+94 71 234 5678",
-    email:     "samathwe@gmail.com",
-    address:   "No: 91/3, Sri Mahavihara Rd, Panadura, Sri Lanka",
-    facebook:  "Samathwee Education",
+    phone:       "+94 71 234 5678",
+    whatsapp:    "+94 71 234 5678",
+    email:       "samathwe@gmail.com",
+    address:     "No: 91/3, Sri Mahavihara Rd, Panadura, Sri Lanka",
+    facebook:    "Samathwee Education",
     facebookUrl: "https://facebook.com/",
     whatsappUrl: "https://wa.me/94712345678"
   },
   footer: {
-    text:       "© 2026 Samathwee Higher Education Center. All rights reserved. Panadura, Sri Lanka.",
-    dev:        "Dualsyntax IT",
+    text:        "© 2026 Samathwee Higher Education Center. All rights reserved. Panadura, Sri Lanka.",
+    dev:         "Dualsyntax IT",
     facebookUrl: "https://facebook.com/",
     whatsappUrl: "https://wa.me/94712345678"
   },
@@ -317,18 +317,18 @@ function renderTeachers(teachers) {
   buildTeacherGrid(allTeachers);
 }
 function buildTeacherGrid(list) {
-  const grid = document.getElementById('teachersGrid');
-  const noEl = document.getElementById('noTeachers');
+  const grid  = document.getElementById('teachersGrid');
+  const noEl  = document.getElementById('noTeachers');
   const noMsg = document.getElementById('noTeachersMsg');
   if (!grid) return;
   const sorted = [...list].sort((a, b) => (a.order || 0) - (b.order || 0));
   if (!sorted.length) {
     grid.innerHTML = '';
-    if (noEl) noEl.style.display = allTeachers.length === 0 ? 'block' : 'none';
-    if (noMsg) noMsg.style.display = allTeachers.length > 0 ? 'block' : 'none';
+    if (noEl)  noEl.style.display  = allTeachers.length === 0 ? 'block' : 'none';
+    if (noMsg) noMsg.style.display = allTeachers.length > 0  ? 'block' : 'none';
     return;
   }
-  if (noEl) noEl.style.display = 'none';
+  if (noEl)  noEl.style.display  = 'none';
   if (noMsg) noMsg.style.display = 'none';
   grid.innerHTML = sorted.map((t, idx) => `
     <a href="${t.name ? 'teacher.html?name=' + encodeURIComponent(t.name) : '#'}"
@@ -450,22 +450,16 @@ function applyCenter(v) {
 
 function applyContact(v) {
   if (!v) return;
-  // Phone
-  if (v.phone   !== undefined) setText('contact-phone',    v.phone   || DEFAULTS.contact.phone);
-  // WhatsApp
+  if (v.phone    !== undefined) setText('contact-phone',    v.phone    || DEFAULTS.contact.phone);
   if (v.whatsapp !== undefined) setText('contact-whatsapp', v.whatsapp || DEFAULTS.contact.whatsapp);
   const waUrl = v.whatsappUrl || (v.whatsapp ? 'https://wa.me/' + v.whatsapp.replace(/[^0-9]/g,'') : '#');
   const waLinkEl = document.getElementById('contact-wa-link');
   if (waLinkEl) waLinkEl.href = waUrl;
-  // Email
-  if (v.email   !== undefined) setText('contact-email',   v.email   || DEFAULTS.contact.email);
-  // Facebook
+  if (v.email    !== undefined) setText('contact-email',    v.email    || DEFAULTS.contact.email);
   if (v.facebook !== undefined) setText('contact-facebook', v.facebook || DEFAULTS.contact.facebook);
   const fbLinkEl = document.getElementById('contact-fb-link');
   if (fbLinkEl && v.facebookUrl) fbLinkEl.href = v.facebookUrl;
-  // Address
-  if (v.address !== undefined) setText('contact-address', v.address || DEFAULTS.contact.address);
-
+  if (v.address  !== undefined) setText('contact-address',  v.address  || DEFAULTS.contact.address);
   // Mirror into footer
   if (v.phone   !== undefined) setText('footer-phone',   v.phone   || '');
   if (v.email   !== undefined) setText('footer-email',   v.email   || '');
@@ -484,8 +478,6 @@ function applyFooter(v) {
     if (el) el.innerHTML = v.text;
   }
   if (v.dev) setText('footer-dev', v.dev);
-
-  // Social links in footer
   const fbFooter = document.getElementById('footer-fb-link');
   const waFooter = document.getElementById('footer-wa-link');
   if (fbFooter && v.facebookUrl) fbFooter.href = v.facebookUrl;
@@ -527,15 +519,15 @@ listen('config/stats',   v => { if (v) applyStats(v); });
 listen('config/center',  v => { if (v) applyCenter(v); });
 listen('config/contact', v => { if (v) applyContact(v); });
 listen('config/footer',  v => { if (v) applyFooter(v); });
-listen('grades',  v => {
+listen('grades', v => {
   if (!v) return;
-  const list = Array.isArray(v) ? v : Object.values(v);
+  const list  = Array.isArray(v) ? v : Object.values(v);
   const clean = list.filter(Boolean);
   if (clean.length) renderGrades(clean);
 });
 listen('subjects', v => {
   if (!v) return;
-  const list = Array.isArray(v) ? v : Object.values(v);
+  const list  = Array.isArray(v) ? v : Object.values(v);
   const clean = list.filter(Boolean);
   if (clean.length) renderSubjects(clean);
 });
@@ -546,19 +538,42 @@ window.addEventListener('beforeunload', () => {
     try { ref.off('value', handler); } catch {}
   });
 });
+
 // ══════════════════════════════════════════════
-//  BANNER SLIDER
+//  BANNER / EVENTS SLIDER
+//  Field mapping (admin saves):
+//    title   → banner title
+//    sub     → subtitle / eyebrow text
+//    btnText → CTA button label
+//    btnLink → CTA button URL
+//    image   → background image
 // ══════════════════════════════════════════════
-let bannerSlides = [];
+let bannerSlides  = [];
 let bannerCurrent = 0;
-let bannerTimer = null;
+let bannerTimer   = null;
+
+function escBanner(s) {
+  return String(s || '')
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function updateBannerCounter() {
+  const el = document.getElementById('bannerCounter');
+  if (el && bannerSlides.length > 0) {
+    el.textContent = `${bannerCurrent + 1} / ${bannerSlides.length}`;
+  }
+}
 
 function initBannerSlider(banners) {
+  // Accept banners with either image or title
   const active = banners.filter(b => b.active !== false && (b.image || b.title));
   if (!active.length) return;
   bannerSlides = active;
 
-  const section = document.getElementById('bannerSection');
+  const section = document.getElementById('eventsSection');
   const track   = document.getElementById('bannerTrack');
   const dots    = document.getElementById('bannerDots');
   if (!section || !track) return;
@@ -570,24 +585,45 @@ function initBannerSlider(banners) {
   bannerSlides.forEach((b, i) => {
     const slide = document.createElement('div');
     slide.className = `bsl-slide${i === 0 ? ' bsl-active' : ''}`;
+
+    // subtitle: admin stores as "sub", also accept legacy "subtitle"
+    const subtitle = b.sub || b.subtitle || '';
+    // button: admin stores as "btnText"/"btnLink", also accept legacy "ctaText"/"ctaUrl"
+    const ctaText = b.btnText || b.ctaText || '';
+    const ctaUrl  = b.btnLink || b.ctaUrl  || '#';
+
     slide.innerHTML = `
       <div class="bsl-bg" style="background-image:url('${escBanner(b.image)}')"></div>
       <div class="bsl-overlay"></div>
       <div class="bsl-content">
-        ${b.subtitle ? `<div class="bsl-eyebrow">✦ ${escBanner(b.subtitle)}</div>` : ''}
-        ${b.title    ? `<h2 class="bsl-title">${escBanner(b.title)}</h2>` : ''}
-        ${b.ctaText  ? `<a href="${escBanner(b.ctaUrl||'#')}" class="bsl-cta">${escBanner(b.ctaText)} →</a>` : ''}
-      </div>`;
+        ${subtitle ? `<div class="bsl-eyebrow">✦ ${escBanner(subtitle)}</div>` : ''}
+        ${b.title  ? `<h2 class="bsl-title">${escBanner(b.title)}</h2>`       : ''}
+        ${ctaText  ? `<a href="${escBanner(ctaUrl)}" class="bsl-cta">${escBanner(ctaText)} →</a>` : ''}
+      </div>
+    `;
     track.appendChild(slide);
 
+    // Dot
     const dot = document.createElement('button');
     dot.className = `bsl-dot${i === 0 ? ' active' : ''}`;
-    dot.setAttribute('aria-label', `Slide ${i+1}`);
-    dot.onclick = () => goToBanner(i);
+    dot.setAttribute('aria-label', `Slide ${i + 1}`);
+    dot.onclick = () => { clearInterval(bannerTimer); goToBanner(i); startBannerAuto(); };
     dots.appendChild(dot);
   });
 
+  // Show / hide arrow buttons based on count
+  const prevBtn = document.getElementById('bslPrev');
+  const nextBtn = document.getElementById('bslNext');
+  if (bannerSlides.length <= 1) {
+    if (prevBtn) prevBtn.style.display = 'none';
+    if (nextBtn) nextBtn.style.display = 'none';
+  } else {
+    if (prevBtn) prevBtn.style.display = '';
+    if (nextBtn) nextBtn.style.display = '';
+  }
+
   section.style.display = 'block';
+  updateBannerCounter();
   startBannerAuto();
 
   // Pause on hover
@@ -596,10 +632,20 @@ function initBannerSlider(banners) {
     wrap.addEventListener('mouseenter', () => clearInterval(bannerTimer));
     wrap.addEventListener('mouseleave', startBannerAuto);
   }
-}
 
-function escBanner(s) {
-  return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  // Touch / swipe support
+  let touchStartX = 0;
+  if (wrap) {
+    wrap.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+    wrap.addEventListener('touchend',   e => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 40) {
+        clearInterval(bannerTimer);
+        goToBanner(bannerCurrent + (diff > 0 ? 1 : -1));
+        startBannerAuto();
+      }
+    });
+  }
 }
 
 function goToBanner(idx) {
@@ -607,12 +653,17 @@ function goToBanner(idx) {
   const dotEls = document.querySelectorAll('.bsl-dot');
   const track  = document.getElementById('bannerTrack');
   if (!slides.length) return;
+
   slides[bannerCurrent].classList.remove('bsl-active');
   dotEls[bannerCurrent]?.classList.remove('active');
-  bannerCurrent = (idx + bannerSlides.length) % bannerSlides.length;
+
+  bannerCurrent = ((idx % bannerSlides.length) + bannerSlides.length) % bannerSlides.length;
+
   slides[bannerCurrent].classList.add('bsl-active');
   dotEls[bannerCurrent]?.classList.add('active');
   if (track) track.style.transform = `translateX(-${bannerCurrent * 100}%)`;
+
+  updateBannerCounter();
 }
 
 function slideBanner(dir) {
@@ -628,10 +679,10 @@ function startBannerAuto() {
   }
 }
 
-// Add to listeners section at the bottom of script.js:
+// Listen for banners from Firebase
 listen('config/banners', v => {
   if (!v) return;
-  const list = Array.isArray(v) ? v : Object.values(v);
+  const list  = Array.isArray(v) ? v : Object.values(v);
   const clean = list.filter(Boolean);
   if (clean.length) initBannerSlider(clean);
 });
